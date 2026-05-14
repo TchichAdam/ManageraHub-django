@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
 :root {
     --plum: #4F0C28;
     --plum-deep: #3f0a20;
@@ -30,10 +32,10 @@ html {
 
 body {
     margin: 0;
-    font-family: "Inter", "Segoe UI", sans-serif;
+    font-family: "Montserrat", "Segoe UI", sans-serif;
     color: var(--text-main);
     background: var(--off-white);
-    line-height: 1.55;
+    line-height: 1.6;
 }
 
 img,
@@ -119,7 +121,7 @@ body.menu-open {
 }
 
 .brand-script {
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: "Great Vibes", cursive;
     font-size: 1.5rem;
     font-style: italic;
     line-height: 1;
@@ -259,25 +261,31 @@ body.menu-open {
 .service-copy h3,
 .admin-copy h3 {
     margin: 0;
-    font-family: "Cormorant Garamond", Georgia, serif;
-    font-weight: 500;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
     color: var(--plum);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
 }
 
 .hero-title {
     font-size: clamp(4.8rem, 11vw, 7.5rem);
     line-height: 0.88;
     text-align: center;
-    font-style: italic;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .hero-subtitle {
     max-width: 440px;
     margin: 10px auto 22px;
     color: rgba(43, 34, 48, 0.82);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     text-align: center;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .placeholder-box {
@@ -359,9 +367,9 @@ body.menu-open {
 .section-kicker {
     display: inline-block;
     margin-bottom: 12px;
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--plum);
 }
@@ -370,13 +378,19 @@ body.menu-open {
 .admin-copy h3 {
     font-size: clamp(1.9rem, 4vw, 2.7rem);
     line-height: 1.05;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .service-copy p,
 .admin-copy p,
 .footer-bar p {
     margin: 0;
-    font-size: 0.96rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.65;
 }
 
 .about-section {
@@ -403,14 +417,17 @@ body.menu-open {
 .about-info-card h3,
 .section-heading h2 {
     margin: 0;
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
     color: var(--plum);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .about-heading h2 {
     font-size: clamp(54px, 7vw, 105px);
     line-height: 0.9;
-    letter-spacing: -2px;
+    letter-spacing: 0.06em;
     text-align: center;
     margin-top: 0;
     overflow: visible;
@@ -420,7 +437,7 @@ body.menu-open {
     position: absolute;
     top: 6px;
     right: 24px;
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: "Great Vibes", cursive;
     font-size: clamp(18px, 2vw, 30px);
     font-style: italic;
     color: var(--plum);
@@ -484,8 +501,9 @@ body.menu-open {
 .about-info-card p {
     margin: 0;
     color: var(--text-main);
-    font-size: 0.92rem;
-    line-height: 1.65;
+    font-size: 0.85rem;
+    font-weight: 400;
+    line-height: 1.7;
 }
 
 .about-note {
@@ -509,9 +527,10 @@ body.menu-open {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    font-size: 0.82rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
     color: var(--plum);
 }
 
@@ -553,7 +572,10 @@ body.menu-open {
 .about-info-card h3 {
     font-size: clamp(1.45rem, 2.4vw, 2rem);
     line-height: 0.92;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.04em;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
+    text-transform: uppercase;
 }
 
 .section-heading {
@@ -565,6 +587,10 @@ body.menu-open {
 .section-heading h2 {
     font-size: clamp(2.4rem, 5.2vw, 3.8rem);
     line-height: 1.05;
+    font-family: "Bodoni Moda", Georgia, serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .section-heading-wide {
@@ -745,9 +771,11 @@ body.menu-open {
 
 .admin-auth-copy h1 {
     margin: 0;
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: "Bodoni Moda", Georgia, serif;
     font-size: clamp(2.6rem, 6vw, 3.4rem);
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     color: #ffffff;
 }
 
@@ -854,8 +882,11 @@ body.menu-open {
 
 .admin-dashboard-panel h1 {
     margin: 0 0 16px;
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: "Bodoni Moda", Georgia, serif;
     font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     color: var(--plum);
 }
 
