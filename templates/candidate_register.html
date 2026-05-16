@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Registration | ManageraHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --plum: #4F0C28;
+            --plum-deep: #3f0a20;
+            --periwinkle: #C5D2F8;
+            --paper: #f4efe5;
+            --text-main: #2b2230;
+            --text-soft: #6b6171;
+            --line-soft: rgba(79, 12, 40, 0.12);
+            --line-strong: rgba(79, 12, 40, 0.2);
+            --radius-pill: 999px;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; }
+        body {
+            font-family: "Montserrat", sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* Image sur tout le body pour que le blur traverse */
+            background: url("{% static 'images/service-candidate.jpeg' %}") center center / cover no-repeat fixed;
+        }
+
+        /* IMAGE PANEL */
+        .reg-left {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .reg-left-bg {
+            position: absolute;
+            inset: 0;
+            background: url("{% static 'images/service-candidate.jpeg' %}") center center / cover no-repeat;
+        }
+        .reg-left-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(79,12,40,0.5) 0%, rgba(20,8,18,0.7) 55%, rgba(10,4,10,0.88) 100%);
+        }
+        .reg-left-brand {
+            position: absolute;
+            top: 34px; left: 40px;
+            z-index: 2;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand-script { font-family: "Great Vibes", cursive; font-size: 2rem; color: #fff; line-height: 1; }
+        .brand-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
+        .reg-left-content {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 1;
+            padding: 44px 40px;
+            color: #fff;
+        }
+        .reg-left-kicker { font-size: 0.69rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--periwinkle); margin-bottom: 10px; }
+        .reg-left-title { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 0.94; color: #fff; margin: 0 0 14px; }
+        .reg-left-desc { font-size: 0.85rem; line-height: 1.68; color: rgba(255,255,255,0.76); max-width: 330px; margin: 0 0 20px; }
+        .reg-left-tag { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: var(--radius-pill); border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.1); font-size: 0.74rem; font-weight: 600; color: rgba(255,255,255,0.88); }
+        .reg-left-tag::before { content: "✦"; color: var(--periwinkle); }
+        .reg-already { margin-top: 14px; font-size: 0.77rem; color: rgba(255,255,255,0.6); }
+        .reg-already a { color: var(--periwinkle); font-weight: 600; text-decoration: none; }
+
+        /* FORM PANEL — GLASSMORPHISM */
+        .reg-right {
+            /* Overlay sombre semi-transparent + blur fort */
+            background: rgba(18, 10, 20, 0.60);
+            backdrop-filter: blur(26px) saturate(1.4);
+            -webkit-backdrop-filter: blur(26px) saturate(1.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            padding: 56px 48px 60px;
+            position: relative;
+        }
+
+        /* Reflet glass subtil en haut */
+        .reg-right::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 220px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .reg-right-header { margin-bottom: 24px; position: relative; z-index: 1; }
+        .reg-step-label { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--periwinkle); margin-bottom: 7px; }
+        .reg-right-header h2 { margin: 0; font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(1.7rem, 2.5vw, 2.3rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--plum); line-height: 1; }
+        .reg-right-header p { margin: 7px 0 0; font-size: 0.82rem; color: rgba(255,255,255,0.6); }
+
+        .reg-message { padding: 13px 16px; border-radius: 14px; font-size: 0.83rem; margin-bottom: 10px; position: relative; z-index: 1; }
+        .reg-message-error { background: rgba(200,50,50,0.15); border: 1px solid rgba(200,50,50,0.3); color: #f2a0a0; }
+        .reg-message-success { background: rgba(50,150,80,0.15); border: 1px solid rgba(50,150,80,0.3); color: #90e0ae; }
+
+        .reg-divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; position: relative; z-index: 1; }
+        .reg-divider::before, .reg-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.18); }
+        .reg-divider span { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); white-space: nowrap; }
+
+        .reg-form { display: grid; gap: 11px; position: relative; z-index: 1; }
+        .reg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+        .reg-field { display: grid; gap: 5px; }
+        .reg-field label { font-size: 0.76rem; font-weight: 600; color: rgba(255,255,255,0.88); }
+        .req { color: #f2c4c4; margin-left: 2px; }
+        .opt { font-size: 0.68rem; font-weight: 400; color: rgba(255,255,255,0.45); margin-left: 3px; }
+
+        .reg-field input,
+        .reg-field select,
+        .reg-field textarea {
+            width: 100%; min-height: 46px; padding: 0 15px;
+            border-radius: 13px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.09);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            font-family: "Montserrat", sans-serif; font-size: 0.82rem;
+            outline: none; transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+        }
+        .reg-field textarea { min-height: 80px; padding: 12px 15px; resize: vertical; }
+        .reg-field input:focus, .reg-field select:focus, .reg-field textarea:focus {
+            border-color: rgba(197,210,248,0.55);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 0 3px rgba(197,210,248,0.12);
+        }
+        .reg-field input::placeholder, .reg-field textarea::placeholder { color: rgba(255,255,255,0.32); }
+        .reg-field select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 15px center;
+            padding-right: 38px; cursor: pointer;
+        }
+        .reg-field select option { background: #1a0d22; color: #fff; }
+
+        /* Date input calendar icon color */
+        .reg-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); cursor: pointer; }
+
+        .file-upload-wrap { position: relative; }
+        .file-upload-label {
+            display: flex; align-items: center; justify-content: space-between;
+            min-height: 46px; padding: 0 15px;
+            border-radius: 13px;
+            border: 1px dashed rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s;
+        }
+        .file-upload-label:hover { border-color: rgba(197,210,248,0.5); background: rgba(255,255,255,0.15); }
+        .file-text { font-size: 0.8rem; color: rgba(255,255,255,0.45); }
+        .file-btn { font-size: 0.69rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--periwinkle); padding: 5px 11px; border-radius: var(--radius-pill); border: 1px solid rgba(197,210,248,0.35); background: rgba(197,210,248,0.1); flex-shrink: 0; }
+        .file-upload-label input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        .pwd-hint { font-size: 0.68rem; color: rgba(255,255,255,0.4); }
+
+        .reg-terms {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 13px 15px; border-radius: 13px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            backdrop-filter: blur(6px);
+        }
+        .reg-terms input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; accent-color: var(--periwinkle); cursor: pointer; }
+        .reg-terms p { margin: 0; font-size: 0.76rem; line-height: 1.55; color: rgba(255,255,255,0.58); }
+        .reg-terms a { color: var(--periwinkle); font-weight: 600; text-decoration: none; }
+
+        .reg-submit {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 52px; border-radius: var(--radius-pill); border: none;
+            background: var(--plum);
+            color: #fff;
+            font-family: "Montserrat", sans-serif; font-size: 0.87rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+            transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+            box-shadow: 0 12px 28px rgba(79,12,40,0.45);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .reg-submit:hover { background: var(--plum-deep); transform: translateY(-1px); box-shadow: 0 18px 36px rgba(79,12,40,0.55); }
+
+        .reg-section-title { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(197,210,248,0.7); padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.12); position: relative; z-index: 1; }
+        .signin-link { text-align: center; font-size: 0.77rem; color: rgba(255,255,255,0.45); margin: 4px 0 0; }
+        .signin-link a { color: var(--periwinkle); font-weight: 600; text-decoration: none; }
+
+        @media (max-width: 900px) {
+            body { grid-template-columns: 1fr; }
+            .reg-left { position: relative; height: 300px; }
+            .reg-left-brand { top: 18px; left: 22px; }
+            .reg-left-content { padding: 22px; }
+            .reg-right { padding: 32px 20px 48px; }
+            .reg-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reg-left">
+        <div class="reg-left-bg"></div>
+        <div class="reg-left-overlay"></div>
+        <div class="reg-left-brand">
+            <span class="brand-script">M</span>
+            <span class="brand-name">ManageraHub</span>
+        </div>
+        <div class="reg-left-content">
+            <p class="reg-left-kicker">Join the platform</p>
+            <h1 class="reg-left-title">Start your career journey</h1>
+            <p class="reg-left-desc">Create your profile, upload your CV, discover opportunities, and track every application — all in one place.</p>
+            <span class="reg-left-tag">Free for all candidates</span>
+            <p class="reg-already">Already have an account? <a href="/signin">Sign in here</a></p>
+        </div>
+    </div>
+
+    <div class="reg-right">
+        <div class="reg-right-header">
+            <p class="reg-step-label">Candidate Registration</p>
+            <h2>Create your account</h2>
+            <p>Fields marked <strong style="color:#f2c4c4">*</strong> are required.</p>
+        </div>
+
+        {% if error_message %}<div class="reg-message reg-message-error">{{ error_message }}</div>{% endif %}
+        {% if success_message %}<div class="reg-message reg-message-success">{{ success_message }}</div>{% endif %}
+
+        <form method="post" action="{% url 'candidate_register' %}" enctype="multipart/form-data" class="reg-form">
+            {% csrf_token %}
+
+            <p class="reg-section-title">Personal Information</p>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="first_name">First Name <span class="req">*</span></label>
+                    <input type="text" id="first_name" name="first_name" placeholder="e.g. Adam" required>
+                </div>
+                <div class="reg-field">
+                    <label for="last_name">Last Name <span class="req">*</span></label>
+                    <input type="text" id="last_name" name="last_name" placeholder="e.g. Tchich" required>
+                </div>
+            </div>
+
+            <div class="reg-field">
+                <label for="email">Email Address <span class="req">*</span></label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="phone">Phone Number <span class="opt">(optional)</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="+212 6XX XXX XXX">
+                </div>
+                <div class="reg-field">
+                    <label for="country">Country <span class="req">*</span></label>
+                    <select id="country" name="country" required>
+                        <option value="" disabled selected>Select your country</option>
+                        <option>Morocco</option><option>France</option><option>United States</option>
+                        <option>United Kingdom</option><option>Canada</option><option>Germany</option>
+                        <option>Spain</option><option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="city">City <span class="opt">(optional)</span></label>
+                    <input type="text" id="city" name="city" placeholder="e.g. Casablanca">
+                </div>
+                <div class="reg-field">
+                    <label for="dob">Date of Birth <span class="opt">(optional)</span></label>
+                    <input type="date" id="dob" name="dob">
+                </div>
+            </div>
+
+            {% comment %} <div class="reg-divider"><span>Professional Profile</span></div>
+
+            <div class="reg-field">
+                <label for="job_title">Current / Target Job Title <span class="req">*</span></label>
+                <input type="text" id="job_title" name="job_title" placeholder="e.g. Software Engineer, Marketing Manager" required>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="experience">Years of Experience <span class="req">*</span></label>
+                    <select id="experience" name="experience" required>
+                        <option value="" disabled selected>Select range</option>
+                        <option>Less than 1 year</option><option>1–3 years</option>
+                        <option>3–5 years</option><option>5–10 years</option><option>10+ years</option>
+                    </select>
+                </div>
+                <div class="reg-field">
+                    <label for="education">Highest Education Level <span class="req">*</span></label>
+                    <select id="education" name="education" required>
+                        <option value="" disabled selected>Select level</option>
+                        <option>High School</option><option>Bachelor's Degree</option>
+                        <option>Master's Degree</option><option>PhD / Doctorate</option>
+                        <option>Professional Certification</option><option>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reg-field">
+                <label for="skills">Key Skills <span class="opt">(optional)</span></label>
+                <input type="text" id="skills" name="skills" placeholder="e.g. Python, Project Management, Adobe Photoshop">
+            </div>
+
+            <div class="reg-field">
+                <label for="bio">Short Bio <span class="opt">(optional)</span></label>
+                <textarea id="bio" name="bio" placeholder="A brief introduction about yourself and your career goals..."></textarea>
+            </div>
+
+            <div class="reg-field">
+                <label for="linkedin">LinkedIn Profile URL <span class="opt">(optional)</span></label>
+                <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/yourname">
+            </div>
+
+            <div class="reg-field">
+                <label>Upload CV / Resume <span class="req">*</span></label>
+                <div class="file-upload-wrap">
+                    <div class="file-upload-label">
+                        <span class="file-text" id="cv-label">PDF, DOC or DOCX — max 5 MB</span>
+                        <span class="file-btn">Browse</span>
+                        <input type="file" name="cv" accept=".pdf,.doc,.docx" required id="cv-input">
+                    </div>
+                </div>
+            </div> {% endcomment %}
+
+            <div class="reg-divider"><span>Account Security</span></div>
+
+            <div class="reg-field">
+                <label for="password">Password <span class="req">*</span></label>
+                <input type="password" id="password" name="password" placeholder="Create a strong password" required minlength="8">
+                <span class="pwd-hint">Minimum 8 characters — letters, numbers, and a symbol.</span>
+            </div>
+
+            <div class="reg-field">
+                <label for="password_confirm">Confirm Password <span class="req">*</span></label>
+                <input type="password" id="password_confirm" name="password_confirm" placeholder="Repeat your password" required minlength="8">
+            </div>
+
+            <div class="reg-divider"><span>Terms &amp; Agreements</span></div>
+
+            <div class="reg-terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <p>I have read and agree to ManageraHub's <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>. I understand my data will be used to connect me with employers. <span class="req">*</span></p>
+            </div>
+
+            <div class="reg-terms">
+                <input type="checkbox" id="marketing" name="marketing">
+                <p>I agree to receive occasional emails about job opportunities and platform news. <span class="opt">(optional)</span></p>
+            </div>
+
+            <button type="submit" class="reg-submit">Create Candidate Account</button>
+            <p class="signin-link">Already registered? <a href="/signin">Sign in</a></p>
+        </form>
+    </div>
+
+    <script>
+        const pwd = document.getElementById('password');
+        const pwdC = document.getElementById('password_confirm');
+        pwdC.addEventListener('input', () => {
+            pwdC.setCustomValidity(pwd.value !== pwdC.value ? 'Passwords do not match.' : '');
+        });
+        document.getElementById('cv-input').addEventListener('change', function () {
+            document.getElementById('cv-label').textContent = this.files[0] ? this.files[0].name : 'PDF, DOC or DOCX — max 5 MB';
+        });
+    </script>
+</body>
+</html>

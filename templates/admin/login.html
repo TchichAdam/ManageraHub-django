@@ -1,0 +1,46 @@
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | ManageraHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260514-2">
+</head>
+<body class="admin-auth-body">
+    <main class="admin-auth-page">
+        <div class="admin-auth-overlay"></div>
+        <section class="admin-auth-card">
+            <div class="admin-auth-copy">
+                <span class="admin-auth-kicker">ManageraHub Admin</span>
+                <h1>Welcome Admin</h1>
+                <p>Sign in to access the ManageraHub admin dashboard</p>
+            </div>
+
+            <form method="post" action="{{ app_path }}" class="admin-auth-form">
+                {% csrf_token %}
+                {% if form.errors %}
+                <div class="admin-auth-error">Invalid admin credentials. Please try again.</div>
+                {% endif %}
+
+                <label class="admin-auth-field">
+                    <span>Email</span>
+                    <input type="text" name="username" placeholder="Enter your admin email" required id="id_username">
+                </label>
+
+                <label class="admin-auth-field">
+                    <span>Password</span>
+                    <input type="password" name="password" placeholder="Enter your password" required id="id_password">
+                    <input type="hidden" name="next" value="{{ next }}">
+                </label>
+
+                <button type="submit" class="admin-auth-submit">Login</button>
+                <a href="/" class="admin-auth-secondary">Back to website</a>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

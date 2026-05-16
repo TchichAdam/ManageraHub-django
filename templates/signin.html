@@ -1,0 +1,214 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | ManageraHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --plum: #4f0c28; --plum-deep: #3f0a20; --periwinkle: #c5d2f8; --radius-pill: 999px; }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; }
+        body { font-family: "Montserrat", sans-serif; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; background: url("{% static 'images/service-candidate.jpeg' %}") center center / cover no-repeat fixed; }
+        .panel-left { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+        .panel-left-bg { position: absolute; inset: 0; background: url("{% static 'images/admin-login-bg.jpg' %}") center center / cover no-repeat; }
+        .panel-left-overlay { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(79, 12, 40, 0.48) 0%, rgba(20, 8, 18, 0.68) 55%, rgba(10, 4, 10, 0.88) 100%); }
+        .brand { position: absolute; top: 34px; left: 40px; z-index: 2; }
+        .brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+        .brand-script { font-family: "Great Vibes", cursive; font-size: 2rem; color: #fff; line-height: 1; }
+        .brand-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
+        .panel-left-content { position: absolute; bottom: 0; left: 0; right: 0; z-index: 1; padding: 44px 40px; color: #fff; }
+        .left-kicker { font-size: 0.69rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--periwinkle); margin-bottom: 10px; }
+        .left-title { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 0.94; color: #fff; margin: 0 0 14px; }
+        .left-desc { font-size: 0.85rem; line-height: 1.68; color: rgba(255, 255, 255, 0.72); max-width: 310px; margin: 0 0 22px; }
+        .left-tag { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: var(--radius-pill); border: 1px solid rgba(255, 255, 255, 0.22); background: rgba(255, 255, 255, 0.1); font-size: 0.74rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); }
+        .left-sub { margin-top: 14px; font-size: 0.77rem; color: rgba(255, 255, 255, 0.55); }
+        .left-sub a { color: var(--periwinkle); font-weight: 600; text-decoration: none; }
+        .panel-right { background: rgba(18, 10, 20, 0.6); backdrop-filter: blur(26px) saturate(1.4); -webkit-backdrop-filter: blur(26px) saturate(1.4); border-left: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; padding: 60px 48px; position: relative; overflow-y: auto; }
+        .signin-box { width: 100%; max-width: 400px; position: relative; z-index: 1; }
+        .signin-kicker { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--periwinkle); margin-bottom: 8px; }
+        .signin-title { margin: 0 0 6px; font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--plum); line-height: 1; }
+        .signin-sub { font-size: 0.82rem; color: rgba(255, 255, 255, 0.55); margin: 0 0 32px; }
+        .msg { padding: 13px 16px; border-radius: 14px; font-size: 0.83rem; margin-bottom: 16px; }
+        .msg-error { background: rgba(200, 50, 50, 0.15); border: 1px solid rgba(200, 50, 50, 0.3); color: #f2a0a0; }
+        .msg-success { background: rgba(50, 150, 80, 0.15); border: 1px solid rgba(50, 150, 80, 0.3); color: #90e0ae; }
+        .form { display: grid; gap: 14px; }
+        .field { display: grid; gap: 6px; }
+        .field label, .role-label { font-size: 0.76rem; font-weight: 600; color: rgba(255, 255, 255, 0.88); }
+        .field input { width: 100%; min-height: 48px; padding: 0 16px; border-radius: 13px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.09); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.84rem; outline: none; transition: border-color 0.18s, box-shadow 0.18s, background 0.18s; }
+        .field input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .field input:focus { border-color: rgba(197, 210, 248, 0.55); background: rgba(255, 255, 255, 0.15); box-shadow: 0 0 0 3px rgba(197, 210, 248, 0.12); }
+        .role-label { margin-bottom: 6px; display: block; }
+        .role-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .role-tab input[type="radio"] { display: none; }
+        .role-tab label { display: flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 13px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.07); font-size: 0.78rem; font-weight: 600; color: rgba(255, 255, 255, 0.55); cursor: pointer; transition: all 0.18s; letter-spacing: 0.04em; }
+        .role-tab input[type="radio"]:checked + label { border-color: rgba(197, 210, 248, 0.5); background: rgba(197, 210, 248, 0.12); color: var(--periwinkle); box-shadow: 0 0 0 3px rgba(197, 210, 248, 0.08); }
+        .forgot { text-align: right; }
+        .forgot a { font-size: 0.74rem; color: rgba(255, 255, 255, 0.45); text-decoration: none; }
+        .btn-submit { display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: var(--radius-pill); border: none; background: var(--plum); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.87rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 12px 28px rgba(79, 12, 40, 0.45); }
+        .divider { display: flex; align-items: center; gap: 10px; }
+        .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 255, 255, 0.15); }
+        .divider span { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.35); white-space: nowrap; }
+        .social-section.hidden { display: none; }
+        .social-btns, .register-links { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .social-btn, .register-link-btn { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; border-radius: 13px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.07); font-family: "Montserrat", sans-serif; font-size: 0.75rem; font-weight: 600; color: rgba(255, 255, 255, 0.75); text-decoration: none; transition: all 0.18s; }
+        .social-btn:hover, .register-link-btn:hover { border-color: rgba(255, 255, 255, 0.35); background: rgba(255, 255, 255, 0.14); color: #fff; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(10, 3, 8, 0.72); z-index: 100; display: none; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        .modal-overlay.open { display: flex; }
+        .modal-box { background: rgba(25, 10, 20, 0.92); border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 20px; padding: 40px 36px; width: min(94vw, 400px); position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4); }
+        .modal-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: rgba(255, 255, 255, 0.4); cursor: pointer; font-size: 1rem; }
+        .modal-title { font-family: "Bodoni Moda", Georgia, serif; font-size: 1.8rem; font-weight: 700; color: #fff; margin-bottom: 8px; }
+        .modal-desc { font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); margin-bottom: 22px; line-height: 1.6; }
+        .modal-success { background: rgba(50, 150, 80, 0.15); border: 1px solid rgba(50, 150, 80, 0.3); color: #90e0ae; padding: 10px 14px; border-radius: 10px; font-size: 0.8rem; margin-bottom: 16px; display: none; }
+        .modal-success.show { display: block; }
+        .modal-field { display: grid; gap: 6px; margin-bottom: 16px; }
+        .modal-field label { font-size: 0.73rem; font-weight: 600; color: rgba(255, 255, 255, 0.7); letter-spacing: 0.06em; text-transform: uppercase; }
+        .modal-field input { width: 100%; min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.09); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.84rem; outline: none; }
+        .modal-submit, .modal-back { width: 100%; min-height: 50px; border-radius: var(--radius-pill); border: none; background: var(--plum); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+        .modal-back { margin-top: 12px; background: transparent; color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.16); }
+        @media (max-width: 900px) { body { grid-template-columns: 1fr; } .panel-left { position: relative; height: 260px; } .brand { top: 18px; left: 22px; } .panel-left-content { padding: 22px; } .panel-right { padding: 36px 24px 48px; align-items: flex-start; } }
+    </style>
+</head>
+<body>
+    <div class="panel-left">
+        <div class="panel-left-bg"></div>
+        <div class="panel-left-overlay"></div>
+        <div class="brand">
+            <a href="{% url 'home' %}" class="brand-link" aria-label="Go to home page">
+                <span class="brand-script">M</span>
+                <span class="brand-name">ManageraHub</span>
+            </a>
+        </div>
+        <div class="panel-left-content">
+            <p class="left-kicker">Welcome back</p>
+            <h1 class="left-title">Your next opportunity awaits</h1>
+            <p class="left-desc">Sign in to manage your applications, review candidates, and keep your hiring pipeline moving forward.</p>
+            <span class="left-tag">Trusted by growing companies</span>
+            <p class="left-sub">Don't have an account? <a href="{% url 'candidate_register' %}">Register as candidate</a> or <a href="{% url 'company_register' %}">as a company</a></p>
+        </div>
+    </div>
+    <div class="panel-right">
+        <div class="signin-box">
+            <p class="signin-kicker">Sign In</p>
+            <h2 class="signin-title">Welcome back</h2>
+            <p class="signin-sub">Enter your credentials to access your account.</p>
+            {% if error_message %}<div class="msg msg-error">{{ error_message }}</div>{% endif %}
+            {% if success_message %}<div class="msg msg-success">{{ success_message }}</div>{% endif %}
+            {% if reset_success %}<div class="msg msg-success">If this email exists, a reset link has been sent.</div>{% endif %}
+            <form method="post" action="{% url 'signin' %}" class="form">
+                {% csrf_token %}
+                <div>
+                    <span class="role-label">I am a</span>
+                    <div class="role-tabs">
+                        <div class="role-tab candidate">
+                            <input type="radio" name="role" id="role-candidate" value="candidate" checked>
+                            <label for="role-candidate">Candidate</label>
+                        </div>
+                        <div class="role-tab company">
+                            <input type="radio" name="role" id="role-company" value="company">
+                            <label for="role-company">Company</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Your password" required>
+                </div>
+                <div class="forgot">
+                    <a href="#" id="forgotLink">Forgot your password?</a>
+                </div>
+                <button type="submit" class="btn-submit">Sign In</button>
+                <div id="candidate-social" class="social-section{% if not social_auth_enabled %} hidden{% endif %}">
+                    {% if google_auth_enabled or github_auth_enabled %}
+                    <div class="divider"><span>or continue with</span></div>
+                    <div class="social-btns">
+                        {% if google_auth_enabled %}
+                        <a href="/auth/google/login/" class="social-btn google">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615Z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18Z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332Z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58Z" fill="#EA4335"/></svg>
+                            Continue with Google
+                        </a>
+                        {% endif %}
+                        {% if github_auth_enabled %}
+                        <a href="/auth/github/login/" class="social-btn github">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12Z"/></svg>
+                            Continue with GitHub
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="divider"><span>No account yet?</span></div>
+                <div class="register-links">
+                    <a href="{% url 'candidate_register' %}" class="register-link-btn">Register as Candidate</a>
+                    <a href="{% url 'company_register' %}" class="register-link-btn">Register as Company</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal-box">
+            <button class="modal-close" type="button" onclick="closeModal()">X</button>
+            <h2 class="modal-title">Reset Password</h2>
+            <p class="modal-desc">Enter your email address and we'll send you a link to reset your password.</p>
+            <div class="modal-success" id="modalSuccess">If this email exists, a reset link has been sent. Check your inbox.</div>
+            <form method="post" action="/password-reset" id="resetForm">
+                {% csrf_token %}
+                <div class="modal-field">
+                    <label for="reset-email">Email address</label>
+                    <input type="email" id="reset-email" name="email" placeholder="your@email.com" required>
+                </div>
+                <button type="submit" class="modal-submit">Send reset link</button>
+            </form>
+            <button class="modal-back" type="button" onclick="closeModal()">Back to sign in</button>
+        </div>
+    </div>
+    <script>
+        const forgotLink = document.getElementById("forgotLink");
+        const forgotModal = document.getElementById("forgotModal");
+        const resetForm = document.getElementById("resetForm");
+        const candidateRadio = document.getElementById("role-candidate");
+        const companyRadio = document.getElementById("role-company");
+        const candidateSocial = document.getElementById("candidate-social");
+        const socialAuthEnabled = {{ social_auth_enabled|yesno:"true,false" }};
+        function syncSocialButtons() {
+            const showSocial = socialAuthEnabled && candidateRadio.checked;
+            candidateSocial.classList.toggle("hidden", !showSocial);
+        }
+        forgotLink.addEventListener("click", function (e) { e.preventDefault(); forgotModal.classList.add("open"); });
+        function closeModal() { forgotModal.classList.remove("open"); }
+        forgotModal.addEventListener("click", function (e) { if (e.target === e.currentTarget) { closeModal(); } });
+        document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeModal(); } });
+        candidateRadio.addEventListener("change", syncSocialButtons);
+        companyRadio.addEventListener("change", syncSocialButtons);
+        syncSocialButtons();
+        resetForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("reset-email").value;
+            if (!email) { return; }
+            fetch("/password-reset", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                },
+                body: "email=" + encodeURIComponent(email),
+            }).then(() => {
+                document.getElementById("modalSuccess").classList.add("show");
+                document.getElementById("reset-email").value = "";
+                document.getElementById("reset-email").disabled = true;
+                document.querySelector(".modal-submit").disabled = true;
+                document.querySelector(".modal-submit").style.opacity = "0.5";
+            }).catch(() => {
+                document.getElementById("modalSuccess").classList.add("show");
+            });
+        });
+    </script>
+</body>
+</html>

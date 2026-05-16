@@ -1,0 +1,405 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Registration | ManageraHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --plum: #4F0C28;
+            --plum-deep: #3f0a20;
+            --sage: #8c907d;
+            --sage-deep: #6f7363;
+            --sage-title: #7a7d6a; /* couleur de la 2ème image */
+            --paper: #f4efe5;
+            --text-main: #2b2230;
+            --text-soft: #6b6171;
+            --line-soft: rgba(79, 12, 40, 0.12);
+            --line-strong: rgba(79, 12, 40, 0.2);
+            --radius-pill: 999px;
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { margin: 0; }
+        body {
+            font-family: "Montserrat", sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: grid;
+            /* IMAGE LEFT, FORM RIGHT */
+            grid-template-columns: 1fr 1fr;
+            /* L'image couvre tout le body pour que le blur ait quelque chose à traverser */
+            background: url("{% static 'images/service-company.jpeg' %}") center center / cover no-repeat fixed;
+        }
+
+        /* IMAGE PANEL — column 1 (LEFT) */
+        .reg-left {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            order: 1;
+        }
+        .reg-left-bg {
+            position: absolute;
+            inset: 0;
+            background: url("{% static 'images/service-company.jpeg' %}") center center / cover no-repeat;
+        }
+        .reg-left-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(55,68,45,0.55) 0%, rgba(25,35,20,0.72) 55%, rgba(8,12,8,0.9) 100%);
+        }
+        .reg-left-brand {
+            position: absolute;
+            top: 34px; left: 40px;
+            z-index: 2;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand-script { font-family: "Great Vibes", cursive; font-size: 2rem; color: #fff; line-height: 1; }
+        .brand-name { font-size: 0.76rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
+        .reg-left-content {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 1;
+            padding: 44px 40px;
+            color: #fff;
+        }
+        .reg-left-kicker { font-size: 0.69rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: #a8d5a2; margin-bottom: 10px; }
+        .reg-left-title { font-family: "Bodoni Moda", Georgia, serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; line-height: 0.94; color: #fff; margin: 0 0 14px; }
+        .reg-left-desc { font-size: 0.85rem; line-height: 1.68; color: rgba(255,255,255,0.76); max-width: 330px; margin: 0 0 20px; }
+        .reg-left-tag { display: inline-flex; align-items: center; gap: 8px; padding: 7px 16px; border-radius: var(--radius-pill); border: 1px solid rgba(255,255,255,0.22); background: rgba(255,255,255,0.1); font-size: 0.74rem; font-weight: 600; color: rgba(255,255,255,0.88); }
+        .reg-left-tag::before { content: "✦"; color: #a8d5a2; }
+        .reg-already { margin-top: 14px; font-size: 0.77rem; color: rgba(255,255,255,0.6); }
+        .reg-already a { color: #a8d5a2; font-weight: 600; text-decoration: none; }
+
+        /* FORM PANEL — column 2 (RIGHT) — GLASSMORPHISM */
+        .reg-right {
+            /* Overlay sombre + blur pour lisibilité */
+            background: rgba(18, 22, 16, 0.62);
+            backdrop-filter: blur(26px) saturate(1.4);
+            -webkit-backdrop-filter: blur(26px) saturate(1.4);
+            border-left: 1px solid rgba(255, 255, 255, 0.12);
+            overflow-y: auto;
+            padding: 56px 48px 60px;
+            order: 2;
+            position: relative;
+        }
+
+        /* Reflet glass subtil en haut */
+        .reg-right::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 220px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .reg-right-header { margin-bottom: 24px; position: relative; z-index: 1; }
+        .reg-step-label { font-size: 0.67rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 7px; }
+        .reg-right-header h2 {
+            margin: 0;
+            font-family: "Bodoni Moda", Georgia, serif;
+            font-size: clamp(1.7rem, 2.5vw, 2.3rem);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--sage-title);
+            line-height: 1;
+        }
+        .reg-right-header p { margin: 7px 0 0; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+
+        .reg-message { padding: 13px 16px; border-radius: 14px; font-size: 0.83rem; margin-bottom: 10px; position: relative; z-index: 1; }
+        .reg-message-error { background: rgba(200,50,50,0.09); border: 1px solid rgba(200,50,50,0.22); color: #8b1a1a; }
+        .reg-message-success { background: rgba(50,150,80,0.09); border: 1px solid rgba(50,150,80,0.22); color: #1a5c30; }
+
+        .reg-divider { display: flex; align-items: center; gap: 10px; margin: 14px 0; position: relative; z-index: 1; }
+        .reg-divider::before, .reg-divider::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.3); }
+        .reg-divider span { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.65); white-space: nowrap; }
+
+        .reg-form { display: grid; gap: 11px; position: relative; z-index: 1; }
+        .reg-row { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+        .reg-field { display: grid; gap: 5px; }
+        .reg-field label { font-size: 0.76rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+        .req { color: #f2c4c4; margin-left: 2px; }
+        .opt { font-size: 0.68rem; font-weight: 400; color: rgba(255,255,255,0.5); margin-left: 3px; }
+
+        .reg-field input,
+        .reg-field select,
+        .reg-field textarea {
+            width: 100%; min-height: 46px; padding: 0 15px;
+            border-radius: 13px;
+            border: 1px solid rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.09);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            color: #fff;
+            font-family: "Montserrat", sans-serif; font-size: 0.82rem;
+            outline: none; transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+        }
+        .reg-field textarea { min-height: 80px; padding: 12px 15px; resize: vertical; }
+        .reg-field input:focus, .reg-field select:focus, .reg-field textarea:focus {
+            border-color: rgba(255,255,255,0.55);
+            background: rgba(255,255,255,0.22);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.1);
+        }
+        .reg-field input::placeholder, .reg-field textarea::placeholder { color: rgba(255,255,255,0.38); }
+        .reg-field select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.6)' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 15px center;
+            padding-right: 38px; cursor: pointer;
+        }
+        .reg-field select option { background: #3a4035; color: #fff; }
+
+        .file-upload-wrap { position: relative; }
+        .file-upload-label {
+            display: flex; align-items: center; justify-content: space-between;
+            min-height: 46px; padding: 0 15px;
+            border-radius: 13px;
+            border: 1px dashed rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s;
+        }
+        .file-upload-label:hover { border-color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.2); }
+        .file-text { font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+        .file-btn { font-size: 0.69rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.85); padding: 5px 11px; border-radius: var(--radius-pill); border: 1px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.15); flex-shrink: 0; }
+        .file-upload-label input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+        .pwd-hint { font-size: 0.68rem; color: rgba(255,255,255,0.5); }
+
+        .reg-terms {
+            display: flex; align-items: flex-start; gap: 10px;
+            padding: 13px 15px; border-radius: 13px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(6px);
+        }
+        .reg-terms input[type="checkbox"] { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; accent-color: var(--sage); cursor: pointer; }
+        .reg-terms p { margin: 0; font-size: 0.76rem; line-height: 1.55; color: rgba(255,255,255,0.65); }
+        .reg-terms a { color: #c8d5b0; font-weight: 600; text-decoration: none; }
+
+        .reg-submit {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 52px; border-radius: var(--radius-pill); border: none;
+            background: rgba(140,144,125,0.7);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-family: "Montserrat", sans-serif; font-size: 0.87rem; font-weight: 700;
+            letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer;
+            transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+        .reg-submit:hover { background: rgba(111,115,99,0.85); transform: translateY(-1px); box-shadow: 0 18px 36px rgba(0,0,0,0.35); }
+
+        .reg-section-title { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.55); padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.18); position: relative; z-index: 1; }
+        .signin-link { text-align: center; font-size: 0.77rem; color: rgba(255,255,255,0.55); margin: 4px 0 0; }
+        .signin-link a { color: #c8d5b0; font-weight: 600; text-decoration: none; }
+
+        @media (max-width: 900px) {
+            body { grid-template-columns: 1fr; }
+            .reg-left { position: relative; height: 300px; order: 1; }
+            .reg-left-brand { top: 18px; left: 22px; }
+            .reg-left-content { padding: 22px; }
+            .reg-right { padding: 32px 20px 48px; order: 2; }
+            .reg-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- IMAGE PANEL — LEFT -->
+    <div class="reg-left">
+        <div class="reg-left-bg"></div>
+        <div class="reg-left-overlay"></div>
+        <div class="reg-left-brand">
+            <span class="brand-script">M</span>
+            <span class="brand-name">ManageraHub</span>
+        </div>
+        <div class="reg-left-content">
+            <p class="reg-left-kicker">Hire smarter</p>
+            <h1 class="reg-left-title">Find your next key talent</h1>
+            <p class="reg-left-desc">Publish job offers, review candidate profiles, and manage your entire recruitment pipeline — from application to decision — in one place.</p>
+            <span class="reg-left-tag">Trusted by growing companies</span>
+            <p class="reg-already">Already have an account? <a href="/signin">Sign in here</a></p>
+        </div>
+    </div>
+
+    <!-- FORM PANEL — RIGHT (GLASS) -->
+    <div class="reg-right">
+        <div class="reg-right-header">
+            <p class="reg-step-label">Company Registration</p>
+            <h2>Register your company</h2>
+            <p>Fields marked <strong style="color:var(--plum)">*</strong> are required.</p>
+        </div>
+
+        {% if error_message %}<div class="reg-message reg-message-error">{{ error_message }}</div>{% endif %}
+        {% if success_message %}<div class="reg-message reg-message-success">{{ success_message }}</div>{% endif %}
+
+        <form method="post" action="{% url 'company_register' %}" enctype="multipart/form-data" class="reg-form">
+            {% csrf_token %}
+
+            <p class="reg-section-title">Company Information</p>
+
+            <div class="reg-field">
+                <label for="company_name">Company Name <span class="req">*</span></label>
+                <input type="text" id="company_name" name="company_name" placeholder="e.g. Acme Corporation" required>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="industry">Industry <span class="req">*</span></label>
+                    <select id="industry" name="industry" required onchange="toggleOtherIndustry(this)">
+                        <option value="" disabled selected>Select industry</option>
+                        <option>Technology & IT</option><option>Finance & Banking</option>
+                        <option>Healthcare</option><option>Education</option>
+                        <option>Manufacturing</option><option>Retail & E-commerce</option>
+                        <option>Consulting</option><option>Media & Communication</option>
+                        <option>Construction & Real Estate</option><option>Other</option>
+                    </select>
+                    <input type="text" id="industry_other" name="industry_other"
+                    placeholder="Please specify your industry"
+                    style="display:none; margin-top:8px;">
+                </div>
+                <div class="reg-field">
+                    <label for="company_size">Company Size <span class="req">*</span></label>
+                    <select id="company_size" name="company_size" required>
+                        <option value="" disabled selected>Select size</option>
+                        <option>1–10 employees</option><option>11–50 employees</option>
+                        <option>51–200 employees</option><option>201–500 employees</option>
+                        <option>500+ employees</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="country">Country <span class="req">*</span></label>
+                    <select id="country" name="country" required>
+                        <option value="" disabled selected>Select country</option>
+                        <option>Morocco</option><option>France</option><option>United States</option>
+                        <option>United Kingdom</option><option>Canada</option>
+                        <option>Germany</option><option>Spain</option><option>Other</option>
+                    </select>
+                </div>
+                <div class="reg-field">
+                    <label for="city">City <span class="req">*</span></label>
+                    <input type="text" id="city" name="city" placeholder="e.g. Casablanca" required>
+                </div>
+            </div>
+
+            <div class="reg-field">
+                <label for="website">Company Website <span class="opt">(optional)</span></label>
+                <input type="url" id="website" name="website" placeholder="https://yourcompany.com">
+            </div>
+
+            <div class="reg-field">
+                <label for="description">Company Description <span class="opt">(optional)</span></label>
+                <textarea id="description" name="description" placeholder="Tell candidates about your culture, mission, and what makes you a great employer..."></textarea>
+            </div>
+
+            {% comment %} <div class="reg-field">
+                <label>Company Logo <span class="opt">(optional)</span></label>
+                <div class="file-upload-wrap">
+                    <div class="file-upload-label">
+                        <span class="file-text" id="logo-label">PNG, JPG or SVG — max 2 MB</span>
+                        <span class="file-btn">Browse</span>
+                        <input type="file" name="logo" accept=".png,.jpg,.jpeg,.svg" id="logo-input">
+                    </div>
+                </div>
+            </div> {% endcomment %}
+
+            <div class="reg-divider"><span>Administrator Account</span></div>
+
+            <div class="reg-row">
+                <div class="reg-field">
+                    <label for="admin_first">First Name <span class="req">*</span></label>
+                    <input type="text" id="admin_first" name="admin_first" placeholder="Account holder's first name" required>
+                </div>
+                <div class="reg-field">
+                    <label for="admin_last">Last Name <span class="req">*</span></label>
+                    <input type="text" id="admin_last" name="admin_last" placeholder="Account holder's last name" required>
+                </div>
+            </div>
+
+            <div class="reg-field">
+                <label for="admin_title">Job Title / Role <span class="opt">(optional)</span></label>
+                <input type="text" id="admin_title" name="admin_title" placeholder="e.g. HR Manager, CEO, Talent Acquisition Lead">
+            </div>
+
+            <div class="reg-field">
+                <label for="email">Work Email Address <span class="req">*</span></label>
+                <input type="email" id="email" name="email" placeholder="contact@yourcompany.com" required>
+            </div>
+
+            <div class="reg-field">
+                <label for="phone">Phone Number <span class="opt">(optional)</span></label>
+                <input type="tel" id="phone" name="phone" placeholder="+212 6XX XXX XXX">
+            </div>
+
+            <div class="reg-divider"><span>Account Security</span></div>
+
+            <div class="reg-field">
+                <label for="password">Password <span class="req">*</span></label>
+                <input type="password" id="password" name="password" placeholder="Create a strong password" required minlength="8">
+                <span class="pwd-hint">Minimum 8 characters — letters, numbers, and a symbol.</span>
+            </div>
+
+            <div class="reg-field">
+                <label for="password_confirm">Confirm Password <span class="req">*</span></label>
+                <input type="password" id="password_confirm" name="password_confirm" placeholder="Repeat your password" required minlength="8">
+            </div>
+
+            <div class="reg-divider"><span>Terms &amp; Agreements</span></div>
+
+            <div class="reg-terms">
+                <input type="checkbox" id="terms" name="terms" required>
+                <p>I confirm I am authorized to register this company and agree to ManageraHub's <a href="/terms">Terms of Service</a>, <a href="/privacy">Privacy Policy</a>, and <a href="/employer-guidelines">Employer Guidelines</a>. <span class="req">*</span></p>
+            </div>
+
+            <div class="reg-terms">
+                <input type="checkbox" id="verified" name="verified" required>
+                <p>I certify that all information is accurate and this is a legally registered business entity. <span class="req">*</span></p>
+            </div>
+
+            <div class="reg-terms">
+                <input type="checkbox" id="marketing" name="marketing">
+                <p>I agree to receive product updates, recruitment insights, and platform news from ManageraHub. <span class="opt">(optional)</span></p>
+            </div>
+
+            <button type="submit" class="reg-submit">Create Company Account</button>
+            <p class="signin-link">Already registered? <a href="/signin">Sign in</a></p>
+        </form>
+    </div>
+
+    <script>
+        const pwd = document.getElementById('password');
+        const pwdC = document.getElementById('password_confirm');
+        pwdC.addEventListener('input', () => {
+            pwdC.setCustomValidity(pwd.value !== pwdC.value ? 'Passwords do not match.' : '');
+        });
+        document.getElementById('logo-input').addEventListener('change', function () {
+            document.getElementById('logo-label').textContent = this.files[0] ? this.files[0].name : 'PNG, JPG or SVG — max 2 MB';
+        });
+        function toggleOtherIndustry(select) {
+            const otherField = document.getElementById('industry_other');
+            if (select.value === 'Other') {
+                otherField.style.display = 'block';
+                otherField.required = true;
+            } else {
+                otherField.style.display = 'none';
+                otherField.required = false;
+                otherField.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
