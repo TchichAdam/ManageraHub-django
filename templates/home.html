@@ -12,7 +12,7 @@
                     <a href="#hero" class="mini-pill topbar-link">Home</a>
                     <a href="#story" class="mini-pill topbar-link">About ManageraHub</a>
                     <a href="#services" class="mini-pill topbar-link">Services</a>
-                    <a href="#admin" class="mini-pill topbar-link">Admin</a>
+                    <a href="#admin" class="mini-pill topbar-link">Login</a>
                 </div>
 
                 <a href="#hero" class="brand-lockup brand-lockup-center" aria-label="ManageraHub home">
@@ -28,7 +28,7 @@
                     <a href="#hero">Home</a>
                     <a href="#story">About ManageraHub</a>
                     <a href="#services">Services</a>
-                    <a href="#admin">Admin</a>
+                    <a href="#admin">Login</a>
                     <a href="#contact">Contact</a>
                 </nav>
 
@@ -144,7 +144,10 @@
                 <article class="service-card service-card-dark">
                     <div class="service-copy">
                         <span class="section-kicker">For Companies</span>
-                        <h3>Hire with more clarity and control</h3>
+                        <h3 class="service-company-title">
+                            <span class="service-company-line">Hire with more</span>
+                            <span class="service-company-line service-company-line-tight">clarity and&nbsp;control</span>
+                        </h3>
                         <p>Publish job offers, receive applications, review candidate profiles, and manage the recruitment process easily.</p>
                         <a href="{% url 'company_register' %}" class="pill-button pill-button-light">Start as Company</a>
                     </div>
@@ -166,7 +169,7 @@
                     <h3>Access your ManageraHub space</h3>
                     <p>Log in to access your account, manage your applications, publish job offers, or supervise the platform.</p>
                     <a href="{% url 'signin' %}" class="pill-button pill-button-dark">Log in</a>
-                    <a href="/admin/login/" class="editorial-link">ADMIN LOGIN</a>
+                    <a href="{% url 'signin' %}" class="editorial-link">ADMIN LOGIN</a>
                 </div>
 
                 <div class="admin-visual admin-photo-wrap">

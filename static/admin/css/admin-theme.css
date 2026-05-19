@@ -370,6 +370,13 @@ div.breadcrumbs {
     color: var(--mh-text-soft);
 }
 
+.change-list div.breadcrumbs,
+.change-form div.breadcrumbs,
+.delete-confirmation div.breadcrumbs,
+.object-history div.breadcrumbs {
+    display: none !important;
+}
+
 @media (max-width: 1200px) {
     #header {
         grid-template-columns: 1fr;
@@ -1552,4 +1559,67 @@ body.app-auth.model-user.change-list .results tbody th {
 .change-list #result_list tbody tr:nth-child(even),
 .change-list .results tbody tr:nth-child(even) {
     background: rgba(200, 213, 176, 0.14) !important;
+}
+
+/* Light theme for the left admin navigation sidebar */
+#nav-sidebar,
+#nav-sidebar .module,
+#nav-sidebar .current-app,
+#nav-sidebar .app-auth,
+#nav-sidebar .app-sites {
+    background: linear-gradient(180deg, rgba(248, 251, 243, 0.98) 0%, rgba(241, 250, 238, 0.98) 100%) !important;
+    color: var(--mh-text-main) !important;
+    border-color: rgba(79, 12, 40, 0.08) !important;
+}
+
+#nav-sidebar .current-app .section,
+#nav-sidebar .current-model,
+#nav-sidebar .model-logentry,
+#nav-sidebar .model-group,
+#nav-sidebar .model-user {
+    background: transparent !important;
+    color: var(--mh-text-main) !important;
+}
+
+#nav-sidebar a,
+#nav-sidebar a:link,
+#nav-sidebar a:visited {
+    color: var(--mh-plum) !important;
+    background: transparent !important;
+}
+
+#nav-sidebar a:hover {
+    color: var(--mh-plum-deep) !important;
+    background: rgba(200, 213, 176, 0.18) !important;
+}
+
+#nav-sidebar th,
+#nav-sidebar td,
+#nav-sidebar caption,
+#nav-sidebar .section,
+#nav-sidebar .app-auth > caption,
+#nav-sidebar .app-sites > caption {
+    color: var(--mh-text-main) !important;
+    background: transparent !important;
+}
+
+#nav-filter,
+#nav-sidebar input[type="search"],
+#nav-sidebar input[type="text"] {
+    background: rgba(241, 250, 238, 0.95) !important;
+    color: var(--mh-text-main) !important;
+    border: 1px solid rgba(79, 12, 40, 0.12) !important;
+    box-shadow: none !important;
+}
+
+#nav-filter::placeholder,
+#nav-sidebar input[type="search"]::placeholder,
+#nav-sidebar input[type="text"]::placeholder {
+    color: var(--mh-text-soft) !important;
+}
+
+#nav-sidebar .addlink,
+#nav-sidebar .changelink,
+#nav-sidebar .viewlink {
+    background: transparent !important;
 }

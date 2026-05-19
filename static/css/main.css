@@ -384,6 +384,15 @@ body.menu-open {
     letter-spacing: 0.03em;
 }
 
+.service-company-line {
+    display: block;
+}
+
+.service-company-line-tight {
+    white-space: nowrap;
+    font-size: 0.9em;
+}
+
 .service-copy p,
 .admin-copy p,
 .footer-bar p {

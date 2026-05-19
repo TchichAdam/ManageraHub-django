@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from app1.views import (
+    admin_login_view,
     admin_logout_view,
     candidate_register_view,
     candidate_signin_view,
@@ -18,6 +19,7 @@ urlpatterns = [
     path('signin', signin_view, name='signin'),
     path('candidate/signin', candidate_signin_view, name='candidate_signin'),
     path('company/signin', company_signin_view, name='company_signin'),
+    path('admin/login/', admin_login_view, name='admin_login_redirect'),
     path('admin/logout/', admin_logout_view, name='admin_logout_redirect'),
     path('password-reset', password_reset_view, name='password_reset'),
     path('candidate/register', candidate_register_view, name='candidate_register'),

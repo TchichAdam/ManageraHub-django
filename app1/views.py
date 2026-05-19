@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import PasswordResetForm
 from django.shortcuts import redirect, render
+from django.urls import reverse
 
 DEFAULT_CANDIDATE_DASHBOARD_URL = "/candidate/dashboard"
 DEFAULT_COMPANY_DASHBOARD_URL = "/company/dashboard"
@@ -12,13 +13,17 @@ def home(request):
 
 
 def admin_login_view(request):
-    return redirect("/admin/login/")
+    next_url = request.GET.get("next", "").strip()
+    signin_url = reverse("signin")
+    if next_url:
+        return redirect(f"{signin_url}?next={next_url}")
+    return redirect(signin_url)
 
 
 def admin_dashboard_view(request):
     if request.user.is_authenticated and request.user.is_staff:
         return redirect("/admin/")
-    return redirect("/admin/login/")
+    return redirect(reverse("signin"))
 
 
 def admin_logout_view(request):
@@ -103,9 +108,10 @@ def _signin_view(request, selected_role=None):
 
         if user is not None:
             login(request, user)
+            next_url = request.GET.get("next", "").strip()
             if user.is_staff:
-                return redirect("/admin/")
-            next_url = request.GET.get("next") or _role_dashboard_url(active_role)
+                return redirect(next_url or "/admin/")
+            next_url = next_url or _role_dashboard_url(active_role)
             return redirect(next_url)
 
         error_message = "Invalid email or password. Please try again."
