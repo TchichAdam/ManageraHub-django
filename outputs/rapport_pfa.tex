@@ -1,0 +1,509 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{margin=2cm, top=2.5cm, bottom=2.5cm}
+\usepackage{times} % Times New Roman
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{setspace}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc, shadows}
+
+% Définition des couleurs exactes du modèle
+\definecolor{emsiblue}{RGB}{68, 114, 196}
+\definecolor{emsigreen}{RGB}{112, 173, 71} % Vert à gauche
+\definecolor{emsimaroon}{RGB}{146, 38, 42} % Grenat en bas
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=magenta,      
+    urlcolor=emsiblue,
+    pdftitle={Rapport PFA - ManageraHub},
+}
+
+% Style des chapitres et sections
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{emsiblue}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{emsiblue}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{emsiblue}}
+  {\thesubsection}{1em}{}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \itshape Rapport de Projet de Fin d'Année}
+\fancyhead[R]{\small \itshape ManageraHub}
+\fancyfoot[C]{\color{emsiblue} \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\onehalfspacing
+
+\begin{document}
+
+% --- Page de Garde ---
+\begin{titlepage}
+    \begin{tikzpicture}[remember picture, overlay]
+        \fill[emsigreen] ($(current page.north west) + (0.5cm,-2cm)$) rectangle ($(current page.south west) + (0.8cm,2cm)$);
+        \fill[emsimaroon] ($(current page.south west) + (2cm,1.5cm)$) rectangle ($(current page.south east) + (-2cm,1.7cm)$);
+        \fill[emsimaroon] ($(current page.south east) + (-1.8cm,1.5cm)$) rectangle ($(current page.south east) + (-1.4cm,1.9cm)$);
+    \end{tikzpicture}
+
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft}
+            \includegraphics[height=1.5cm]{logo_0.png}
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright}
+            \includegraphics[height=1.5cm]{logo_1.png}
+        \end{flushright}
+    \end{minipage}
+    
+    \vspace{1cm}
+    
+    {\Large \textbf{Rapport de projet de fin d'année}} \\
+    \vspace{0.3cm}
+    {\large \textbf{3\textsuperscript{ème} année}} \\
+    \vspace{0.3cm}
+    {\large \textbf{Ingénierie Informatique et Réseaux}} \\
+    
+    \vfill
+    
+    {\Huge \textbf{\color{emsiblue} ManageraHub :}} \\
+    \vspace{0.5cm}
+    {\huge \textbf{\color{emsiblue} Plateforme Intégrée de Recrutement, Réseautage Professionnel et Vérification d'Entreprise}} \\
+    
+    \vfill
+    
+    {\large \textbf{PERIODE DU PROJET : DU 01 MARS 2026 AU 30 JUIN 2026}} \\
+    
+    \vspace{1.5cm}
+    
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushleft} \large
+            \textbf{Réalisé par :}\\
+            \vspace{0.2cm}
+            Adam [NOM]
+        \end{flushleft}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \begin{flushright} \large
+            \textbf{Encadré par :} \\
+            \vspace{0.2cm}
+            Pr. Mme Asma Ouarhim \\
+            \vspace{0.1cm}
+            \textbf{Encadrant pédagogique :} \\
+            Pr. [NOM PÉDAGOGIQUE]
+        \end{flushright}
+    \end{minipage}
+    
+    \vfill
+    
+    {\large \textbf{ANNEE UNIVERSITAIRE: 2025-2026}}
+    \vspace{1cm}
+\end{titlepage}
+
+\pagenumbering{roman}
+
+% --- Dédicaces ---
+\chapter*{Dédicaces}
+\addcontentsline{toc}{chapter}{Dédicaces}
+\begin{center}
+    \emph{À mes parents, pour leur amour inconditionnel, leurs sacrifices et leur soutien indéfectible tout au long de mon parcours académique. Vous êtes ma plus grande source de motivation.} \\
+    \vspace{1cm}
+    \emph{À mes professeurs de l'EMSI, pour la qualité de leur enseignement, leur rigueur et leur bienveillance qui m'ont permis d'acquérir les compétences nécessaires à la réalisation de ce projet.} \\
+    \vspace{1cm}
+    \emph{À tous mes amis et collègues, pour les moments d'échange, d'entraide et les encouragements mutuels durant cette année de défis.}
+\end{center}
+
+% --- Remerciements ---
+\chapter*{Remerciements}
+\addcontentsline{toc}{chapter}{Remerciements}
+Au terme de ce projet de fin d'année, je tiens à exprimer ma profonde gratitude envers toutes les personnes qui ont contribué, de près ou de loin, à sa réussite. \\
+\\
+Je remercie en premier lieu mon encadrante, \textbf{Pr. Mme Asma Ouarhim}, pour ses précieux conseils, sa disponibilité constante et la confiance qu'elle m'a témoignée. Ses orientations méthodologiques et techniques ont été déterminantes pour mener à bien ce travail. \\
+\\
+Mes remerciements s'adressent également à l'ensemble du corps professoral et administratif de l'\textbf{École Marocaine des Sciences de l'Ingénieur (EMSI) de Rabat} pour leur soutien pédagogique et l'environnement d'apprentissage d'excellence qu'ils nous offrent. \\
+\\
+Enfin, je remercie ma famille et mes proches pour leur soutien moral et leur patience infinie. Que ce travail soit le témoignage de ma reconnaissance et de mon affection.
+\newpage
+
+% --- Sommaire ---
+\tableofcontents
+\newpage
+
+% --- Résumé ---
+\chapter*{Résumé}
+\addcontentsline{toc}{chapter}{Résumé}
+Le projet \textbf{ManageraHub} est une solution web innovante conçue pour moderniser et sécuriser le marché du recrutement au Maroc. Face à la prolifération de fausses offres d'emploi, ManageraHub intègre un système de vérification rigoureux pour les entreprises, basé sur l'Identifiant Commun de l'Entreprise (ICE) et le Registre du Commerce (RC). \\
+\\
+Développée avec le framework \textbf{Django}, la plateforme offre une expérience utilisateur riche combinant recrutement classique et réseautage social professionnel. Les candidats bénéficient d'outils de gestion de carrière avancés (CV, certifications multiples, suivi de candidatures), tandis que les entreprises disposent d'un tableau de bord complet pour piloter leurs offres. Le fil d'actualité social favorise l'interaction et la visibilité des talents. Ce rapport détaille l'intégralité du processus, de l'étude de l'existant à l'implémentation technique, en suivant une méthodologie de développement structurée. \\
+\\
+\textbf{Mots clés :} Django, Recrutement, Réseautage Social, UML, Vérification ICE, Python, Web Sécurisé.
+
+% --- Abstract ---
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+The \textbf{ManageraHub} project is an innovative web solution designed to modernize and secure the recruitment market in Morocco. Addressing the proliferation of fake job offers, ManageraHub integrates a rigorous verification system for companies, based on the Common Company Identifier (ICE) and the Trade Register (RC). \\
+\\
+Developed with the \textbf{Django} framework, the platform offers a rich user experience combining classic recruitment with professional social networking. Candidates benefit from advanced career management tools (CV, multiple certifications, application tracking), while companies have a complete dashboard to manage their offers. The social feed promotes talent interaction and visibility. This report details the entire process, from the initial study to technical implementation, following a structured development methodology. \\
+\\
+\textbf{Keywords :} Django, Recruitment, Social Networking, UML, ICE Verification, Python, Secure Web.
+
+% --- Tables ---
+\listoffigures
+\listoftables
+
+% --- Liste des abréviations ---
+\chapter*{Liste des abréviations}
+\addcontentsline{toc}{chapter}{Liste des abréviations}
+\begin{tabular}{ll}
+    \textbf{PFA} & Projet de Fin d'Année \\
+    \textbf{EMSI} & École Marocaine des Sciences de l'Ingénieur \\
+    \textbf{UML} & Unified Modeling Language \\
+    \textbf{ICE} & Identifiant Commun de l'Entreprise \\
+    \textbf{RC} & Registre du Commerce \\
+    \textbf{2TUP} & 2 Track Unified Process \\
+    \textbf{MVT} & Model-View-Template \\
+    \textbf{DRY} & Don't Repeat Yourself \\
+    \textbf{ORM} & Object-Relational Mapping \\
+    \textbf{CSRF} & Cross-Site Request Forgery \\
+    \textbf{CSS} & Cascading Style Sheets \\
+    \textbf{JS} & JavaScript \\
+\end{tabular}
+
+\newpage
+\pagenumbering{arabic}
+
+% --- Introduction Générale ---
+\chapter*{Introduction Générale}
+\addcontentsline{toc}{chapter}{Introduction Générale}
+\section*{Contexte du Projet}
+À l'ère de la transformation numérique, le recrutement ne se limite plus au simple dépôt de CV. Il nécessite aujourd'hui une visibilité accrue, une interaction sociale et surtout une sécurité renforcée. Le marché marocain, en pleine expansion digitale, fait face à un défi majeur : la véracité des entreprises et des offres publiées en ligne.
+
+\section*{Problématique}
+Comment concevoir une plateforme qui non seulement facilite la mise en relation entre recruteurs et candidats, mais garantit également la légitimité des acteurs et favorise le développement d'un réseau professionnel dynamique ? Les solutions actuelles sont soit trop rigides (sites de recrutement classiques), soit trop vastes (réseaux sociaux généralistes), laissant souvent place à l'incertitude sur la fiabilité des employeurs.
+
+\section*{Objectifs}
+Le projet \textbf{ManageraHub} vise à répondre à cette problématique à travers trois piliers fondamentaux :
+\begin{enumerate}
+    \item \textbf{Vérification Légale} : Instaurer une confiance totale par la validation administrative des entreprises via leurs documents officiels (ICE, Modèle J).
+    \item \textbf{Efficacité Opérationnelle} : Automatiser le flux de recrutement, du dépôt de l'offre à la gestion du statut des candidatures.
+    \item \textbf{Interactivité Sociale} : Permettre aux professionnels de partager du contenu, de se suivre mutuellement et de taguer des entreprises dans un fil d'actualité moderne.
+\end{enumerate}
+
+\section*{Structure du Rapport}
+Ce rapport est organisé comme suit :
+\begin{itemize}
+    \item \textbf{Chapitre 1 : Contexte et Présentation}, qui analyse l'existant et définit la méthodologie de travail.
+    \item \textbf{Chapitre 2 : Analyse et Conception}, détaillant les besoins et la modélisation UML exhaustive.
+    \item \textbf{Chapitre 3 : Réalisation et Interfaces}, présentant les choix technologiques et les résultats obtenus.
+\end{itemize}
+
+% --- Chapitre 1 ---
+\chapter{Contexte général et présentation de projet}
+\section{Introduction}
+Ce chapitre expose le cadre global dans lequel s'inscrit le projet. Il présente l'étude de l'existant, les critiques formulées et la solution proposée, ainsi que l'organisation adoptée pour sa réalisation.
+
+\section{Étude de l'existant}
+\subsection{Analyse du marché actuel}
+Le secteur du recrutement en ligne au Maroc est dominé par des portails classiques comme Rekrute ou Anapec. Bien que fonctionnels, ces sites privilégient une approche unidirectionnelle : l'entreprise publie, le candidat postule. La dimension "communauté" y est quasi inexistante.
+\subsection{Critique de l'existant}
+\begin{itemize}
+    \item \textbf{Manque de transparence} : Sur beaucoup de sites gratuits, n'importe qui peut se faire passer pour une entreprise, entraînant des risques d'arnaques.
+    \item \textbf{Passivité du profil} : Le profil du candidat est souvent un document statique stocké en base de données sans réelle visibilité continue.
+    \item \textbf{Charge administrative} : Pour les PME, la gestion des candidatures par email est chronophage et source d'erreurs.
+\end{itemize}
+
+\section{Solution proposée : ManageraHub}
+ManageraHub se positionne comme un \textbf{Hub de Carrière} centralisé. La plateforme introduit un processus d'approbation administrative obligatoire pour toute entreprise souhaitant recruter. Une fois validée, l'entreprise accède à des outils de gestion puissants. Parallèlement, le candidat dispose d'un espace social pour valoriser son savoir-faire au-delà de son simple CV.
+
+\section{Organisation du projet}
+\subsection{Processus de Développement : 2TUP}
+Nous avons choisi le processus \textbf{2TUP} (2 Track Unified Process). Ce processus en "Y" nous permet de gérer séparément :
+\begin{itemize}
+    \item \textbf{L'axe fonctionnel} : Analyse des besoins métiers (recrutement, social).
+    \item \textbf{L'axe technique} : Maîtrise du framework Django, gestion de la base de données et de la sécurité.
+\end{itemize}
+Cette séparation garantit que l'évolution technique (ex: changement de base de données) n'impacte pas la logique métier.
+
+\subsection{Outils de Gestion}
+Le développement a été soutenu par des outils modernes :
+\begin{itemize}
+    \item \textbf{PyCharm / VS Code} : Pour le codage Python et Frontend.
+    \item \textbf{Git / GitHub} : Pour le versionnage du code source.
+    \item \textbf{Trello} : Pour le suivi des tâches (Backlog, In Progress, Done).
+\end{itemize}
+
+\section{Conclusion}
+L'analyse rigoureuse du contexte nous a permis de définir une vision claire pour ManageraHub. Avec une méthodologie robuste, nous pouvons maintenant passer à la phase de modélisation détaillée.
+
+% --- Chapitre 2 ---
+\chapter{Analyse et Conception}
+\section{Introduction}
+L'étape d'analyse et de conception est le coeur de l'ingénierie informatique. Elle permet de traduire les besoins utilisateurs en spécifications techniques précises via le langage UML.
+
+\section{Description des besoins}
+\subsection{Besoins fonctionnels}
+Nous avons classé les fonctionnalités par acteur :
+\subsubsection{Acteur : Candidat}
+\begin{itemize}
+    \item \textbf{Inscription/Connexion} sécurisée.
+    \item \textbf{Gestion de profil} : Informations personnelles, compétences, expériences.
+    \item \textbf{Gestion de documents} : Téléchargement de CV, lettres de motivation et certifications (multiples).
+    \item \textbf{Recherche d'emploi} avec filtres multicritères (ville, type de contrat, salaire).
+    \item \textbf{Social} : Publication de posts, likes, commentaires, suivi d'autres profils.
+\end{itemize}
+\subsubsection{Acteur : Entreprise}
+\begin{itemize}
+    \item \textbf{Enregistrement légal} : Soumission de l'ICE et du RC pour approbation.
+    \item \textbf{Gestion des offres} : Création, édition et suspension d'offres d'emploi.
+    \item \textbf{Pilotage des candidatures} : Visualisation des dossiers et modification du statut (Accepté, Refusé, Interview).
+\end{itemize}
+\subsubsection{Acteur : Administrateur}
+\begin{itemize}
+    \item \textbf{Modération} : Suppression de contenus inappropriés.
+    \item \textbf{Validation} : Vérification manuelle des documents d'entreprise.
+\end{itemize}
+
+\subsection{Besoins non fonctionnels}
+\begin{itemize}
+    \item \textbf{Sécurité} : Protection contre les failles XSS, CSRF et injection SQL (géré nativement par Django).
+    \item \textbf{Performance} : Temps de réponse rapide via l'optimisation des requêtes ORM.
+    \item \textbf{Ergonomie} : Interface intuitive respectant la charte graphique EMSI.
+\end{itemize}
+
+\section{Modélisation UML Exhaustive}
+\subsection{Diagramme des cas d'utilisation global}
+Ce diagramme illustre les interactions des acteurs avec le système.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=0.75, transform shape]
+        % Acteurs
+        \node (candidate) at (-8, 0) [draw, circle, inner sep=2pt] {C};
+        \node (candidate_text) at (-8, -0.8) {Candidat};
+        
+        \node (company) at (8, 2) [draw, circle, inner sep=2pt] {E};
+        \node (company_text) at (8, 1.2) {Entreprise};
+        
+        \node (admin) at (8, -2) [draw, circle, inner sep=2pt] {A};
+        \node (admin_text) at (8, -2.8) {Admin};
+        
+        % Cas d'utilisation
+        \begin{scope}[every node/.style={draw, ellipse, align=center, minimum width=2.5cm, fill=white, drop shadow}]
+            \node (auth) at (0, 6) {S'authentifier};
+            \node (profile) at (0, 4.5) {Gérer Profil / Docs};
+            \node (search) at (0, 3) {Rechercher / Postuler};
+            \node (social) at (0, 1.5) {Interagir (Posts, Likes)};
+            \node (network) at (0, 0) {Gérer Réseau (Follow)};
+            \node (job_mgt) at (0, -1.5) {Gérer Offres d'Emploi};
+            \node (app_mgt) at (0, -3) {Gérer Candidatures};
+            \node (verify) at (0, -4.5) {Vérifier Entreprises};
+            \node (moderate) at (0, -6) {Modérer Plateforme};
+        \end{scope}
+        
+        % Système
+        \draw[thick, emsiblue] (-5, -7) rectangle (5, 7);
+        \node[emsiblue] at (0, 6.7) {\textbf{Système ManageraHub}};
+        
+        % Relations
+        \draw (candidate) -- (auth); \draw (candidate) -- (profile); \draw (candidate) -- (search);
+        \draw (candidate) -- (social); \draw (candidate) -- (network);
+        
+        \draw (company) -- (auth); \draw (company) -- (profile); \draw (company) -- (job_mgt); \draw (company) -- (app_mgt);
+        
+        \draw (admin) -- (auth); \draw (admin) -- (verify); \draw (admin) -- (moderate);
+    \end{tikzpicture}
+    \caption{Diagramme de cas d'utilisation global détaillé}
+\end{figure}
+
+\subsection{Diagramme de classes technique}
+Structure des données reflétant les modèles Django.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=0.55, transform shape, every node/.style={draw, rectangle, align=center, fill=emsiblue!5, drop shadow}]
+        \node (User) at (0, 8) {\textbf{User (Django Auth)} \\ \hline username, email, password \\ first\_name, last\_name};
+        
+        \node (Candidate) at (-6, 4) {\textbf{CandidateProfile} \\ \hline phone, address, city \\ education, skills, bio \\ cv\_file, cover\_letter \\ completion\_percent()};
+        
+        \node (Cert) at (-6, 0) {\textbf{CandidateCertification} \\ \hline file, uploaded\_at};
+        
+        \node (Company) at (6, 4) {\textbf{CompanyProfile} \\ \hline company\_name, industry \\ ice, rc\_number, logo \\ is\_approved};
+        
+        \node (Job) at (6, -2) {\textbf{JobOffer} \\ \hline title, city, job\_type \\ contract\_type, salary \\ is\_active, posted\_at};
+        
+        \node (App) at (0, -2) {\textbf{JobApplication} \\ \hline status, application\_text \\ cv\_file, submitted\_at};
+        
+        \node (Post) at (-6, -4) {\textbf{Post} \\ \hline content, image, video \\ location, created\_at \\ total\_likes()};
+        
+        \node (Comment) at (-6, -8) {\textbf{Comment} \\ \hline content, created\_at};
+
+        % Relations
+        \draw[thick, -{Stealth}] (Candidate) -- (User) node[midway, left] {1..1};
+        \draw[thick, -{Stealth}] (Company) -- (User) node[midway, right] {1..1};
+        \draw[thick] (Candidate) -- (Cert) node[midway, left] {1..*};
+        \draw[thick] (Job) -- (App) node[midway, above] {1..*};
+        \draw[thick] (Candidate) -- (App) node[midway, right] {1..*};
+        \draw[thick] (Candidate) -- (Post) node[midway, left] {1..*};
+        \draw[thick] (Post) -- (Comment) node[midway, left] {1..*};
+        \draw[thick] (Company) -- (Job) node[midway, right] {1..*};
+    \end{tikzpicture}
+    \caption{Diagramme de classes du système}
+\end{figure}
+
+\subsection{Diagramme de séquence : Interaction Sociale}
+Focus sur la publication d'un post avec tag d'entreprise.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=0.85, transform shape]
+        \draw[thick] (0,0) -- (0,-5) node[below] {Utilisateur};
+        \draw[thick] (4,0) -- (4,-5) node[below] {FeedView (Django)};
+        \draw[thick] (8,0) -- (8,-5) node[below] {PostModel (DB)};
+        
+        \node[draw, fill=white] at (0,0.3) {Utilisateur};
+        \node[draw, fill=white] at (4,0.3) {Système};
+        \node[draw, fill=white] at (8,0.3) {BDD};
+        
+        \draw[->] (0,-1) -- (4,-1) node[midway, above] {Publier Post (Texte, Média, Tag)};
+        \draw[->] (4,-1.5) -- (4,-2) node[midway, right] {Valider Données};
+        \draw[->] (4,-2.5) -- (8,-2.5) node[midway, above] {Enregistrer Post};
+        \draw[<-] (4,-3.5) -- (8,-3.5) node[midway, above] {Succès ID};
+        \draw[->] (4,-4.5) -- (0,-4.5) node[midway, above] {Afficher dans le Feed};
+    \end{tikzpicture}
+    \caption{Diagramme de séquence : Publication sociale}
+\end{figure}
+
+\subsection{Diagramme d'activité : Inscription Candidat}
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[node distance=1.5cm, every node/.style={fill=white, font=\small}, align=center]
+        \node (start) [draw, circle, fill=black, inner sep=2pt] {};
+        \node (form) [draw, rounded corners, below of=start] {Remplir Formulaire \\ (Email, Pass, Nom)};
+        \node (dec1) [draw, diamond, below of=form, aspect=2] {Valide ?};
+        \node (create) [draw, rounded corners, below of=dec1, yshift=-0.5cm] {Créer Compte Utilisateur \\ \& Profil Vide};
+        \node (profile) [draw, rounded corners, below of=create] {Compléter Profil \\ (Photo, CV, Compétences)};
+        \node (calc) [draw, rounded corners, below of=profile] {Calculer \% de Complétion};
+        \node (end) [draw, double, circle, fill=black!20, below of=calc, inner sep=2pt] {};
+
+        \draw[->] (start) -- (form);
+        \draw[->] (form) -- (dec1);
+        \draw[->] (dec1) -- node[right] {Oui} (create);
+        \draw[->] (dec1.west) -- ++(-1,0) |- node[left, pos=0.25] {Non} (form.west);
+        \draw[->] (create) -- (profile);
+        \draw[->] (profile) -- (calc);
+        \draw[->] (calc) -- (end);
+    \end{tikzpicture}
+    \caption{Diagramme d'activité : Inscription et Profiling}
+\end{figure}
+
+\subsection{Diagramme de déploiement}
+Architecture physique de l'application.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+        \node (client) [draw, rectangle, minimum width=3cm, minimum height=1.5cm, align=center] {Navigateur Client \\ (HTML/CSS/JS)};
+        \node (server) [draw, rectangle, minimum width=4cm, minimum height=2cm, align=center, right=2cm of client] {Serveur d'Application \\ \textbf{Django / Python} \\ \textbf{Gunicorn}};
+        \node (db) [draw, rectangle, minimum width=3cm, minimum height=1.5cm, align=center, right=2cm of server] {Serveur BDD \\ \textbf{PostgreSQL}};
+        \node (storage) [draw, rectangle, minimum width=3cm, minimum height=1.5cm, align=center, below=1cm of server] {Stockage Médias \\ (/media/)};
+
+        \draw[<->, thick] (client) -- (server) node[midway, above] {HTTP/HTTPS};
+        \draw[<->, thick] (server) -- (db) node[midway, above] {SQL};
+        \draw[<->, thick] (server) -- (storage) node[midway, right] {I/O};
+    \end{tikzpicture}
+    \caption{Diagramme de déploiement}
+\end{figure}
+
+\section{Conclusion}
+La conception UML détaillée a permis de lever les ambiguïtés techniques. Nous disposons désormais d'un plan de construction précis pour l'implémentation sous Django.
+
+% --- Chapitre 3 ---
+\chapter{Interfaces et Réalisation}
+\section{Introduction}
+Ce chapitre détaille la phase de réalisation technique. Il justifie les choix technologiques et présente les interfaces finales à travers des captures d'écran et des explications fonctionnelles.
+
+\section{Environnement de travail}
+\subsection{Matériel}
+\begin{itemize}
+    \item \textbf{PC portable} : Processeur Intel Core i7, 16 Go de RAM.
+    \item \textbf{Système d'exploitation} : Windows 11 avec WSL2 (Ubuntu).
+\end{itemize}
+\subsection{Logiciel}
+\begin{itemize}
+    \item \textbf{Python 3.11} : Langage de base.
+    \item \textbf{Django 4.2} : Framework backend pour sa structure MVT et son panneau d'administration.
+    \item \textbf{PostgreSQL} : Pour la persistence des données.
+    \item \textbf{HTML/CSS/JS} : Pour le frontend dynamique.
+\end{itemize}
+
+\section{Architecture de l'Application}
+ManageraHub suit l'architecture \textbf{MVT} (Model-View-Template) de Django :
+\begin{itemize}
+    \item \textbf{Models} : Définis dans \texttt{app1/models.py}, ils structurent la BDD.
+    \item \textbf{Views} : Contenues dans \texttt{app1/views.py}, elles traitent la logique (ex: vérification ICE, filtrage des jobs).
+    \item \textbf{Templates} : Fichiers HTML utilisant le moteur de template Django pour l'affichage dynamique.
+\end{itemize}
+
+\section{Réalisation des interfaces}
+\subsection{Tableau de bord Candidat}
+Cette interface offre une vue d'ensemble de la carrière de l'utilisateur. Elle affiche dynamiquement le pourcentage de complétion du profil. Si des éléments manquent (ex: CV non chargé), des alertes visuelles sont affichées pour guider l'utilisateur.
+\subsection{Fil d'actualité professionnel}
+Le feed intègre des fonctionnalités sociales avancées. L'utilisateur peut taguer des entreprises ou des membres. Les requêtes sont optimisées avec \texttt{prefetch\_related} pour charger les commentaires et les likes sans impacter la performance.
+\subsection{Système de vérification des entreprises}
+C'est la fonctionnalité phare de ManageraHub. Lors de l'inscription, l'entreprise doit obligatoirement fournir son ICE (15 chiffres) et son RC. Tant que l'administrateur n'a pas validé les documents, l'entreprise reste en mode "Lecture seule" et ne peut publier d'offres.
+
+\section{Sécurité et Optimisation}
+\subsection{Protection des données}
+Nous avons implémenté des \textbf{Middleware} personnalisés et utilisé les décorateurs Django \texttt{@login\_required} pour restreindre les accès. Les fichiers sensibles (CV) sont stockés dans des sous-répertoires protégés par ID utilisateur.
+\subsection{Tests}
+Des tests unitaires ont été réalisés pour valider les modèles et les formulaires, notamment la validation de l'ICE marocain.
+
+\chapter*{Conclusion Générale}
+\addcontentsline{toc}{chapter}{Conclusion Générale}
+La réalisation du projet \textbf{ManageraHub} a été une expérience enrichissante tant sur le plan technique que méthodologique. En partant d'un constat simple sur les failles du marché du recrutement actuel, j'ai pu concevoir une plateforme complète, sécurisée et interactive. \\
+\\
+Ce projet m'a permis de maîtriser le framework \textbf{Django} et de comprendre l'importance d'une modélisation UML rigoureuse avant tout développement. L'intégration de la vérification légale (ICE/RC) apporte une réelle valeur ajoutée par rapport aux solutions existantes. \\
+\\
+Comme perspectives, j'envisage d'intégrer un moteur d'intelligence artificielle pour le matching automatique entre profils et offres, ainsi qu'une messagerie instantanée en temps réel. Ce PFA marque une étape cruciale dans ma formation d'ingénieur à l'EMSI.
+
+\chapter*{Références et Webographie}
+\addcontentsline{toc}{chapter}{Références et Webographie}
+
+\section*{Bibliographie}
+[1] "Django 4 par la pratique", Antonio Mele, Éditions Packt. \\
+[2] "UML 2.5 par la pratique", Pascal Roques, Éditions Eyrolles. \\
+[3] "Génie logiciel et gestion de projet", Vincent Drecq.
+
+\section*{Webographie}
+[W1] Documentation officielle de Django, \url{https://docs.djangoproject.com/}. \\
+[W2] Stack Overflow - Aide au développement Python, \url{https://stackoverflow.com/}. \\
+[W3] MDN Web Docs - Référence Frontend, \url{https://developer.mozilla.org/}. \\
+[W4] Site officiel de l'OMPIC (Vérification ICE), \url{http://www.ompic.ma/}.
+
+\end{document}

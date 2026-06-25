@@ -1,5 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_delete, pre_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -113,6 +115,11 @@ class CompanyProfile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Moroccan Legal Verification Fields
+    ice = models.CharField(max_length=15, blank=True, null=True, verbose_name="ICE (15 digits)")
+    rc_number = models.CharField(max_length=50, blank=True, null=True, verbose_name="Registre du Commerce (RC)")
+    legal_document = models.FileField(upload_to=company_profile_file_path, blank=True, null=True)
+
     class Meta:
         ordering = ["company_name", "user__username"]
 
@@ -134,8 +141,11 @@ class CompanyProfile(models.Model):
             bool(self.website),
             bool(self.description.strip()),
             bool(self.logo),
+            bool(self.ice and len(self.ice.strip()) == 15),
+            bool(self.legal_document),
         ]
         return int((sum(fields) / len(fields)) * 100)
+
 
 
 class JobOffer(models.Model):
@@ -173,6 +183,13 @@ class JobOffer(models.Model):
     summary = models.TextField()
     responsibilities = models.TextField()
     requirements = models.TextField()
+    posted_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="posted_job_offers",
+    )
     salary_range = models.CharField(max_length=120, blank=True)
     is_remote = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -227,3 +244,251 @@ class JobApplication(models.Model):
 
     def __str__(self):
         return f"{self.full_name} -> {self.job_offer.title}"
+
+    @property
+    def progress_steps(self):
+        status_map = {
+            "sent": 1,
+            "under_review": 2,
+            "interview_scheduled": 3,
+            "accepted": 4,
+            "rejected": 4,
+        }
+        current_step_num = status_map.get(self.status, 1)
+        
+        steps = [
+            {
+                "key": "sent",
+                "label": "Candidature Envoyée",
+                "desc": "Votre dossier a été soumis avec succès.",
+                "state": "completed" if current_step_num >= 1 else "upcoming"
+            },
+            {
+                "key": "under_review",
+                "label": "En cours d'examen",
+                "desc": "L'équipe de recrutement étudie votre profil.",
+                "state": "completed" if current_step_num > 2 else ("current" if current_step_num == 2 else "upcoming")
+            },
+            {
+                "key": "interview",
+                "label": "Entretien Planifié",
+                "desc": "Un entretien a été organisé par l'entreprise.",
+                "state": "completed" if current_step_num > 3 else ("current" if current_step_num == 3 else "upcoming")
+            },
+            {
+                "key": "decision",
+                "label": "Décision Finale",
+                "desc": "Félicitations ! Candidature acceptée." if self.status == "accepted" else ("Désolé, candidature non retenue." if self.status == "rejected" else "Décision finale en attente."),
+                "state": "rejected" if self.status == "rejected" else ("current" if self.status == "accepted" else ("current" if current_step_num == 4 else "upcoming"))
+            }
+        ]
+        
+        return steps
+
+    @property
+    def live_activity_logs(self):
+        logs = []
+        base_time = self.submitted_at
+        
+        logs.append({
+            "time": base_time.strftime("%d %b, %H:%M"),
+            "title": "Candidature reçue",
+            "desc": "Votre dossier a été enregistré avec succès dans notre système."
+        })
+        
+        status_map = {
+            "sent": 1,
+            "under_review": 2,
+            "interview_scheduled": 3,
+            "accepted": 4,
+            "rejected": 4,
+        }
+        current_step_num = status_map.get(self.status, 1)
+        
+        if current_step_num >= 2:
+            review_time = self.updated_at if current_step_num == 2 else base_time
+            logs.append({
+                "time": review_time.strftime("%d %b, %H:%M"),
+                "title": "Profil en cours d'examen",
+                "desc": "Le département des ressources humaines étudie votre parcours."
+            })
+            
+        if current_step_num >= 3:
+            interview_time = self.updated_at if current_step_num == 3 else base_time
+            logs.append({
+                "time": interview_time.strftime("%d %b, %H:%M"),
+                "title": "Planification d'entretien",
+                "desc": "Un entretien a été planifié. Vérifiez votre boîte mail."
+            })
+            
+        if current_step_num == 4:
+            decision_title = "Candidature Acceptée 🎉" if self.status == "accepted" else "Candidature Refusée"
+            decision_desc = "Offre d'emploi émise. Félicitations !" if self.status == "accepted" else "Votre profil n'a pas été retenu pour ce poste."
+            logs.append({
+                "time": self.updated_at.strftime("%d %b, %H:%M"),
+                "title": decision_title,
+                "desc": decision_desc
+            })
+            
+        logs.reverse()
+        return logs
+
+
+def social_post_file_path(instance, filename):
+    return f"social_posts/user_{instance.author_id}/{filename}"
+
+
+class Post(models.Model):
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="social_posts",
+    )
+    content = models.TextField()
+    image = models.FileField(upload_to=social_post_file_path, blank=True, null=True)
+    video = models.FileField(upload_to=social_post_file_path, blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    tagged_company = models.ForeignKey(
+        "CompanyProfile",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="tagged_posts",
+    )
+    tagged_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        related_name="tagged_in_posts_list",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_posts",
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Post by {self.author.username} at {self.created_at}"
+
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
+
+class Comment(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="post_comments",
+    )
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Comment by {self.author.username} on post {self.post_id}"
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="following_relations",
+    )
+    following = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="follower_relations",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["follower", "following"],
+                name="unique_follower_following",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.follower.username} follows {self.following.username}"
+
+
+class QuizResult(models.Model):
+    candidate = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="quiz_results",
+    )
+    score = models.PositiveIntegerField()
+    total = models.PositiveIntegerField()
+    taken_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-taken_at"]
+
+    def __str__(self):
+        return f"{self.candidate} — {self.score}/{self.total}"
+
+    @property
+    def percent(self):
+        return int(round((self.score / self.total) * 100)) if self.total else 0
+
+
+# ── File cleanup: delete old file from disk when a new one is uploaded ──────
+
+def _replace_file(old_field, new_field):
+    """Delete the old stored file if it was replaced with a different one."""
+    if old_field and str(old_field) != str(new_field):
+        old_field.delete(save=False)
+
+
+@receiver(pre_save, sender=CandidateProfile)
+def cleanup_candidate_profile_files(sender, instance, **kwargs):
+    if not instance.pk:
+        return
+    try:
+        old = CandidateProfile.objects.get(pk=instance.pk)
+    except CandidateProfile.DoesNotExist:
+        return
+    _replace_file(old.cv_file, instance.cv_file)
+    _replace_file(old.cover_letter_file, instance.cover_letter_file)
+    _replace_file(old.profile_picture, instance.profile_picture)
+
+
+@receiver(post_delete, sender=CandidateProfile)
+def delete_candidate_profile_files(sender, instance, **kwargs):
+    for field in (instance.cv_file, instance.cover_letter_file, instance.profile_picture):
+        if field:
+            field.delete(save=False)
+
+
+@receiver(post_delete, sender=CandidateCertification)
+def delete_certification_file(sender, instance, **kwargs):
+    if instance.file:
+        instance.file.delete(save=False)
+
+
+@receiver(post_delete, sender=JobApplication)
+def delete_application_files(sender, instance, **kwargs):
+    for field in (instance.cv_file, instance.cover_letter_file):
+        if field:
+            field.delete(save=False)
+
+
+@receiver(post_delete, sender=Post)
+def delete_post_files(sender, instance, **kwargs):
+    for field in (instance.image, instance.video):
+        if field:
+            field.delete(save=False)
+

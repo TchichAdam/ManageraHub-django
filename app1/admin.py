@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.admin.models import LogEntry
 
-from .models import CandidateCertification, CandidateProfile, CompanyProfile, JobApplication, JobOffer
+from .models import CandidateCertification, CandidateProfile, CompanyProfile, JobApplication, JobOffer, QuizResult
 
 
 # Unregister default User admin to use custom one
@@ -98,3 +98,11 @@ class JobApplicationAdmin(admin.ModelAdmin):
     list_display = ("full_name", "job_offer", "status", "submitted_at")
     search_fields = ("full_name", "email", "job_offer__title", "job_offer__company_name")
     list_filter = ("status", "submitted_at")
+
+
+@admin.register(QuizResult)
+class QuizResultAdmin(admin.ModelAdmin):
+    list_display = ("candidate", "score", "total", "taken_at")
+    search_fields = ("candidate__username", "candidate__first_name", "candidate__last_name")
+    list_filter = ("taken_at",)
+    readonly_fields = ("taken_at",)

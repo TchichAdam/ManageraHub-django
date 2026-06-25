@@ -1,0 +1,20 @@
+# ── Optional dependencies ────────────────────────────────────────────────────
+# Install the core requirements first:  pip install -r requirements.txt
+# Then enable extras with:               pip install -r requirements-optional.txt
+
+# Social login (Google / GitHub) via django-allauth.
+# When these are installed AND OAuth keys are set in .env, social sign-in turns
+# on automatically (HAS_ALLAUTH gate in monprojet/settings.py).
+django-allauth==65.16.1
+PyJWT==2.12.1
+requests==2.34.2
+requests-oauthlib==2.0.0
+oauthlib==3.3.1
+# Note: cryptography is already pinned in requirements.txt (core, for MySQL auth).
+
+# Image processing — only needed if profile_picture becomes an ImageField.
+Pillow==12.1.1
+
+# Timezone data — only needed on systems without a system tz database
+# (macOS / most Linux ship one, so this is usually unnecessary).
+tzdata==2026.2

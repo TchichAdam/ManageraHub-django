@@ -1,9 +1,33 @@
-env/
+# Python
 __pycache__/
 *.py[cod]
+*.egg-info/
+
+# Virtual environments
+env/
+venv/
+.venv/
+.venv311/
+
+# Django
 db.sqlite3
 *.sqlite3
+staticfiles/
+
+# Secrets / environment
+.env
+.env.*
+!.env.example
+
+# User-uploaded media (real candidate documents — never commit)
+media/
+
+# Local DB dumps
+*.sql
+
+# OS / editor
 .DS_Store
 Thumbs.db
-.env
-.env 
+
+# Backups created during consolidation
+*.real-backup

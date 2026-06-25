@@ -6,6 +6,7 @@ from django.urls import include, path
 from app1.views import (
     account_logout_view,
     admin_approve_company_view,
+    admin_verify_company_offline_view,
     admin_login_view,
     admin_logout_view,
     admin_reject_company_view,
@@ -37,6 +38,9 @@ from app1.views import (
     home,
     password_reset_view,
     signin_view,
+    post_like_view,
+    post_comment_view,
+    toggle_follow_view,
 )
 
 urlpatterns = [
@@ -61,6 +65,9 @@ urlpatterns = [
     path('candidate/application-status', candidate_application_status_view, name='candidate_application_status'),
     path('candidate/quizzes', candidate_quizzes_view, name='candidate_quizzes'),
     path('candidate/network', candidate_network_view, name='candidate_network'),
+    path('candidate/posts/<int:post_id>/like/', post_like_view, name='post_like'),
+    path('candidate/posts/<int:post_id>/comment/', post_comment_view, name='post_comment'),
+    path('candidate/users/<int:user_id>/follow/', toggle_follow_view, name='toggle_follow'),
     path('candidate/settings', candidate_settings_view, name='candidate_settings'),
     path('admin/login/', admin_login_view, name='admin_login_redirect'),
     path('admin/logout/', admin_logout_view, name='admin_logout_redirect'),
@@ -80,6 +87,7 @@ urlpatterns = [
     path('company/applications/<int:application_id>/', company_application_detail_view, name='company_application_detail'),
     path('admin/approve-company/<int:company_id>/', admin_approve_company_view, name='admin_approve_company'),
     path('admin/reject-company/<int:company_id>/', admin_reject_company_view, name='admin_reject_company'),
+    path('admin/verify-company-offline/<int:company_id>/', admin_verify_company_offline_view, name='admin_verify_company_offline'),
     path('admin/', admin.site.urls),
 ]
 

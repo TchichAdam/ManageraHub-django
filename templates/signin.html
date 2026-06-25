@@ -71,10 +71,50 @@
         .modal-field input { width: 100%; min-height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.18); background: rgba(255, 255, 255, 0.09); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.84rem; outline: none; }
         .modal-submit, .modal-back { width: 100%; min-height: 50px; border-radius: var(--radius-pill); border: none; background: var(--plum); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
         .modal-back { margin-top: 12px; background: transparent; color: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255, 255, 255, 0.16); }
-        @media (max-width: 900px) { body { grid-template-columns: 1fr; } .panel-left { position: relative; height: 260px; } .brand { top: 18px; left: 22px; } .panel-left-content { padding: 22px; } .panel-right { padding: 36px 24px 48px; align-items: flex-start; } }
+        @media (max-width: 900px) {
+            body { grid-template-columns: 1fr; }
+            .panel-left { position: relative; height: auto; min-height: 380px; }
+            .brand { top: 18px; left: 22px; }
+            .panel-left-content { position: relative; bottom: auto; left: auto; right: auto; padding: 72px 24px 30px; }
+            .panel-right { padding: 36px 24px 48px; align-items: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+            .panel-left-content { padding: 60px 16px 24px; }
+            .left-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+            .left-desc { font-size: 0.8rem; max-width: none; }
+            .panel-right { padding: 28px 16px 36px; }
+            .signin-box { max-width: 100%; }
+            .signin-title { font-size: clamp(1.6rem, 7vw, 2rem); }
+            .role-tabs { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .role-tab label, .role-static-label { min-height: 44px; font-size: 0.76rem; }
+            .field input { min-height: 48px; font-size: 0.88rem; }
+            .btn-submit { min-height: 52px; font-size: 0.85rem; }
+            .social-btns, .register-links { grid-template-columns: 1fr; gap: 6px; }
+            .social-btn, .register-link-btn { min-height: 44px; }
+            .modal-box { padding: 28px 20px; width: min(96vw, 380px); }
+        }
+        
+        /* Company theme dynamic overrides */
+        body.company-theme {
+            --plum: #5a5d4a;
+            --plum-deep: #4a4d3c;
+            --periwinkle: #a8d5a2;
+            background: url("{% static 'images/service-company.jpeg' %}") center center / cover no-repeat fixed !important;
+        }
+        body.company-theme .panel-left-bg {
+            background: url("{% static 'images/about-company.jpg' %}") center center / cover no-repeat !important;
+        }
+        body.company-theme .panel-left-overlay {
+            background: linear-gradient(160deg, rgba(90, 93, 74, 0.48) 0%, rgba(26, 30, 24, 0.68) 55%, rgba(14, 16, 13, 0.88) 100%) !important;
+        }
+        body.company-theme .btn-submit {
+            background: var(--plum) !important;
+            box-shadow: 0 12px 28px rgba(90, 93, 74, 0.45) !important;
+        }
     </style>
 </head>
-<body>
+<body class="{% if active_role == 'company' %}company-theme{% endif %}">
     <div class="panel-left">
         <div class="panel-left-bg"></div>
         <div class="panel-left-overlay"></div>
@@ -94,7 +134,10 @@
     </div>
     <div class="panel-right">
         <div class="signin-box">
-            <h2 class="signin-title">Welcome back</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 8px;">
+                <h2 class="signin-title" style="margin:0;">Welcome back</h2>
+                <button type="button" onclick="autofillSignIn()" class="btn-submit" style="background:#5a5d4a; border-color:#8c907d; color:#fff; cursor:pointer; padding:4px 10px; font-size:0.7rem; transition: background 0.15s; height: 28px; border-radius: 999px; width: auto; margin: 0;">✨ Demo Autofill</button>
+            </div>
             <p class="signin-sub">Enter your credentials to access your account.</p>
             {% if error_message %}<div class="msg msg-error">{{ error_message }}</div>{% endif %}
             {% if success_message %}<div class="msg msg-success">{{ success_message }}</div>{% endif %}
@@ -180,6 +223,17 @@
         </div>
     </div>
     <script>
+        function autofillSignIn() {
+            const isCompany = document.getElementById('role-company')?.checked || window.location.pathname.includes('company');
+            if (isCompany) {
+                document.getElementById('email').value = "recrutement@iam.ma";
+                document.getElementById('password').value = "IAM12345678";
+            } else {
+                document.getElementById('email').value = "adam.tchich@emsi.ma";
+                document.getElementById('password').value = "Adam12345678";
+            }
+        }
+
         const forgotLink = document.getElementById("forgotLink");
         const forgotModal = document.getElementById("forgotModal");
         const resetForm = document.getElementById("resetForm");
@@ -188,12 +242,24 @@
         const candidateSocial = document.getElementById("candidate-social");
         const socialAuthEnabled = {{ social_auth_enabled|yesno:"true,false" }};
 
+        function syncCompanyTheme() {
+            if (!candidateRadio || !companyRadio) {
+                return;
+            }
+            if (companyRadio.checked) {
+                document.body.classList.add("company-theme");
+            } else {
+                document.body.classList.remove("company-theme");
+            }
+        }
+
         function syncSocialButtons() {
             if (!candidateRadio || !companyRadio) {
                 return;
             }
             const showSocial = socialAuthEnabled && candidateRadio.checked;
             candidateSocial.classList.toggle("hidden", !showSocial);
+            syncCompanyTheme();
         }
 
         forgotLink.addEventListener("click", function (e) { e.preventDefault(); forgotModal.classList.add("open"); });

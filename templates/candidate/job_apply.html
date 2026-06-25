@@ -1,4 +1,5 @@
 {% extends "candidate/base.html" %}
+{% load static %}
 
 {% block title %}Apply to {{ job.title }} | ManageraHub{% endblock %}
 
@@ -10,7 +11,10 @@
 </section>
 
 <section class="candidate-panel-card candidate-panel-card-wide">
-    <p class="candidate-card-kicker">Application form</p>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom: 16px;">
+        <p class="candidate-card-kicker" style="margin:0;">Application form</p>
+        <button type="button" onclick="autofillApply()" class="pill-button" style="background:#5a5d4a; color:#fff; border:1px solid #8c907d;">✨ Demo Autofill</button>
+    </div>
     <form method="post" enctype="multipart/form-data" class="candidate-form-grid">
         {% csrf_token %}
         {% if form.non_field_errors %}
@@ -71,4 +75,66 @@
         </div>
     </form>
 </section>
+
+<script>
+    function autofillApply() {
+        document.getElementById('id_full_name').value = "Adam Tchich";
+        document.getElementById('id_email').value = "adam.tchich@emsi.ma";
+        document.getElementById('id_phone_number').value = "+212 612 34 56 78";
+        document.getElementById('id_application_text').value = "Dear Hiring Team,\n\nI am very excited to apply for this position. With my strong academic background at EMSI Rabat and practical experience developing Python/Django web applications, I am confident in my ability to contribute value to your projects. Thank you for considering my application.\n\nBest regards,\nAdam Tchich";
+        
+        const useCv = document.getElementById('id_use_profile_cv');
+        if (useCv) { useCv.checked = false; }
+        const useCl = document.getElementById('id_use_profile_cover_letter');
+        if (useCl) { useCl.checked = false; }
+
+        // Attach CV file (fetch real PDF from static if exists, fallback to simulated)
+        const cvInput = document.getElementById('id_cv_file');
+        if (cvInput) {
+            fetch("{% static 'files/Adam_Tchich_CV.pdf' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_CV.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    cvInput.files = dt.files;
+                    cvInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["%PDF-1.4 simulated CV content"], "Adam_Tchich_CV.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    cvInput.files = dt.files;
+                    cvInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+
+        // Attach Cover Letter file (fetch real PDF from static if exists, fallback to simulated)
+        const clInput = document.getElementById('id_cover_letter_file');
+        if (clInput) {
+            fetch("{% static 'files/Adam_Tchich_Lettre_Motivation.pdf' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_Lettre_Motivation.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    clInput.files = dt.files;
+                    clInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["%PDF-1.4 simulated Cover Letter content"], "Adam_Tchich_Lettre_Motivation.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    clInput.files = dt.files;
+                    clInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+    }
+</script>
 {% endblock %}

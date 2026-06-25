@@ -4,12 +4,13 @@
 
 {% block company_main %}
 <section class="candidate-profile-editor-card candidate-panel-card candidate-panel-card-wide">
-    <div class="candidate-profile-editor-head">
+    <div class="candidate-profile-editor-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div>
             <p class="candidate-card-kicker">New Job Posting</p>
-            <h2>Post a new job</h2>
+            <h2 style="margin:0;">Post a new job</h2>
             <p>Fill in the details below. The job will be visible to candidates immediately.</p>
         </div>
+        <button type="button" onclick="autofillDemoJob()" class="pill-button" style="background:#5a5d4a; color:#fff; border:1px solid #8c907d;">✨ Demo Autofill</button>
     </div>
 
     <form method="post">
@@ -77,4 +78,20 @@
         </div>
     </form>
 </section>
+
+<script>
+    function autofillDemoJob() {
+        document.getElementById('id_title').value = "Django Web Developer";
+        document.getElementById('id_city').value = "Rabat";
+        document.getElementById('id_country').value = "Morocco";
+        document.getElementById('id_job_type').value = "full_time";
+        document.getElementById('id_contract_type').value = "cdi";
+        document.getElementById('id_experience_level').value = "mid";
+        document.getElementById('id_salary_range').value = "10 000 - 15 000 MAD";
+        document.getElementById('id_summary').value = "We are looking for a Django developer to join our team in Rabat. You will work on building scaleable backend services and clean web interfaces.";
+        document.getElementById('id_responsibilities').value = "- Build responsive frontend templates\n- Develop database models and API endpoints\n- Maintain clean code and optimize ORM queries";
+        document.getElementById('id_requirements').value = "- Strong understanding of Python and Django\n- Experience with MySQL and HTML/CSS/JS\n- Familiarity with version control using Git";
+        document.getElementById('id_is_remote').checked = true;
+    }
+</script>
 {% endblock %}

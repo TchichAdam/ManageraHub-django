@@ -2,7 +2,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from .models import CandidateCertification, CandidateProfile, JobApplication, JobOffer
+from .models import CandidateCertification, CandidateProfile, JobApplication, JobOffer, Post, Comment, Follow
 
 
 class SigninRoutesTests(TestCase):
@@ -250,3 +250,140 @@ class SigninRoutesTests(TestCase):
 
         self.assertRedirects(response, "/candidate/profile/?saved=1", fetch_redirect_response=False)
         self.assertEqual(CandidateCertification.objects.filter(profile=user.candidate_profile).count(), 2)
+
+
+class SocialFeedAndNetworkTests(TestCase):
+    def setUp(self):
+        self.candidate_user = User.objects.create_user(
+            username="test_candidate@example.com",
+            email="test_candidate@example.com",
+            password="secret123",
+        )
+        CandidateProfile.objects.create(user=self.candidate_user, city="Rabat", country="Morocco")
+        
+        self.other_user = User.objects.create_user(
+            username="other_candidate@example.com",
+            email="other_candidate@example.com",
+            password="secret123",
+        )
+        CandidateProfile.objects.create(user=self.other_user, city="Casablanca", country="Morocco")
+
+    def test_feed_page_requires_auth(self):
+        response = self.client.get("/candidate/feed")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/candidate/signin", response.url)
+
+    def test_feed_page_renders_for_logged_in_candidate(self):
+        self.client.force_login(self.candidate_user)
+        response = self.client.get("/candidate/feed")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Réseau Professionnel")
+        self.assertContains(response, "Quoi de neuf ?")
+
+    def test_candidate_can_create_post(self):
+        self.client.force_login(self.candidate_user)
+        response = self.client.post(
+            "/candidate/feed",
+            {"content": "Hello world from tests! #testtag"}
+        )
+        self.assertRedirects(response, "/candidate/feed")
+        self.assertEqual(Post.objects.count(), 1)
+        self.assertEqual(Post.objects.first().content, "Hello world from tests! #testtag")
+
+    def test_candidate_can_like_post(self):
+        self.client.force_login(self.candidate_user)
+        post = Post.objects.create(author=self.other_user, content="Some post content")
+        response = self.client.get(f"/candidate/posts/{post.id}/like/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(post.likes.filter(id=self.candidate_user.id).exists())
+
+    def test_candidate_can_comment_post(self):
+        self.client.force_login(self.candidate_user)
+        post = Post.objects.create(author=self.other_user, content="Some post content")
+        response = self.client.post(
+            f"/candidate/posts/{post.id}/comment/",
+            {"content": "This is a great comment!"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Comment.objects.count(), 1)
+        self.assertEqual(Comment.objects.first().content, "This is a great comment!")
+
+    def test_candidate_can_follow_user(self):
+        self.client.force_login(self.candidate_user)
+        response = self.client.get(f"/candidate/users/{self.other_user.id}/follow/")
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(Follow.objects.filter(follower=self.candidate_user, following=self.other_user).exists())
+
+    def test_feed_search_filters_by_post_content(self):
+        self.client.force_login(self.candidate_user)
+        Post.objects.create(author=self.other_user, content="This is an OFPPT certified course post!")
+        Post.objects.create(author=self.other_user, content="Django framework overview and details")
+        
+        response = self.client.get("/candidate/feed?q=OFPPT")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "OFPPT")
+        self.assertNotContains(response, "Django framework")
+
+    def test_feed_search_filters_by_comment_content(self):
+        self.client.force_login(self.candidate_user)
+        post_ok = Post.objects.create(author=self.other_user, content="First original post content")
+        post_fail = Post.objects.create(author=self.other_user, content="Second original post content")
+        
+        Comment.objects.create(post=post_ok, author=self.candidate_user, content="This is excellent feedback indeed!")
+        
+        response = self.client.get("/candidate/feed?q=feedback")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "First original post content")
+        self.assertNotContains(response, "Second original post content")
+
+    def test_create_post_with_metadata(self):
+        from .models import CompanyProfile
+        self.client.force_login(self.candidate_user)
+        company_user = User.objects.create_user(
+            username="company_user_test@example.com",
+            email="company_user_test@example.com",
+            password="secret123",
+        )
+        company = CompanyProfile.objects.create(user=company_user, company_name="Test Corp", industry="IT")
+        
+        response = self.client.post(
+            "/candidate/feed",
+            {
+                "content": "A high-end professional update!",
+                "location": "Casablanca, Morocco",
+                "tagged_company": company.id,
+                "tagged_users": [self.other_user.id]
+            }
+        )
+        self.assertRedirects(response, "/candidate/feed")
+        
+        post = Post.objects.latest("id")
+        self.assertEqual(post.content, "A high-end professional update!")
+        self.assertEqual(post.location, "Casablanca, Morocco")
+        self.assertEqual(post.tagged_company, company)
+        self.assertIn(self.other_user, post.tagged_users.all())
+
+    def test_feed_renders_post_metadata(self):
+        from .models import CompanyProfile
+        self.client.force_login(self.candidate_user)
+        company_user = User.objects.create_user(
+            username="company_user_test2@example.com",
+            email="company_user_test2@example.com",
+            password="secret123",
+        )
+        company = CompanyProfile.objects.create(user=company_user, company_name="Test Corp", industry="IT")
+        post = Post.objects.create(
+            author=self.candidate_user,
+            content="This is content with location and tags",
+            location="Marrakech",
+            tagged_company=company
+        )
+        post.tagged_users.add(self.other_user)
+        
+        response = self.client.get("/candidate/feed")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Marrakech")
+        self.assertContains(response, "Test Corp")
+
+
+

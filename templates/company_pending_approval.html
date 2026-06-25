@@ -215,6 +215,14 @@
             .pending-card { padding: 36px 22px 32px; }
             .pending-actions { flex-direction: column; }
         }
+
+        @media (max-width: 480px) {
+            .pending-card { padding: 28px 16px; border-radius: 22px; }
+            .pending-title { font-size: clamp(1.5rem, 7vw, 2rem); }
+            .steps-col { gap: 18px; }
+            .step-card { padding: 16px; }
+            .step-title { font-size: 0.88rem; }
+        }
     </style>
 </head>
 <body>

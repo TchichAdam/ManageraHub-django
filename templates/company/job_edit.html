@@ -4,12 +4,13 @@
 
 {% block company_main %}
 <section class="candidate-profile-editor-card candidate-panel-card candidate-panel-card-wide">
-    <div class="candidate-profile-editor-head">
+    <div class="candidate-profile-editor-head" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
         <div>
             <p class="candidate-card-kicker">Edit Job</p>
-            <h2>{{ job.title }}</h2>
+            <h2 style="margin:0;">{{ job.title }}</h2>
             <p>Update the details of this job posting.</p>
         </div>
+        <button type="button" onclick="autofillDemoJob()" class="pill-button" style="background:#5a5d4a; color:#fff; border:1px solid #8c907d;">✨ Demo Autofill</button>
     </div>
 
     {% if success %}
@@ -49,4 +50,20 @@
         </div>
     </form>
 </section>
+
+<script>
+    function autofillDemoJob() {
+        document.getElementById('id_title').value = "Senior Django Engineer";
+        document.getElementById('id_city').value = "Casablanca";
+        document.getElementById('id_country').value = "Morocco";
+        document.getElementById('id_job_type').value = "full_time";
+        document.getElementById('id_contract_type').value = "cdi";
+        document.getElementById('id_experience_level').value = "senior";
+        document.getElementById('id_salary_range').value = "20 000 - 30 000 MAD";
+        document.getElementById('id_summary').value = "We are seeking an experienced Django engineer to lead our core backend team in Casablanca. This role involves designing microservices and optimizing database access layers.";
+        document.getElementById('id_responsibilities').value = "- Lead and mentor a team of python developers\n- Architect new microservices and clean API contracts\n- Audit database performance and optimize slow queries";
+        document.getElementById('id_requirements').value = "- 5+ years of experience with Python and Django\n- Deep knowledge of MySQL, PostgreSQL or related RDBMS\n- Excellent communication and collaboration skills";
+        document.getElementById('id_is_remote').checked = false;
+    }
+</script>
 {% endblock %}

@@ -200,6 +200,17 @@
             .reg-right { padding: 32px 20px 48px; }
             .reg-row { grid-template-columns: 1fr; }
         }
+
+        @media (max-width: 480px) {
+            .reg-right { padding: 28px 16px 36px; }
+            .reg-form { max-width: 100%; }
+            .reg-right-header h2 { font-size: clamp(1.5rem, 7vw, 2rem); }
+            .reg-field input, .reg-field select, .reg-field textarea { min-height: 48px; font-size: 0.88rem; }
+            .reg-submit { min-height: 52px; }
+            .reg-row { gap: 12px; }
+            .reg-left-content { padding: 60px 16px 24px; }
+            .reg-left-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+        }
     </style>
 </head>
 <body>
@@ -223,14 +234,17 @@
     <div class="reg-right">
         <div class="reg-right-header">
             <p class="reg-step-label">Candidate Registration</p>
-            <h2>Create your account</h2>
-            <p>Fields marked <strong style="color:#f2c4c4">*</strong> are required.</p>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                <h2 style="margin:0;">Create your account</h2>
+                <button type="button" onclick="autofillDemoCandidate()" class="file-btn" style="background:#5a5d4a; border-color:#8c907d; color:#fff; cursor:pointer; padding:6px 14px; font-size:0.72rem; transition: background 0.15s; height: 32px; border-radius: 999px;">✨ Demo Autofill</button>
+            </div>
+            <p style="margin-top: 8px;">Fields marked <strong style="color:#f2c4c4">*</strong> are required.</p>
         </div>
 
         {% if error_message %}<div class="reg-message reg-message-error">{{ error_message }}</div>{% endif %}
         {% if success_message %}<div class="reg-message reg-message-success">{{ success_message }}</div>{% endif %}
 
-        <form method="post" action="{% url 'candidate_register' %}" enctype="multipart/form-data" class="reg-form">
+        <form method="post" action="{% url 'candidate_register' %}" enctype="multipart/form-data" class="reg-form" id="candidate-register-form">
             {% csrf_token %}
 
             <p class="reg-section-title">Personal Information</p>
@@ -362,6 +376,19 @@
     </div>
 
     <script>
+        function autofillDemoCandidate() {
+            document.getElementById('first_name').value = "Adam";
+            document.getElementById('last_name').value = "Tchich";
+            document.getElementById('email').value = "adam.tchich@emsi.ma";
+            document.getElementById('phone').value = "+212 612 34 56 78";
+            document.getElementById('country').value = "Morocco";
+            document.getElementById('city').value = "Rabat";
+            document.getElementById('dob').value = "2003-08-15";
+            document.getElementById('password').value = "Adam12345678";
+            document.getElementById('password_confirm').value = "Adam12345678";
+            document.getElementById('terms').checked = true;
+        }
+
         const pwd = document.getElementById('password');
         const pwdC = document.getElementById('password_confirm');
         pwdC.addEventListener('input', () => {

@@ -124,6 +124,13 @@
 
         <div class="candidate-layout">
             <aside class="candidate-sidebar">
+                <!-- Mobile Navigation Links (Visible only on Mobile/Tablet) -->
+                <nav class="candidate-sidebar-nav-mobile" aria-label="Mobile navigation">
+                    {% for item in candidate_nav_items %}
+                    <a href="{{ item.url }}" class="candidate-side-link{% if active_section == item.key %} is-active{% endif %}">{{ item.label }}</a>
+                    {% endfor %}
+                </nav>
+
                 <div class="candidate-side-note">
                     <p class="candidate-card-kicker">Candidate summary</p>
                     <h3>{{ candidate_stats.applications }} application{{ candidate_stats.applications|pluralize }}</h3>

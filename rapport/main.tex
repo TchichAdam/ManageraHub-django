@@ -1,0 +1,146 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm, top=2.5cm, bottom=2.5cm, headheight=15pt}
+\widowpenalty10000
+\clubpenalty10000
+\usepackage{times} % Times New Roman
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{longtable}
+\usepackage{array}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc, shadows}
+
+% Définition des couleurs exactes du modèle
+\definecolor{emsiblue}{RGB}{68, 114, 196}
+\definecolor{emsigreen}{RGB}{112, 173, 71} % Vert à gauche
+\definecolor{emsimaroon}{RGB}{146, 38, 42} % Grenat en bas
+\definecolor{lightgray}{RGB}{245, 245, 245}
+
+% Configuration des liens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    filecolor=magenta,      
+    urlcolor=emsiblue,
+    pdftitle={Rapport PFA - ManageraHub},
+}
+
+% Style des chapitres et sections
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{emsiblue}}
+  {\chaptertitlename\ \thechapter}{10pt}{\Huge}
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{emsiblue}}
+  {\thesection}{1em}{}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{emsiblue}}
+  {\thesubsection}{1em}{}
+
+% En-tête et pied de page
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small \itshape Rapport de Projet de Fin d'Année - 3\textsuperscript{ème} IIR}
+\fancyhead[R]{\small \itshape ManageraHub}
+\fancyfoot[C]{\color{emsiblue} \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\onehalfspacing
+
+% Commande personnalisée pour les placeholders de captures d'écran
+\newcommand{\screenshotplaceholder}[2][8cm]{
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Simulated Browser window frame
+            \draw[draw=emsiblue!60, fill=lightgray!10, thick, rounded corners=6pt] (0,0) rectangle (\textwidth,#1);
+            % Title bar
+            \draw[draw=emsiblue!60, fill=emsiblue!15, thick, rounded corners=6pt] (0,#1) -- (0,#1-0.8cm) -- (\textwidth,#1-0.8cm) -- (\textwidth,#1) -- cycle;
+            % Minimize, Maximize, Close buttons
+            \fill[red!80] (0.4cm, #1-0.4cm) circle (0.12cm);
+            \fill[orange!80] (0.8cm, #1-0.4cm) circle (0.12cm);
+            \fill[green!80] (1.2cm, #1-0.4cm) circle (0.12cm);
+            % URL bar
+            \draw[draw=gray!30, fill=white, rounded corners=3pt] (1.8cm, #1-0.6cm) rectangle (\textwidth-0.4cm, #1-0.2cm);
+            \node[anchor=west, font=\ttfamily\scriptsize\color{gray}] at (2.0cm, #1-0.4cm) {https://www.managerahub.ma/};
+            
+            % Mock UI elements inside the window
+            \node[emsiblue!80, font=\Large\bfseries] at (\textwidth/2, #1/2 + 0.6cm) {ManageraHub};
+            \node[gray!90, font=\large\bfseries, align=center] at (\textwidth/2, #1/2) {#2};
+            \node[gray!50, align=center, font=\scriptsize\itshape] at (\textwidth/2, #1/2 - 0.7cm) {Interface de l'application - Rendu Web d'illustration};
+        \end{tikzpicture}
+        \caption{#2}
+    \end{figure}
+}
+
+% Configuration des listings de code
+\lstset{
+    backgroundcolor=\color{lightgray},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    commentstyle=\color{emsigreen},
+    keywordstyle=\color{emsimaroon}\bfseries,
+    stringstyle=\color{emsiblue},
+    frame=single,
+    keepspaces=true,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    language=Python
+}
+
+\begin{document}
+
+% --- Pages préliminaires (chiffres romains) ---
+\pagenumbering{roman}
+
+\include{chapters/cover}
+\include{chapters/dedicaces}
+\include{chapters/remerciements}
+\include{chapters/resume}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\include{chapters/abbreviations}
+
+\newpage
+% --- Corps du rapport (chiffres arabes) ---
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\include{chapters/introduction}
+\include{chapters/chapitre1}
+\include{chapters/chapitre2}
+\include{chapters/chapitre3}
+\include{chapters/conclusion}
+\include{chapters/references}
+\include{chapters/annexes}
+
+\end{document}

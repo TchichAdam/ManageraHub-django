@@ -1,4 +1,4 @@
-﻿"""
+"""
 Django settings for monprojet project.
 """
 
@@ -8,12 +8,54 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+if find_spec('dj_database_url') is not None:
+    import dj_database_url
+else:
+    dj_database_url = None
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env', override=True)
 
-SECRET_KEY = 'django-insecure-$3w2av1@$q3da2(74_%am*1iw7eiz-()#3@cii6rqc%-6ul4ru'
-DEBUG = True
-ALLOWED_HOSTS = []
+# Security-sensitive settings are read from the environment in production and
+# fall back to development-friendly defaults locally.
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    'django-insecure-$3w2av1@$q3da2(74_%am*1iw7eiz-()#3@cii6rqc%-6ul4ru',
+)
+
+# DEBUG defaults to True locally; set DEBUG=False in the host's environment.
+DEBUG = os.getenv('DEBUG', 'True').strip().lower() in ('1', 'true', 'yes', 'on')
+
+# Comma-separated list in the environment, e.g. ALLOWED_HOSTS=example.com,www.example.com
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.getenv(
+        'ALLOWED_HOSTS', '192.168.11.23,192.168.11.22,localhost,127.0.0.1'
+    ).split(',')
+    if h.strip()
+]
+
+RENDER_EXTERNAL_HOSTNAME = os.getenv('RENDER_EXTERNAL_HOSTNAME', '').strip()
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# When deployed behind a TLS-terminating proxy (most hosts), trust forwarded
+# origins/headers. Configure CSRF_TRUSTED_ORIGINS=https://yourdomain in the env.
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [
+        o.strip()
+        for o in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',')
+        if o.strip()
+    ]
+    if RENDER_EXTERNAL_HOSTNAME:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True').strip().lower() in (
+        '1', 'true', 'yes', 'on',
+    )
+    SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0') or '0')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '').strip()
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '').strip()
@@ -77,6 +119,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 
 if HAS_ALLAUTH:
+    ACCOUNT_ADAPTER = 'app1.adapters.NoMessagesAccountAdapter'
+    SOCIALACCOUNT_ADAPTER = 'app1.adapters.NoMessagesSocialAccountAdapter'
     SOCIALACCOUNT_PROVIDERS = {}
     if GOOGLE_AUTH_CONFIGURED:
         SOCIALACCOUNT_PROVIDERS['google'] = {
@@ -114,6 +158,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if find_spec('whitenoise') is not None:
+    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
 if HAS_ALLAUTH:
     MIDDLEWARE.append('allauth.account.middleware.AccountMiddleware')
 
@@ -136,12 +183,40 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'monprojet.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Database — DATABASE_URL for hosted Postgres, MySQL when DB_NAME is configured,
+# otherwise SQLite for local development.
+DATABASE_URL = os.getenv('DATABASE_URL', '').strip()
+if DATABASE_URL:
+    if dj_database_url is None:
+        raise RuntimeError('DATABASE_URL is set but dj-database-url is not installed.')
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
     }
-}
+elif os.getenv('DB_NAME', '').strip():
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.getenv('DB_NAME', '').strip(),
+            'USER': os.getenv('DB_USER', '').strip(),
+            'PASSWORD': os.getenv('DB_PASSWORD', ''),
+            'HOST': os.getenv('DB_HOST', '').strip() or '127.0.0.1',
+            'PORT': os.getenv('DB_PORT', '').strip() or '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -165,8 +240,35 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+# Target dir for `python manage.py collectstatic` in production.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+if not DEBUG and find_spec('whitenoise') is not None:
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Email — console backend by default (local/dev & offline presentation);
+# configure real SMTP via the environment in production.
+EMAIL_BACKEND = os.getenv(
+    'EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend'
+)
+EMAIL_HOST = os.getenv('EMAIL_HOST', '')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587') or '587')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').strip().lower() in (
+    '1', 'true', 'yes', 'on',
+)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@managerahub.ma')
+
+# Allow embedding media/pages in iframes from the same origin (needed for offline PDF previews)
+X_FRAME_OPTIONS = 'SAMEORIGIN'

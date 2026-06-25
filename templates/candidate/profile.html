@@ -1,4 +1,5 @@
 {% extends "candidate/base.html" %}
+{% load static %}
 
 {% block title %}My Profile | ManageraHub{% endblock %}
 
@@ -74,6 +75,7 @@
 
                 <div class="candidate-profile-header-actions">
                     <a href="#profile-editor" class="pill-button pill-button-dark">Update profile</a>
+                    <button type="button" onclick="autofillDemoProfile()" class="pill-button" style="background:#5a5d4a; color:#fff; border:1px solid #8c907d;">✨ Demo Autofill</button>
                     <a href="#skills-section" class="pill-button pill-button-light">Add section</a>
                     <a href="#profile-editor" class="pill-button pill-button-light">Improve profile</a>
                     <button type="button" class="pill-button pill-button-light">More</button>
@@ -779,5 +781,125 @@
             }
         });
     })();
+
+    function autofillDemoProfile() {
+        const fields = {
+            'id_first_name': 'Adam',
+            'id_last_name': 'Tchich',
+            'id_headline': 'Software Engineer | Python & Django Expert',
+            'id_phone_number': '+212 612 34 56 78',
+            'id_address': 'Avenue Mohamed V',
+            'id_city': 'Rabat',
+            'id_country': 'Morocco',
+            'id_education_level': 'master',
+            'id_skills': 'Python, Django, HTML, CSS, JavaScript, Git, SQL, UML, REST APIs',
+            'id_experience_summary': 'Developed several full-stack web applications using Django and Python. Proficient in database modeling, responsive UI design, and security best practices.',
+            'id_bio': 'I am a passionate software engineering student specializing in web application development. Active member in EMSI student projects and open-source contributions.'
+        };
+        for (const [id, val] of Object.entries(fields)) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.value = val;
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
+
+        // Attach CV file (fetch real PDF from static if exists, fallback to simulated)
+        const cvInput = document.getElementById('id_cv_file');
+        if (cvInput) {
+            fetch("{% static 'files/Adam_Tchich_CV.pdf' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_CV.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    cvInput.files = dt.files;
+                    cvInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["%PDF-1.4 simulated CV content"], "Adam_Tchich_CV.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    cvInput.files = dt.files;
+                    cvInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+
+        // Attach Cover Letter file (fetch real PDF from static if exists, fallback to simulated)
+        const clInput = document.getElementById('id_cover_letter_file');
+        if (clInput) {
+            fetch("{% static 'files/Adam_Tchich_Lettre_Motivation.pdf' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_Lettre_Motivation.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    clInput.files = dt.files;
+                    clInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["%PDF-1.4 simulated Cover Letter content"], "Adam_Tchich_Lettre_Motivation.pdf", { type: "application/pdf" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    clInput.files = dt.files;
+                    clInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+
+        // Attach Profile Picture file (fetch real image from static if exists, fallback to simulated)
+        const avatarInput = document.getElementById("{{ form.profile_picture.id_for_label }}");
+        if (avatarInput) {
+            fetch("{% static 'images/Adam_Tchich_Photo.png' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_Photo.png", { type: "image/png" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    avatarInput.files = dt.files;
+                    avatarInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["mock_avatar"], "Adam_Tchich_Photo.png", { type: "image/png" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    avatarInput.files = dt.files;
+                    avatarInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+
+        // Attach Cover Background file (fetch real image from static if exists, fallback to simulated)
+        const coverInput = document.getElementById("candidate-cover-upload");
+        if (coverInput) {
+            fetch("{% static 'images/Adam_Tchich_Cover.png' %}")
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.blob();
+                })
+                .then(blob => {
+                    const file = new File([blob], "Adam_Tchich_Cover.png", { type: "image/png" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    coverInput.files = dt.files;
+                    coverInput.dispatchEvent(new Event('change', { bubbles: true }));
+                })
+                .catch(() => {
+                    const file = new File(["mock_cover"], "Adam_Tchich_Cover.png", { type: "image/png" });
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    coverInput.files = dt.files;
+                    coverInput.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+        }
+    }
 </script>
 {% endblock %}

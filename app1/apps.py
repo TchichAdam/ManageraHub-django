@@ -6,6 +6,10 @@ class App1Config(AppConfig):
     name = 'app1'
 
     def ready(self):
+        # Register signal handlers (e.g. candidate email notifications on
+        # job-application status changes).
+        import app1.signals  # noqa: F401
+
         # Hide allauth/social models from admin after autodiscover completes
         # They still work in background for Google login
         from django.contrib import admin
@@ -18,14 +22,14 @@ class App1Config(AppConfig):
 
         try:
             from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
-            admin.site.unregister(SocialAccount)
-            admin.site.unregister(SocialApp)
-            admin.site.unregister(SocialToken)
+            # admin.site.unregister(SocialAccount)
+            # admin.site.unregister(SocialApp)
+            # admin.site.unregister(SocialToken)
         except Exception:
             pass
 
         try:
             from django.contrib.sites.models import Site
-            admin.site.unregister(Site)
+            # admin.site.unregister(Site)
         except Exception:
             pass

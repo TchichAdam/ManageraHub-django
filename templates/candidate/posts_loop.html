@@ -1,0 +1,142 @@
+{% for post in posts %}
+<article class="post-card" id="post-{{ post.id }}">
+    <header class="post-card-header">
+        {% if post.author_avatar %}
+        <img 
+            src="{{ post.author_avatar }}" 
+            alt="{{ post.author_display_name }}" 
+            class="post-avatar-img"
+            id="post-avatar-img-{{ post.id }}"
+            onerror="this.style.display='none'; document.getElementById('post-avatar-letter-{{ post.id }}').style.display='flex';"
+        >
+        {% endif %}
+        <span 
+            class="post-avatar-letter"
+            id="post-avatar-letter-{{ post.id }}"
+            {% if post.author_avatar %}style="display: none;"{% endif %}
+        >
+            {{ post.author_display_name|slice:":1"|upper }}
+        </span>
+        <div class="post-author-meta">
+            <div class="author-identity">
+                <h3>{{ post.author_display_name }}</h3>
+                {% if "yassen" in post.author.username %}
+                <span class="badge-tag">Publication OFPPT</span>
+                {% endif %}
+                {% if post.location %}
+                <span class="post-location-tag" style="font-size: 0.78rem; color: var(--text-soft); font-weight: normal; margin-left: 8px; vertical-align: middle;">📍 à {{ post.location }}</span>
+                {% endif %}
+            </div>
+            <p class="author-title-text">{{ post.author_title }}</p>
+            <span class="post-timestamp">{{ post.created_at|date:"d M Y à H:i" }}</span>
+        </div>
+    </header>
+    
+    <div class="post-card-body">
+        <p class="post-text-content">{{ post.content|linebreaksbr }}</p>
+        
+        {% if post.image %}
+        <div class="post-media-box">
+            <img src="{{ post.image.url }}" alt="Visuel de la publication">
+        </div>
+        {% endif %}
+
+        {% if post.video %}
+        <div class="post-media-box video-box" style="margin-top: 12px; border-radius: var(--radius-m); overflow: hidden; background: #000; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <video controls src="{{ post.video.url }}" style="width: 100%; display: block; max-height: 450px;"></video>
+        </div>
+        {% endif %}
+
+        {% if post.tagged_company or post.tagged_users.exists %}
+        <div class="post-tags-container" style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 10px; border-top: 1px dashed rgba(79, 12, 40, 0.08);">
+            {% if post.tagged_company %}
+            <span class="tag-badge company-tag" style="display: inline-flex; align-items: center; background: rgba(79, 12, 40, 0.04); border: 1px solid rgba(79, 12, 40, 0.08); border-radius: var(--radius-s); padding: 4px 10px; font-size: 0.78rem; font-weight: 600; color: var(--plum);">
+                🏢 {{ post.tagged_company.company_name }}
+            </span>
+            {% endif %}
+            
+            {% for tagged_user in post.tagged_users.all %}
+            <span class="tag-badge member-tag" style="display: inline-flex; align-items: center; background: rgba(118, 106, 185, 0.05); border: 1px solid rgba(118, 106, 185, 0.15); border-radius: var(--radius-s); padding: 4px 10px; font-size: 0.78rem; font-weight: 600; color: rgb(118, 106, 185);">
+                👤 {{ tagged_user.get_full_name|default:tagged_user.username }}
+            </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- STATS DES INTERACTIONS -->
+    <div class="post-card-stats">
+        <span class="likes-count-badge" id="likes-count-{{ post.id }}">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" class="stats-icon">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+            </svg>
+            <strong>{{ post.total_likes }}</strong> J'aime
+        </span>
+        <span class="comments-count-badge" data-comments-toggle="{{ post.id }}">
+            <strong>{{ post.comments.count }}</strong> commentaire{{ post.comments.count|pluralize }}
+        </span>
+    </div>
+    
+    <!-- ACTIONS DU POST -->
+    <footer class="post-card-actions">
+        <a href="{% url 'post_like' post.id %}" class="action-btn-link {% if post.has_liked %}has-liked{% endif %}" aria-label="Aimer la publication">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="{% if post.has_liked %}currentColor{% else %}none{% endif %}" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            <span>J'aime</span>
+        </a>
+        
+        <button type="button" class="action-btn-link" data-comments-btn="{{ post.id }}" aria-expanded="false">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span>Commenter</span>
+        </button>
+    </footer>
+    
+    <!-- SECTION DES COMMENTAIRES (AFFICHÉE DIRECTEMENT OU DÉROULABLE) -->
+    <section class="comments-section" id="comments-box-{{ post.id }}">
+        <div class="comments-list">
+            {% for comment in post.comments.all %}
+            <div class="comment-item">
+                <span class="comment-author-avatar">{{ comment.author.username|slice:":1"|upper }}</span>
+                <div class="comment-body">
+                    <div class="comment-author-header">
+                        <h4>{{ comment.author.get_full_name|default:comment.author.username }}</h4>
+                        <span class="comment-time">{{ comment.created_at|date:"d M, H:i" }}</span>
+                    </div>
+                    <p class="comment-text-text">{{ comment.content }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Formulaire pour ajouter un commentaire -->
+        <form method="post" action="{% url 'post_comment' post.id %}" class="comment-input-form">
+            {% csrf_token %}
+            <input 
+                type="text" 
+                name="content" 
+                placeholder="Ajouter un commentaire..." 
+                required
+                aria-label="Saisir un commentaire"
+            >
+            <button type="submit" class="comment-submit-icon-btn" aria-label="Publier le commentaire">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </section>
+</article>
+{% empty %}
+<div class="empty-feed-card" style="text-align: center; padding: 40px 20px; background: #ffffff; border-radius: var(--radius-m); border: 1px solid rgba(79, 12, 40, 0.08);">
+    {% if search_query %}
+    <p style="font-size: 1rem; color: var(--text-main); margin-bottom: 16px;">Aucun résultat ne correspond à votre recherche "<strong>{{ search_query }}</strong>".</p>
+    <a href="{% url 'candidate_feed' %}" class="pill-button pill-button-dark" style="display: inline-block; text-decoration: none;">Réinitialiser la recherche</a>
+    {% else %}
+    <p>Aucune publication disponible. Soyez le premier à partager une mise à jour !</p>
+    {% endif %}
+</div>
+{% endfor %}

@@ -1,0 +1,175 @@
+\chapter*{Annexes}
+\addcontentsline{toc}{chapter}{Annexes}
+\markboth{Annexes}{Annexes}
+
+\section*{Annexe A : Guide d'installation et configuration}
+
+Pour déployer ManageraHub en local pour le développement, veuillez suivre ces étapes :
+
+\subsection*{1. Prérequis système}
+\begin{itemize}
+    \item Python 3.9 installé.
+    \item Gestionnaire de paquets \texttt{pip} et utilitaire de virtualisation \texttt{venv}.
+    \item Git installé pour le clonage du dépôt.
+\end{itemize}
+
+\subsection*{2. Étapes de déploiement}
+\begin{lstlisting}[language=bash, caption=Commandes de configuration du projet]
+# 1. Cloner le depot du projet
+git clone https://github.com/TchichAdam/managerahub-django.git
+cd managerahub-django
+
+# 2. Creer et activer l'environnement virtuel
+python -m venv venv
+# Sur Windows :
+venv\Scripts\activate
+# Sur Linux/macOS :
+source venv/bin/activate
+
+# 3. Installer les dependances
+pip install -r requirements.txt
+
+# 4. Creer les fichiers de migration de base de donnees
+python manage.py makemigrations app1
+
+# 5. Appliquer les migrations
+python manage.py migrate
+
+# 6. Creer un compte administrateur principal
+python manage.py createsuperuser
+
+# 7. Lancer le serveur de developpement local
+python manage.py runserver
+\end{lstlisting}
+
+Une fois le serveur démarré, l'application est accessible à l'adresse suivante dans n'importe quel navigateur web : \url{http://127.0.0.1:8000/}.
+
+\subsection*{3. Comptes de test prédéfinis}
+\begin{itemize}
+    \item \textbf{Compte Administrateur :} \texttt{admin@managerahub.com} / Mot de passe : \texttt{admin123}
+    \item \textbf{Candidat de test :} \texttt{candidate@}\allowbreak\texttt{test.com} / Passe : \texttt{candidate123}
+    \item \textbf{Compte Entreprise de test (en attente) :} \texttt{entreprise@test.com} / Mot de passe : \texttt{entreprise123}
+\end{itemize}
+\textit{Note de sécurité importante : Ces comptes de test et leurs mots de passe associés sont réservés exclusivement à l'environnement de développement local (dev-only) et doivent impérativement être supprimés ou modifiés en production.}
+
+\newpage
+
+\section*{Annexe B : Structure des gabarits HTML (Templates)}
+L'architecture de présentation (frontend) de ManageraHub est conçue selon un modèle d'héritage de templates Django, favorisant la réutilisabilité du code et le respect du principe DRY (Don't Repeat Yourself).
+
+\subsection*{1. Fichier de base global (templates/base.html)}
+Ce fichier contient la structure HTML5 globale commune, l'intégration des polices Cormorant Garamond et Inter via Google Fonts, et le point d'inclusion de la feuille de style principale.
+
+\begin{lstlisting}[language=HTML, caption=Structure réelle du template base.html]
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ManageraHub{% endblock %}</title>
+    <meta name="description" content="ManageraHub is a modern recruitment platform that connects candidates, companies, and administrators in one professional experience.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=20260615-feed-v11">
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <script src="{% static 'js/main.js' %}?v=20260520-2"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+\end{lstlisting}
+
+\subsection*{2. Fichier de tableau de bord Candidat (\texttt{candidate/}\allowbreak\texttt{dashboard.html})}
+Ce gabarit affiche le profil du candidat, la complétion de son profil et ses candidatures récentes. Il hérite du gabarit \texttt{candidate/}\allowbreak\texttt{base.html}.
+
+\begin{lstlisting}[language=HTML, caption=Template du Dashboard Candidat (Extrait)]
+{% extends "candidate/base.html" %}
+
+{% block title %}Candidate Dashboard | ManageraHub{% endblock %}
+
+{% block candidate_main %}
+<section class="candidate-hero-card candidate-welcome">
+    <div class="candidate-welcome-text">
+        <p class="candidate-card-kicker">Candidate Dashboard</p>
+        <h1>Welcome back, {{ candidate_display_name }}.</h1>
+        <p>Track your applications, finish your profile, and discover fresh opportunities.</p>
+        <div class="candidate-hero-actions">
+            <a href="{% url 'candidate_profile' %}" class="pill-button pill-button-dark">Complete my profile</a>
+            <a href="{% url 'candidate_job_offers' %}" class="pill-button pill-button-light">Browse job offers</a>
+        </div>
+    </div>
+    <div class="candidate-welcome-aside">
+        <div class="candidate-progress-ring" style="--p: {{ candidate_completion_percent }};">
+            <div class="candidate-progress-ring-center">
+                <strong>{{ candidate_completion_percent }}%</strong>
+                <span>Profile</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="candidate-dash-grid">
+    <div class="candidate-dash-main">
+        <article class="candidate-panel-card">
+            <p class="candidate-card-kicker">Recent applications</p>
+            {% if applications %}
+            <div class="candidate-mini-stack">
+                {% for application in applications %}
+                <div class="candidate-mini-entry">
+                    <strong>{{ application.job_offer.title }}</strong>
+                    <span>{{ application.job_offer.company_name }} - {{ application.get_status_display }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>You have not applied to a job yet. Start from the Job Offers page.</p>
+            {% endif %}
+        </article>
+    </div>
+</section>
+{% endblock %}
+\end{lstlisting}
+
+\newpage
+
+\section*{Annexe C : Validations de formulaires et logique de sécurité}
+Pour garantir la cohérence des données, notamment pour le marché marocain, des mécanismes de validation stricts ont été mis en œuvre.
+
+\subsection*{1. Validateur personnalisé d'ICE marocain (app1/forms.py)}
+L'ICE (Identifiant Commun de l'Entreprise) doit être composé de 15 chiffres. Voici comment ce contrôle est géré dans notre formulaire de modification du profil de l'entreprise :
+
+\begin{lstlisting}[language=Python, caption=Validation de l'ICE dans CompanyProfileForm]
+from django import forms
+from .models import CompanyProfile
+
+class CompanyProfileForm(forms.ModelForm):
+    class Meta:
+        model = CompanyProfile
+        fields = [
+            "company_name",
+            "industry",
+            "company_size",
+            "phone_number",
+            "city",
+            "country",
+            "website",
+            "description",
+            "logo",
+            "background_image",
+            "ice",
+            "rc_number",
+            "legal_document",
+        ]
+        
+    def clean_ice(self):
+        ice = self.cleaned_data.get("ice")
+        if ice:
+            ice = ice.strip()
+            if not ice.isdigit() or len(ice) != 15:
+                raise forms.ValidationError("The ICE number must contain exactly 15 digits.")
+        return ice
+\end{lstlisting}
+\newpage

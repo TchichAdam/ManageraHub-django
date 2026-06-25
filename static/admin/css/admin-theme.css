@@ -48,11 +48,26 @@ html {
     --message-error-bg: rgba(255, 107, 107, 0.14);
 }
 
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     margin: 0;
+    width: 100%;
+    overflow-x: hidden;
     font-family: "Inter", sans-serif;
     background: linear-gradient(180deg, #f1faee 0%, #edf5e5 100%);
     color: var(--mh-text-main);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 h1,
@@ -76,17 +91,27 @@ input[type="submit"] {
     color: #4f0c28 !important;
 }
 
+a,
 a:link,
-a:visited {
+a:visited,
+a:hover,
+a:active,
+a:focus {
     color: var(--mh-plum);
+    text-decoration: none !important;
 }
 
 a:hover {
     color: var(--mh-plum-deep);
+    text-decoration: none !important;
 }
 
 #container {
     min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 #header {
@@ -190,32 +215,44 @@ a:hover {
 .mh-admin-center-nav a,
 .mh-user-nav > a,
 .mh-user-welcome,
+.mh-user-menu-link,
 #mh-logout-form button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 28px;
-    padding: 0 12px;
-    border-radius: var(--mh-radius-pill);
-    border: 1px solid rgba(79, 12, 40, 0.15);
-    background: rgba(249, 251, 244, 0.88);
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 28px !important;
+    height: 28px !important;
+    padding: 0 12px !important;
+    border-radius: var(--mh-radius-pill) !important;
+    border: 1px solid rgba(79, 12, 40, 0.15) !important;
+    background: rgba(249, 251, 244, 0.88) !important;
     color: var(--mh-plum) !important;
-    font-family: "Poppins", sans-serif;
-    font-size: 0.74rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    text-decoration: none;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    font-family: "Poppins", sans-serif !important;
+    font-size: 0.74rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.01em !important;
+    text-decoration: none !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    line-height: 1 !important;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease !important;
 }
 
 .mh-admin-center-nav a:hover,
 .mh-user-nav > a:hover,
-#mh-logout-form button:hover {
-    transform: translateY(-1px);
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(79, 12, 40, 0.22);
-    box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08);
+#mh-logout-form button:hover,
+.mh-user-welcome:hover,
+.mh-user-menu-link:hover {
+    transform: translateY(-1px) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(79, 12, 40, 0.22) !important;
+    box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+}
+
+.mh-user-nav > a {
+    text-transform: uppercase !important;
+    letter-spacing: 0.01em !important;
 }
 
 .mh-brand-script-sub {
@@ -282,7 +319,7 @@ a:hover {
     font-weight: 500;
     letter-spacing: 0.045em;
     text-transform: uppercase;
-    cursor: default;
+    cursor: pointer;
     min-width: 148px;
 }
 
@@ -311,7 +348,8 @@ a:hover {
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    min-width: 170px;
+    min-width: 220px !important;
+    width: max-content !important;
     padding: 8px;
     display: grid;
     gap: 8px;
@@ -319,7 +357,7 @@ a:hover {
     border: 1px solid rgba(79, 12, 40, 0.12);
     background: rgba(249, 251, 244, 0.98);
     box-shadow: 0 18px 38px rgba(79, 12, 40, 0.12);
-    z-index: 30;
+    z-index: 100000 !important;
 }
 
 .mh-user-menu:not([open]) .mh-user-menu-panel {
@@ -330,16 +368,18 @@ a:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 36px;
+    min-height: 28px !important;
     width: 100%;
     padding: 0 12px;
-    border-radius: 999px;
+    border-radius: var(--mh-radius-pill) !important;
     border: 1px solid rgba(79, 12, 40, 0.12);
     background: rgba(255, 255, 255, 0.86);
     color: var(--mh-plum) !important;
     font-family: "Poppins", sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.74rem !important;
     font-weight: 500;
+    text-transform: uppercase !important;
+    letter-spacing: 0.01em !important;
     text-decoration: none;
     cursor: pointer;
 }
@@ -441,10 +481,22 @@ div.breadcrumbs a {
     color: var(--mh-plum);
 }
 
+#main {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+    min-width: 0 !important;
+}
+
 #content {
-    width: min(96vw, 1560px);
+    flex: 1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    width: auto !important;
     margin: 0 auto;
-    padding: 0 0 30px;
+    padding: 0 20px 30px !important;
+    box-sizing: border-box !important;
 }
 
 #content-main,
@@ -468,7 +520,6 @@ div.breadcrumbs a {
 #changelist .actions,
 #toolbar,
 .paginator,
-ul.object-tools a,
 .calendarbox,
 .clockbox {
     background: linear-gradient(180deg, rgba(248, 251, 243, 0.98) 0%, rgba(241, 250, 238, 0.98) 100%);
@@ -519,13 +570,24 @@ input[type="submit"],
 input[type="button"],
 .submit-row input,
 a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--mh-plum);
     color: var(--mh-offwhite);
     border: 1px solid transparent;
     border-radius: var(--mh-radius-pill);
-    padding: 12px 20px;
+    padding: 0 22px;
+    min-height: 44px;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.84rem;
     font-weight: 700;
-    box-shadow: var(--mh-shadow-soft);
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(79, 12, 40, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    cursor: pointer;
 }
 
 .button.default,
@@ -541,13 +603,26 @@ input[type="button"]:hover,
 a.button:hover {
     background: var(--mh-plum-deep);
     color: var(--mh-offwhite);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(79, 12, 40, 0.24);
 }
 
 .deletelink,
 .deletelink-box a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--mh-plum-deep);
     color: #fff;
     border-radius: var(--mh-radius-pill);
+    padding: 0 22px;
+    min-height: 44px;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
 }
 
 table {
@@ -655,9 +730,14 @@ table {
 }
 
 #nav-sidebar {
-    background: linear-gradient(180deg, rgba(241, 250, 238, 0.94) 0%, rgba(228, 236, 218, 0.9) 100%);
-    border-right: 1px solid var(--mh-line-soft);
-    backdrop-filter: blur(18px);
+    background: var(--body-bg) !important;
+    background-color: var(--body-bg) !important;
+    border: 1px solid var(--mh-line-soft) !important;
+    border-radius: 20px !important;
+    margin: 20px 10px 20px 20px !important;
+    padding: 16px !important;
+    box-shadow: var(--mh-shadow-soft) !important;
+    backdrop-filter: blur(18px) !important;
 }
 
 #nav-sidebar .current-app .section,
@@ -709,6 +789,7 @@ fieldset.module.aligned,
 
 ul.object-tools {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin: 0 0 18px;
     padding: 0;
@@ -723,14 +804,27 @@ ul.object-tools a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 42px;
-    padding: 0 18px;
-    color: var(--mh-plum);
-    background: var(--mh-surface);
+    min-height: 44px;
+    padding: 0 24px;
+    border-radius: var(--mh-radius-pill) !important;
+    border: 1px solid transparent !important;
+    background: var(--mh-plum) !important;
+    color: var(--mh-offwhite) !important;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    box-shadow: 0 6px 18px rgba(79, 12, 40, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    cursor: pointer;
 }
 
 ul.object-tools a:hover {
-    background: var(--mh-sage-soft);
+    background: var(--mh-plum-deep) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(79, 12, 40, 0.24);
 }
 
 .object-history {
@@ -802,8 +896,11 @@ ul.errorlist {
 }
 
 .mh-home-admin-shell {
-    width: min(96vw, 1560px);
-    margin: 0 auto;
+    width: 100% !important;
+    max-width: 1560px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
     display: grid;
     gap: 18px;
 }
@@ -1036,13 +1133,19 @@ ul.errorlist {
 }
 
 .mh-home-stat-card {
-    display: grid;
+    display: grid !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     gap: 10px;
     padding: 22px 20px;
     border-radius: 24px;
     background: linear-gradient(180deg, rgba(248, 251, 243, 0.98) 0%, rgba(241, 250, 238, 0.98) 100%);
     border: 1px solid rgba(79, 12, 40, 0.08);
     box-shadow: var(--mh-shadow-soft);
+    text-align: center;
+    justify-items: center;
+    justify-content: center;
 }
 
 .mh-home-stat-card .mh-home-kicker {
@@ -1241,16 +1344,18 @@ ul.errorlist {
     vertical-align: middle;
 }
 
-@media (max-width: 1280px) {
+@media (max-width: 1400px) {
     .mh-home-admin-stats,
     .mh-home-admin-panels {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     }
 }
 
 @media (max-width: 980px) {
     #content {
-        width: min(96vw, 100%);
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     #user-tools {
@@ -1269,6 +1374,73 @@ ul.errorlist {
         justify-self: stretch;
         max-width: none;
     }
+
+    /* Prevent any horizontal overflow on admin pages */
+    .mh-home-admin-page,
+    .mh-home-admin-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    .mh-home-admin-card,
+    .mh-home-admin-copy {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Responsive title sizing for tablets/phones */
+    .mh-home-admin-card h1 {
+        font-size: clamp(1.1rem, 5vw, 2rem) !important;
+        letter-spacing: 0.01em !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .mh-home-admin-stats,
+    .mh-home-admin-panels {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+    }
+
+    .mh-pending-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 16px !important;
+    }
+
+    .mh-pending-actions {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .mh-pending-actions a,
+    .mh-pending-actions .mh-verify-dropdown {
+        flex: 1 1 auto !important;
+        text-align: center !important;
+        justify-content: center !important;
+        min-height: 38px !important;
+    }
+
+    .mh-pending-actions .mh-verify-dropdown a {
+        min-height: 0 !important;
+    }
+
+    .mh-home-table-wrap {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .mh-home-table {
+        min-width: 650px !important;
+        width: 100% !important;
+    }
 }
 
 @media (max-width: 760px) {
@@ -1279,7 +1451,11 @@ ul.errorlist {
     }
 
     #content {
-        width: min(96vw, 100%);
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 6px !important;
+        padding-right: 6px !important;
+        box-sizing: border-box !important;
     }
 
     .change-list #changelist {
@@ -1296,8 +1472,88 @@ ul.errorlist {
         justify-content: center;
     }
 
-    .mh-home-admin-shell {
-        width: min(96vw, 100%);
+    /* --- Force ALL admin dashboard containers to stay inside viewport --- */
+    .mh-home-admin-page,
+    .mh-home-admin-shell,
+    .mh-home-admin-card,
+    .mh-home-admin-hero,
+    .mh-home-admin-stats,
+    .mh-home-admin-panels,
+    .mh-home-admin-table-card,
+    .mh-home-admin-copy,
+    .mh-pending-section {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+
+    /* Reduce card padding so content has room on narrow screens */
+    .mh-home-admin-card {
+        padding: 20px 14px !important;
+        gap: 16px !important;
+    }
+
+    .mh-home-admin-copy {
+        padding: 0 !important;
+        gap: 10px !important;
+    }
+
+    .mh-home-admin-hero {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+
+    .mh-home-admin-stats,
+    .mh-home-admin-panels {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+
+    .mh-home-admin-table-card {
+        margin: 0 4px !important;
+        padding: 16px 12px !important;
+    }
+
+    /* --- Title: force it small enough to fit on a 375px phone --- */
+    .mh-home-admin-card h1 {
+        font-size: clamp(1.1rem, 5.5vw, 1.5rem) !important;
+        letter-spacing: 0.01em !important;
+        overflow-wrap: break-word !important;
+        word-break: break-word !important;
+        line-height: 1.15 !important;
+    }
+
+    .mh-home-admin-card p {
+        font-size: 0.82rem !important;
+        line-height: 1.55 !important;
+    }
+
+    /* --- Buttons: stack vertically so they don't overflow --- */
+    .mh-home-admin-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+        width: 100% !important;
+    }
+
+    .mh-home-pill {
+        width: 100% !important;
+        min-height: 40px !important;
+        padding: 0 16px !important;
+        font-size: 0.82rem !important;
+        box-sizing: border-box !important;
+    }
+
+    /* --- Stat cards: ensure they don't have a fixed min-width --- */
+    .mh-home-stat-card {
+        min-width: 0 !important;
+        padding: 16px 14px !important;
+    }
+
+    .mh-home-stat-card strong {
+        font-size: clamp(1.6rem, 8vw, 2.2rem) !important;
     }
 
     .mh-home-admin-topbar {
@@ -1312,26 +1568,23 @@ ul.errorlist {
         display: none;
     }
 
-    .mh-home-admin-hero,
-    .mh-home-admin-stats,
-    .mh-home-admin-panels {
-        padding-left: 8px;
-        padding-right: 8px;
-    }
-
-    .mh-home-admin-stats,
-    .mh-home-admin-panels {
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .mh-home-admin-table-card {
-        margin: 0 8px;
-        padding: 20px;
-    }
-
     .mh-home-admin-table-head {
         flex-direction: column;
+    }
+
+    /* Pending section mobile fix */
+    .mh-pending-section {
+        padding: 16px 12px !important;
+    }
+
+    .mh-pending-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .mh-pending-header h2 {
+        font-size: 1rem !important;
     }
 }
 
@@ -1470,6 +1723,20 @@ ul.errorlist li,
     background: var(--mh-plum) !important;
     color: var(--mh-offwhite) !important;
     border: 1px solid transparent !important;
+    border-radius: var(--mh-radius-pill) !important;
+    min-height: 44px !important;
+    padding: 0 24px !important;
+    font-family: "Poppins", sans-serif !important;
+    font-size: 0.84rem !important;
+    font-weight: 600 !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+    box-shadow: 0 6px 18px rgba(79, 12, 40, 0.18) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: normal !important;
 }
 
 .change-list ul.object-tools a:hover,
@@ -1477,6 +1744,8 @@ ul.errorlist li,
 .object-tools a.addlink:hover {
     background: var(--mh-plum-deep) !important;
     color: var(--mh-offwhite) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 24px rgba(79, 12, 40, 0.24) !important;
 }
 
 body.app-auth.model-user.change-list ul.object-tools,
@@ -1562,14 +1831,37 @@ body.app-auth.model-user.change-list .results tbody th {
 }
 
 /* Light theme for the left admin navigation sidebar */
-#nav-sidebar,
+#nav-sidebar {
+    background: var(--body-bg) !important;
+    background-color: var(--body-bg) !important;
+    color: var(--mh-text-main) !important;
+    border: 1px solid var(--mh-line-soft) !important;
+    border-radius: 20px !important;
+}
+
 #nav-sidebar .module,
 #nav-sidebar .current-app,
 #nav-sidebar .app-auth,
-#nav-sidebar .app-sites {
-    background: linear-gradient(180deg, rgba(248, 251, 243, 0.98) 0%, rgba(241, 250, 238, 0.98) 100%) !important;
-    color: var(--mh-text-main) !important;
-    border-color: rgba(79, 12, 40, 0.08) !important;
+#nav-sidebar .app-sites,
+#nav-sidebar .app-admin,
+#nav-sidebar .app-app1,
+#nav-sidebar div,
+#nav-sidebar section,
+#nav-sidebar nav {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+#nav-sidebar tr,
+#nav-sidebar tr:nth-child(even),
+#nav-sidebar tr:nth-child(odd),
+#nav-sidebar td,
+#nav-sidebar th {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
 }
 
 #nav-sidebar .current-app .section,
@@ -1581,24 +1873,111 @@ body.app-auth.model-user.change-list .results tbody th {
     color: var(--mh-text-main) !important;
 }
 
-#nav-sidebar a,
-#nav-sidebar a:link,
-#nav-sidebar a:visited {
-    color: var(--mh-plum) !important;
-    background: transparent !important;
+#nav-sidebar caption {
+    font-family: "Poppins", sans-serif !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    color: var(--mh-text-soft) !important;
+    padding: 14px 6px 6px !important;
+    border-bottom: 2px solid rgba(79, 12, 40, 0.08) !important;
+    margin-bottom: 8px !important;
+    text-align: left !important;
 }
 
-#nav-sidebar a:hover {
-    color: var(--mh-plum-deep) !important;
-    background: rgba(200, 213, 176, 0.18) !important;
+#nav-sidebar th a {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 7px 16px !important;
+    border-radius: 999px !important; /* Make it a pill */
+    background: #f8f6f3 !important; /* Light cream background, like view details */
+    color: var(--mh-plum) !important;
+    border: 1px solid rgba(79, 12, 40, 0.14) !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: all 0.18s ease !important;
+    margin: 4px 0 !important;
+    box-shadow: 0 2px 4px rgba(79, 12, 40, 0.03) !important;
+}
+
+#nav-sidebar th a:hover {
+    transform: translateY(-1px) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(79, 12, 40, 0.22) !important;
+    box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+    color: var(--mh-plum) !important;
+}
+
+#nav-sidebar td a.addlink {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px 14px !important;
+    border-radius: 999px !important; /* Pill button */
+    background: #e8f5e9 !important; /* Light green background, matching active/approve style! */
+    color: #2e7d32 !important;
+    border: 1px solid rgba(46, 125, 50, 0.2) !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    transition: all 0.18s ease !important;
+    margin: 4px 0 !important;
+    box-shadow: 0 2px 4px rgba(46, 125, 50, 0.03) !important;
+}
+
+#nav-sidebar td a.addlink:hover {
+    transform: translateY(-1px) !important;
+    background: rgba(232, 245, 233, 0.9) !important;
+    border-color: rgba(46, 125, 50, 0.35) !important;
+    box-shadow: 0 10px 18px rgba(46, 125, 50, 0.08) !important;
+    color: #2e7d32 !important;
+}
+
+#nav-sidebar td a.changelink,
+#nav-sidebar td a.viewlink {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px 14px !important;
+    border-radius: 999px !important;
+    background: #fafaf9 !important;
+    color: var(--mh-text-soft) !important;
+    border: 1px solid rgba(79, 12, 40, 0.12) !important;
+    font-size: 0.74rem !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    transition: all 0.18s ease !important;
+    margin: 4px 0 !important;
+}
+
+#nav-sidebar td a.changelink:hover,
+#nav-sidebar td a.viewlink:hover {
+    transform: translateY(-1px) !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(79, 12, 40, 0.22) !important;
+    box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+    color: var(--mh-text-soft) !important;
+}
+
+/* Base fallbacks for generic unclassed sidebar links */
+#nav-sidebar a:not([class]) {
+    color: var(--mh-plum) !important;
+    text-decoration: none !important;
 }
 
 #nav-sidebar th,
 #nav-sidebar td,
-#nav-sidebar caption,
 #nav-sidebar .section,
 #nav-sidebar .app-auth > caption,
-#nav-sidebar .app-sites > caption {
+#nav-sidebar .app-sites > caption,
+#nav-sidebar .app-admin > caption,
+#nav-sidebar .app-app1 > caption {
     color: var(--mh-text-main) !important;
     background: transparent !important;
 }
@@ -1606,10 +1985,13 @@ body.app-auth.model-user.change-list .results tbody th {
 #nav-filter,
 #nav-sidebar input[type="search"],
 #nav-sidebar input[type="text"] {
-    background: rgba(241, 250, 238, 0.95) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
     color: var(--mh-text-main) !important;
-    border: 1px solid rgba(79, 12, 40, 0.12) !important;
+    border: 1px solid rgba(79, 12, 40, 0.15) !important;
     box-shadow: none !important;
+    border-radius: 999px !important; /* Make search box beautifully pill-shaped */
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
 }
 
 #nav-filter::placeholder,
@@ -1622,4 +2004,865 @@ body.app-auth.model-user.change-list .results tbody th {
 #nav-sidebar .changelink,
 #nav-sidebar .viewlink {
     background: transparent !important;
+}
+
+/* Bulletproof reset to disable browser-level and Django-level automatic dark mode styling.
+   This forces Django Admin pages and sidebars to always render in our premium light theme. */
+@media (prefers-color-scheme: dark) {
+    :root, html {
+        color-scheme: light !important;
+        
+        --primary: var(--mh-plum) !important;
+        --secondary: var(--mh-plum) !important;
+        --accent: var(--mh-periwinkle) !important;
+        --body-bg: var(--mh-offwhite) !important;
+        --body-fg: var(--mh-text-main) !important;
+        --body-quiet-color: var(--mh-text-soft) !important;
+        --body-loud-color: var(--mh-text-main) !important;
+        --header-bg: transparent !important;
+        --header-color: var(--mh-text-main) !important;
+        --breadcrumbs-bg: transparent !important;
+        --breadcrumbs-fg: var(--mh-text-soft) !important;
+        --breadcrumbs-link-fg: var(--mh-plum) !important;
+        --link-fg: var(--mh-plum) !important;
+        --link-hover-color: var(--mh-plum-deep) !important;
+        --hairline-color: var(--mh-line-soft) !important;
+        --border-color: var(--mh-line-soft) !important;
+        --selected-bg: rgba(200, 213, 176, 0.25) !important;
+        --selected-row: rgba(200, 213, 176, 0.18) !important;
+        
+        /* Dark Mode Admin Sidebar Variables Reset */
+        --nav-sidebar-bg: rgba(241, 250, 238, 0.98) !important;
+        --nav-sidebar-border-color: var(--mh-line-soft) !important;
+        --nav-sidebar-link-color: var(--mh-plum) !important;
+        --nav-sidebar-link-hover-bg: rgba(200, 213, 176, 0.18) !important;
+        --nav-sidebar-link-active-color: var(--mh-plum) !important;
+    }
+
+    body {
+        background: linear-gradient(180deg, #f1faee 0%, #edf5e5 100%) !important;
+        color: var(--mh-text-main) !important;
+    }
+
+    /* Force all layout boxes to use our premium light theme colors under dark mode */
+    #header {
+        background: linear-gradient(180deg, rgba(241, 250, 238, 0.98), rgba(237, 246, 232, 0.96)) !important;
+        border-color: rgba(79, 12, 40, 0.08) !important;
+        box-shadow: 0 10px 26px rgba(79, 12, 40, 0.06) !important;
+    }
+
+    .module,
+    #content-related,
+    .inline-group,
+    .selector,
+    .submit-row,
+    .dashboard .module,
+    .app-auth.module,
+    .app-sites.module,
+    #changelist-filter,
+    #changelist .actions,
+    #toolbar,
+    .paginator,
+    .calendarbox,
+    .clockbox,
+    #result_list,
+    #changelist table {
+        background: linear-gradient(180deg, rgba(248, 251, 243, 0.98) 0%, rgba(241, 250, 238, 0.98) 100%) !important;
+        border-color: var(--mh-line-soft) !important;
+        box-shadow: var(--mh-shadow-soft) !important;
+    }
+
+    /* Force the left sidebar to render light cream under all OS settings */
+    #nav-sidebar {
+        background: var(--body-bg) !important;
+        background-color: var(--body-bg) !important;
+        color: var(--mh-text-main) !important;
+        border: 1px solid var(--mh-line-soft) !important;
+        border-radius: 20px !important;
+        margin: 20px 10px 20px 20px !important;
+        padding: 16px !important;
+        box-shadow: var(--mh-shadow-soft) !important;
+        backdrop-filter: blur(18px) !important;
+    }
+
+    #nav-sidebar .module,
+    #nav-sidebar .current-app,
+    #nav-sidebar .app-auth,
+    #nav-sidebar .app-sites,
+    #nav-sidebar .app-admin,
+    #nav-sidebar .app-app1,
+    #nav-sidebar div,
+    #nav-sidebar section,
+    #nav-sidebar nav,
+    .js-nav-sidebar,
+    .sticky {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    #nav-sidebar tr,
+    #nav-sidebar tr:nth-child(even),
+    #nav-sidebar tr:nth-child(odd),
+    #nav-sidebar td,
+    #nav-sidebar th {
+        background: transparent !important;
+        background-color: transparent !important;
+        border: none !important;
+    }
+
+    #nav-sidebar caption {
+        font-family: "Poppins", sans-serif !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.08em !important;
+        text-transform: uppercase !important;
+        color: var(--mh-text-soft) !important;
+        padding: 14px 6px 6px !important;
+        border-bottom: 2px solid rgba(79, 12, 40, 0.08) !important;
+        margin-bottom: 8px !important;
+        text-align: left !important;
+    }
+
+    #nav-sidebar th a {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 7px 16px !important;
+        border-radius: 999px !important;
+        background: #f8f6f3 !important;
+        color: var(--mh-plum) !important;
+        border: 1px solid rgba(79, 12, 40, 0.14) !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        transition: all 0.18s ease !important;
+        margin: 4px 0 !important;
+        box-shadow: 0 2px 4px rgba(79, 12, 40, 0.03) !important;
+    }
+
+    #nav-sidebar th a:hover {
+        transform: translateY(-1px) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: rgba(79, 12, 40, 0.22) !important;
+        box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+        color: var(--mh-plum) !important;
+    }
+
+    #nav-sidebar td a.addlink {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 5px 14px !important;
+        border-radius: 999px !important;
+        background: #e8f5e9 !important;
+        color: #2e7d32 !important;
+        border: 1px solid rgba(46, 125, 50, 0.2) !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        transition: all 0.18s ease !important;
+        margin: 4px 0 !important;
+        box-shadow: 0 2px 4px rgba(46, 125, 50, 0.03) !important;
+    }
+
+    #nav-sidebar td a.addlink:hover {
+        transform: translateY(-1px) !important;
+        background: rgba(232, 245, 233, 0.9) !important;
+        border-color: rgba(46, 125, 50, 0.35) !important;
+        box-shadow: 0 10px 18px rgba(46, 125, 50, 0.08) !important;
+        color: #2e7d32 !important;
+    }
+
+    #nav-sidebar td a.changelink,
+    #nav-sidebar td a.viewlink {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 5px 14px !important;
+        border-radius: 999px !important;
+        background: #fafaf9 !important;
+        color: var(--mh-text-soft) !important;
+        border: 1px solid rgba(79, 12, 40, 0.12) !important;
+        font-size: 0.74rem !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        transition: all 0.18s ease !important;
+        margin: 4px 0 !important;
+    }
+
+    #nav-sidebar td a.changelink:hover,
+    #nav-sidebar td a.viewlink:hover {
+        transform: translateY(-1px) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: rgba(79, 12, 40, 0.22) !important;
+        box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+        color: var(--mh-text-soft) !important;
+    }
+
+    #nav-sidebar a:not([class]) {
+        color: var(--mh-plum) !important;
+        text-decoration: none !important;
+    }
+
+    #nav-sidebar th,
+    #nav-sidebar td,
+    #nav-sidebar .section,
+    #nav-sidebar .app-auth > caption,
+    #nav-sidebar .app-sites > caption,
+    #nav-sidebar .app-admin > caption,
+    #nav-sidebar .app-app1 > caption {
+        color: var(--mh-text-main) !important;
+        background: transparent !important;
+    }
+
+    #nav-filter,
+    #nav-sidebar input[type="search"],
+    #nav-sidebar input[type="text"] {
+        background: rgba(255, 255, 255, 0.9) !important;
+        color: var(--mh-text-main) !important;
+        border: 1px solid rgba(79, 12, 40, 0.15) !important;
+        box-shadow: none !important;
+        border-radius: 999px !important;
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Clean form inputs and text areas under dark mode */
+    input,
+    textarea,
+    select,
+    .vTextField,
+    .vURLField,
+    .vLargeTextField {
+        background: rgba(241, 250, 238, 0.95) !important;
+        color: var(--mh-text-main) !important;
+        border-color: var(--mh-line-soft) !important;
+    }
+
+    /* Tables, filters, and paginators under dark mode */
+    #changelist table thead th,
+    .results thead th {
+        background: rgba(255, 255, 255, 0.75) !important;
+        color: var(--mh-text-soft) !important;
+        border-bottom-color: var(--mh-line-soft) !important;
+    }
+
+    #changelist table tbody tr:nth-child(even),
+    .results tbody tr:nth-child(even) {
+        background: rgba(79, 12, 40, 0.03) !important;
+    }
+
+    #changelist table tbody tr:hover,
+    .results tbody tr:hover {
+        background: rgba(200, 213, 176, 0.12) !important;
+    }
+
+    #changelist table tbody td,
+    #changelist table tbody th,
+    .results tbody td,
+    .results tbody th {
+        border-top-color: rgba(79, 12, 40, 0.06) !important;
+        color: var(--mh-text-main) !important;
+    }
+
+    #changelist-filter h2 {
+        background: transparent !important;
+        color: var(--mh-plum) !important;
+        border-bottom-color: var(--mh-line-soft) !important;
+    }
+
+    #changelist-filter h3 {
+        color: var(--mh-plum) !important;
+    }
+
+    #changelist-filter li.selected a {
+        color: var(--mh-plum) !important;
+    }
+
+    /* Django Admin buttons and search fields under dark mode */
+    .button,
+    input[type="submit"],
+    input[type="button"],
+    .submit-row input,
+    a.button {
+        background: var(--mh-plum) !important;
+        color: var(--mh-offwhite) !important;
+    }
+
+    .button:hover,
+    input[type="submit"]:hover,
+    input[type="button"]:hover,
+    a.button:hover {
+        background: var(--mh-plum-deep) !important;
+        color: var(--mh-offwhite) !important;
+    }
+}
+
+/* === Universal Responsive Sidebar Slide-out Drawer for Admin Panel (Tablets & Mobiles) === */
+
+/* Admin Hamburger Toggle Button */
+.admin-sidebar-toggle-hamburger {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: var(--mh-plum);
+    border-radius: 50%;
+    transition: background 0.15s;
+    margin-right: 12px;
+}
+
+.admin-sidebar-toggle-hamburger:hover {
+    background: rgba(79, 12, 40, 0.08);
+}
+
+/* Admin Sidebar Overlay */
+.admin-sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(43, 34, 48, 0.42);
+    z-index: 9998;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    animation: fadeInOverlay 0.25s ease;
+}
+
+/* Base Mobile Sidebar Nav - Hide by default on desktop */
+.admin-sidebar-nav-mobile {
+    display: none;
+}
+
+/* Center-aligned Admin Searchbar Toolbar */
+#toolbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 18px !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+}
+
+#toolbar form,
+#toolbar form > div {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+}
+
+#toolbar form input[type="text"]#searchbar {
+    width: min(460px, 100%) !important;
+}
+
+@media (max-width: 1024px) {
+    #header {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 10px 16px !important;
+        gap: 14px !important;
+        width: min(96vw, 1660px) !important;
+    }
+
+    .mh-brand-shell {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 8px !important;
+        width: auto !important;
+    }
+
+    .mh-admin-center-nav {
+        display: none !important; /* Hide redundant center links, already in collapsible sidebar drawer */
+    }
+
+    #user-tools {
+        float: none !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        width: auto !important;
+    }
+
+    .mh-user-nav {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 8px !important;
+        justify-content: flex-end !important;
+    }
+
+    .admin-sidebar-toggle-hamburger {
+        display: inline-flex !important;
+    }
+    
+    .admin-sidebar-open .admin-sidebar-overlay {
+        display: block !important;
+    }
+    
+    /* Transition the sidebar into a gorgeous slide-out card drawer */
+    #nav-sidebar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: -340px !important;
+        width: 310px !important;
+        height: 100vh !important;
+        z-index: 99999 !important;
+        background: rgba(241, 250, 238, 0.98) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        box-shadow: 6px 0 30px rgba(79, 12, 40, 0.15) !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        margin: 0 !important;
+        border-radius: 0 24px 24px 0 !important;
+        padding: 30px 20px !important;
+        overflow-y: auto !important;
+        border: none !important;
+    }
+    
+    .admin-sidebar-open #nav-sidebar {
+        left: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: block !important;
+    }
+    
+    /* Make main content area occupy full width when sidebar is hidden */
+    #main.shift {
+        margin-left: 0 !important;
+    }
+    
+    #content {
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+
+    #toggle-nav-sidebar {
+        display: none !important; /* Hide default Django collapsible sidebar button on tablet/mobile */
+    }
+
+    /* Render Admin center nav links inside Collapsible Sidebar drawer instead */
+    .admin-sidebar-nav-mobile {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        margin-bottom: 24px !important;
+        border-bottom: 1px solid rgba(79, 12, 40, 0.08) !important;
+        padding-bottom: 18px !important;
+        width: 100% !important;
+    }
+
+    .admin-sidebar-nav-mobile a {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 38px !important;
+        padding: 0 16px !important;
+        border-radius: var(--mh-radius-pill) !important;
+        border: 1px solid rgba(79, 12, 40, 0.15) !important;
+        background: rgba(249, 251, 244, 0.88) !important;
+        color: var(--mh-plum) !important;
+        font-family: "Poppins", sans-serif !important;
+        font-size: 0.82rem !important;
+        font-weight: 500 !important;
+        text-decoration: none !important;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .admin-sidebar-nav-mobile a:hover {
+        transform: translateY(-1px) !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-color: rgba(79, 12, 40, 0.22) !important;
+        box-shadow: 0 10px 18px rgba(79, 12, 40, 0.08) !important;
+    }
+}
+
+/* Hide the long Administration text on extra-small mobile viewports to avoid crowding */
+@media (max-width: 480px) {
+    .mh-brand-script-text {
+        display: none !important;
+    }
+}
+
+
+/* ==========================================================================
+   CUSTOM DESIGN UPDATES: THIN SCROLLBARS, PILL BUTTONS, SCROLLABLE FILTERS
+   ========================================================================== */
+
+/* 1. Thin and Sleek Scrollbars across all Admin pages */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(79, 12, 40, 0.15) !important;
+    border-radius: 8px !important;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(79, 12, 40, 0.3) !important;
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(79, 12, 40, 0.15) transparent;
+}
+
+/* Thin Scrollbar for the Navigation Sidebar */
+#nav-sidebar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+#nav-sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(79, 12, 40, 0.2) !important;
+    border-radius: 4px !important;
+}
+#nav-sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(79, 12, 40, 0.4) !important;
+}
+
+/* 2. Thin and minimal Sidebar Resizer Handle */
+#nav-sidebar-resizer, 
+.main-resizer {
+    width: 4px !important;
+    background: var(--mh-line-soft) !important;
+    border: none !important;
+    cursor: col-resize !important;
+    transition: background-color 0.2s ease !important;
+}
+#nav-sidebar-resizer:hover,
+#nav-sidebar-resizer:active {
+    background: var(--mh-plum) !important;
+}
+
+/* 3. Modern Pill-Shaped and Uniform Buttons */
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button,
+.object-tools a,
+.addlink,
+#changelist .actions button,
+#changelist .actions input[type="submit"],
+#toolbar form input[type="submit"] {
+    border-radius: var(--mh-radius-pill) !important;
+    font-family: "Poppins", sans-serif !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+/* Primary Action Buttons (Go, Add Group, Save, etc.) */
+.button,
+input[type="submit"],
+.submit-row input.default,
+a.button.default,
+.object-tools a.addlink,
+.actions button,
+.actions input[type="submit"] {
+    background: var(--mh-plum) !important;
+    color: var(--mh-offwhite) !important;
+    box-shadow: 0 4px 12px rgba(79, 12, 40, 0.08) !important;
+    padding: 8px 24px !important;
+    border: 1px solid transparent !important;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+.submit-row input.default:hover,
+.object-tools a.addlink:hover,
+.actions button:hover,
+.actions input[type="submit"]:hover {
+    background: var(--mh-plum-deep) !important;
+    color: var(--mh-offwhite) !important;
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 8px 20px rgba(79, 12, 40, 0.2) !important;
+}
+
+/* Secondary and Search Buttons (Search, Add Another, Continue) */
+#toolbar form input[type="submit"],
+.submit-row input[name="_addanother"],
+.submit-row input[name="_continue"] {
+    background: rgba(79, 12, 40, 0.08) !important;
+    color: var(--mh-plum) !important;
+    border: 1px solid rgba(79, 12, 40, 0.15) !important;
+    padding: 8px 24px !important;
+}
+
+#toolbar form input[type="submit"]:hover,
+.submit-row input[name="_addanother"]:hover,
+.submit-row input[name="_continue"]:hover {
+    background: rgba(79, 12, 40, 0.15) !important;
+    color: var(--mh-plum-deep) !important;
+    transform: translateY(-1.5px) !important;
+}
+
+/* Action Bar Go Button layout override */
+#changelist .actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+#changelist .actions select {
+    border-radius: var(--mh-radius-pill) !important;
+    padding: 6px 16px !important;
+    min-height: 38px !important;
+    background: rgba(241, 250, 238, 0.95) !important;
+    border: 1px solid var(--mh-line-soft) !important;
+}
+#changelist .actions button.button,
+#changelist .actions input[type="submit"] {
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 20px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* 4. Scrollable Filter Lists to prevent overflow and UI hiding */
+#changelist-filter {
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+}
+#changelist-filter ul {
+    max-height: 170px !important;
+    overflow-y: auto !important;
+    padding-right: 6px !important;
+    margin-bottom: 12px !important;
+}
+#changelist-filter ul::-webkit-scrollbar {
+    width: 4px;
+}
+#changelist-filter ul::-webkit-scrollbar-track {
+    background: transparent;
+}
+#changelist-filter ul::-webkit-scrollbar-thumb {
+    background-color: rgba(79, 12, 40, 0.15) !important;
+    border-radius: 4px !important;
+}
+#changelist-filter ul::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(79, 12, 40, 0.3) !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Modern Sleek Search Bar & Button Styling Overrides
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Force all buttons, action triggers, and tools to use normal casing and letter spacing */
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+.submit-row a,
+a.button,
+.deletelink,
+.addlink,
+.changelink,
+.viewlink,
+ul.object-tools a,
+.object-tools a,
+#changelist .actions .button,
+#toolbar form input[type="submit"] {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-weight: 500 !important;
+    border-radius: 999px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: normal !important;
+}
+
+/* Make search bar input and button modern, compact, and aligned */
+#toolbar {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+}
+
+#toolbar form div,
+#toolbar form p,
+#toolbar form {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+    position: relative !important;
+}
+
+#toolbar form label {
+    display: none !important;
+}
+
+#toolbar form input[type="text"]#searchbar {
+    width: 100% !important;
+    max-width: 320px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 16px 0 38px !important; /* Left padding ensures text doesn't overlap the icon */
+    border-radius: 999px !important;
+    border: 1px solid var(--mh-line-strong) !important;
+    background: rgba(255, 255, 255, 0.95) url("/static/admin/img/search.svg") no-repeat 14px center / 15px 15px !important;
+    font-size: 0.85rem !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#toolbar form input[type="text"]#searchbar:focus {
+    border-color: var(--mh-plum) !important;
+    box-shadow: 0 0 0 3px rgba(79, 12, 40, 0.15) !important;
+    outline: none !important;
+}
+
+#toolbar form input[type="submit"] {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 20px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    border-radius: 999px !important;
+    background: var(--mh-plum) !important;
+    color: var(--mh-offwhite) !important;
+    border: 1px solid transparent !important;
+    cursor: pointer !important;
+    box-shadow: var(--mh-shadow-soft) !important;
+    transition: background-color 0.2s ease, transform 0.1s ease !important;
+}
+
+#toolbar form input[type="submit"]:hover {
+    background: var(--mh-plum-deep) !important;
+    transform: translateY(-1px) !important;
+}
+
+#toolbar form input[type="submit"]:active {
+    transform: translateY(0) !important;
+}
+
+/* Modernize actions bar */
+#changelist .actions {
+    padding: 8px 16px !important;
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid var(--mh-line-soft) !important;
+    border-radius: 16px !important;
+    margin-bottom: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    flex-wrap: wrap !important;
+}
+
+#changelist .actions select {
+    height: 38px !important;
+    min-height: 38px !important;
+    border-radius: 999px !important;
+    padding: 0 32px 0 16px !important;
+    font-size: 0.85rem !important;
+    border: 1px solid var(--mh-line-strong) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
+#changelist .actions .button {
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 20px !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    border-radius: 999px !important;
+    background: var(--mh-plum) !important;
+    color: var(--mh-offwhite) !important;
+    border: 1px solid transparent !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease, transform 0.1s ease !important;
+}
+
+#changelist .actions .button:hover {
+    background: var(--mh-plum-deep) !important;
+    transform: translateY(-1px) !important;
+}
+
+#changelist .actions .all,
+#changelist .actions .action-counter {
+    font-size: 0.8rem !important;
+    color: var(--mh-text-soft) !important;
+}
+
+/* Sleek sidebar filter input */
+#nav-filter,
+#nav-sidebar input[type="search"],
+#nav-sidebar input[type="text"] {
+    height: 34px !important;
+    min-height: 34px !important;
+    border-radius: 999px !important;
+    padding: 0 14px !important;
+    font-size: 0.8rem !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Layout Responsiveness & Z-Index Dropdown Menu Fixes
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Welcome Admin user menu dropdown layering fix */
+#header {
+    position: relative !important;
+    z-index: 10000 !important;
+    overflow: visible !important;
+}
+.mh-user-menu {
+    position: relative !important;
+}
+
+/* Fix mobile/tablet viewport crop & empty block on the right */
+@media (max-width: 1024px) {
+    #main {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .main.shifted > #nav-sidebar + .content,
+    .main > #nav-sidebar + .content,
+    .content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #content {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 16px !important;
+        box-sizing: border-box !important;
+    }
 }

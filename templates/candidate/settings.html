@@ -1,0 +1,94 @@
+{% extends "candidate/base.html" %}
+
+{% block title %}Settings | ManageraHub{% endblock %}
+
+{% block candidate_main %}
+<section class="candidate-hero-card">
+    <p class="candidate-card-kicker">Account Management</p>
+    <h1>Settings</h1>
+    <p>Manage your account security, profile privacy, and system preferences.</p>
+</section>
+
+{% if visibility_success %}
+<div class="candidate-alert candidate-alert-success" role="alert" style="margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.15); color: #2e7d32; font-weight: 500;">
+    {{ visibility_success }}
+</div>
+{% endif %}
+
+{% if password_success %}
+<div class="candidate-alert candidate-alert-success" role="alert" style="margin-top: 18px; padding: 14px 18px; border-radius: 14px; background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.15); color: #2e7d32; font-weight: 500;">
+    {{ password_success }}
+</div>
+{% endif %}
+
+<div class="candidate-content-grid" style="grid-template-columns: 1fr; gap: 24px; margin-top: 24px;">
+    
+    <!-- Profile Privacy Card -->
+    <div class="candidate-panel-card candidate-panel-card-wide" style="padding: 24px; border-radius: 20px; border: 1px solid var(--line-soft); background: rgba(255, 255, 255, 0.82); box-shadow: var(--shadow-soft);">
+        <p class="candidate-card-kicker">Privacy Settings</p>
+        <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--plum); margin: 4px 0 16px;">Profile Visibility</h2>
+        
+        <form method="post" action="{% url 'candidate_settings' %}">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_visibility">
+            
+            <div style="display: grid; gap: 14px; margin-bottom: 20px;">
+                <label class="candidate-quiz-option" style="display: flex; align-items: flex-start; gap: 14px; padding: 18px; border: 1px solid var(--line-soft); border-radius: 16px; cursor: pointer; transition: all 0.25s ease; background: #ffffff;">
+                    <input type="radio" name="is_public" value="true" {% if profile.is_public %}checked{% endif %} style="accent-color: var(--plum); width: 18px; height: 18px; margin-top: 2px;">
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <span style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Public Profile (Recommended)</span>
+                        <span style="color: var(--text-soft); font-size: 0.84rem; line-height: 1.4;">Your profile and resume are discoverable by registered companies. Recruitment managers can find you through global searches.</span>
+                    </div>
+                </label>
+                
+                <label class="candidate-quiz-option" style="display: flex; align-items: flex-start; gap: 14px; padding: 18px; border: 1px solid var(--line-soft); border-radius: 16px; cursor: pointer; transition: all 0.25s ease; background: #ffffff;">
+                    <input type="radio" name="is_public" value="false" {% if not profile.is_public %}checked{% endif %} style="accent-color: var(--plum); width: 18px; height: 18px; margin-top: 2px;">
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <span style="font-weight: 600; color: var(--text-main); font-size: 0.95rem;">Private Profile</span>
+                        <span style="color: var(--text-soft); font-size: 0.84rem; line-height: 1.4;">Your profile is hidden from all company searches. Only companies to which you submit explicit applications will see your details.</span>
+                    </div>
+                </label>
+            </div>
+            
+            <button type="submit" class="pill-button pill-button-dark" style="min-height: 38px; padding: 0 20px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: transform 0.18s ease;">Save Privacy Settings</button>
+        </form>
+    </div>
+
+    <!-- Change Password Card -->
+    <div class="candidate-panel-card candidate-panel-card-wide" style="padding: 24px; border-radius: 20px; border: 1px solid var(--line-soft); background: rgba(255, 255, 255, 0.82); box-shadow: var(--shadow-soft);">
+        <p class="candidate-card-kicker">Security</p>
+        <h2 style="font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--plum); margin: 4px 0 16px;">Change Password</h2>
+
+        {% if password_error %}
+        <div class="candidate-alert candidate-alert-error" role="alert" style="margin-bottom: 16px; padding: 12px 16px; border-radius: 12px; background: rgba(211, 47, 47, 0.08); border: 1px solid rgba(211, 47, 47, 0.15); color: #c62828; font-weight: 500; font-size: 0.85rem;">
+            {{ password_error }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'candidate_settings' %}" style="display: grid; gap: 16px; max-width: 480px;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="change_password">
+
+            <div class="candidate-form-field" style="display: grid; gap: 6px;">
+                <label for="old_password" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Current Password</label>
+                <input type="password" id="old_password" name="old_password" required style="width: 100%; min-height: 40px; padding: 0 14px; border: 1px solid var(--line-soft); border-radius: var(--radius-pill); background: rgba(255,255,255,0.9); transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;">
+            </div>
+
+            <div class="candidate-form-field" style="display: grid; gap: 6px;">
+                <label for="new_password" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">New Password</label>
+                <input type="password" id="new_password" name="new_password" required style="width: 100%; min-height: 40px; padding: 0 14px; border: 1px solid var(--line-soft); border-radius: var(--radius-pill); background: rgba(255,255,255,0.9); transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;">
+            </div>
+
+            <div class="candidate-form-field" style="display: grid; gap: 6px;">
+                <label for="confirm_password" style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required style="width: 100%; min-height: 40px; padding: 0 14px; border: 1px solid var(--line-soft); border-radius: var(--radius-pill); background: rgba(255,255,255,0.9); transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;">
+            </div>
+
+            <div style="margin-top: 8px;">
+                <button type="submit" class="pill-button pill-button-dark" style="min-height: 38px; padding: 0 20px; border-radius: var(--radius-pill); font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: transform 0.18s ease;">Update Password</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

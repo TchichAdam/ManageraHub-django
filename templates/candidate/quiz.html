@@ -1,0 +1,86 @@
+{% extends "candidate/base.html" %}
+
+{% block title %}Skills Quiz | ManageraHub{% endblock %}
+
+{% block candidate_main %}
+<section class="candidate-hero-card">
+    <p class="candidate-card-kicker">Candidate Quiz</p>
+    <h1>{{ quiz_title }}</h1>
+    <p>{{ quiz_subtitle }} — answer the questions below to test your interview and soft-skills readiness.</p>
+</section>
+
+{% if result %}
+<section class="candidate-panel-card candidate-panel-card-wide candidate-quiz-result">
+    <p class="candidate-card-kicker">Your result</p>
+    <h2>{{ result.score }}/{{ result.total }} · {{ result.percent }}%</h2>
+    {% if result.percent >= 80 %}
+    <p>Excellent — you have strong interview and soft-skills awareness.</p>
+    {% elif result.percent >= 50 %}
+    <p>Good effort. Review the answers below to sharpen a few areas.</p>
+    {% else %}
+    <p>Keep practising. Read the explanations below and try again.</p>
+    {% endif %}
+    <div class="candidate-card-actions">
+        <a href="{% url 'candidate_quizzes' %}" class="pill-button pill-button-dark">Retake quiz</a>
+        <a href="{% url 'candidate_dashboard' %}" class="pill-button pill-button-light">Back to dashboard</a>
+    </div>
+</section>
+
+<section class="candidate-panel-card candidate-panel-card-wide">
+    <p class="candidate-card-kicker">Review</p>
+    <h2>Your answers</h2>
+    <div class="candidate-quiz-review">
+        {% for question in reviewed_questions %}
+        <div class="candidate-quiz-review-item {% if question.is_correct %}is-correct{% else %}is-wrong{% endif %}">
+            <p class="candidate-quiz-q">{{ forloop.counter }}. {{ question.text }}</p>
+            <ul class="candidate-quiz-review-options">
+                {% for option in question.options %}
+                <li class="{% if forloop.counter0 == question.answer %}is-answer{% endif %}{% if forloop.counter0 == question.selected and not question.is_correct %} is-selected-wrong{% endif %}">
+                    {{ option }}
+                    {% if forloop.counter0 == question.answer %}<span class="candidate-quiz-tag">Correct answer</span>{% endif %}
+                    {% if forloop.counter0 == question.selected and not question.is_correct %}<span class="candidate-quiz-tag candidate-quiz-tag-wrong">Your answer</span>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<form method="post" class="candidate-panel-card candidate-panel-card-wide candidate-quiz-form">
+    {% csrf_token %}
+    {% for question in questions %}
+    <fieldset class="candidate-quiz-question">
+        <legend>{{ forloop.counter }}. {{ question.text }}</legend>
+        <div class="candidate-quiz-options">
+            {% for option in question.options %}
+            <label class="candidate-quiz-option">
+                <input type="radio" name="{{ question.id }}" value="{{ forloop.counter0 }}" required>
+                <span>{{ option }}</span>
+            </label>
+            {% endfor %}
+        </div>
+    </fieldset>
+    {% endfor %}
+    <div class="candidate-card-actions">
+        <button type="submit" class="pill-button pill-button-dark">Submit answers</button>
+        <a href="{% url 'candidate_dashboard' %}" class="pill-button pill-button-light">Cancel</a>
+    </div>
+</form>
+
+{% if previous_results %}
+<section class="candidate-panel-card candidate-panel-card-wide">
+    <p class="candidate-card-kicker">History</p>
+    <h2>Previous attempts</h2>
+    <div class="candidate-mini-stack">
+        {% for attempt in previous_results %}
+        <div class="candidate-mini-entry">
+            <strong>{{ attempt.score }}/{{ attempt.total }} · {{ attempt.percent }}%</strong>
+            <span>{{ attempt.taken_at|date:"M j, Y · H:i" }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

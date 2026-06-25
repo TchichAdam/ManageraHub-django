@@ -1,0 +1,116 @@
+{% extends "candidate/base.html" %}
+{% load static %}
+
+{% block title %}Mon Réseau | ManageraHub{% endblock %}
+
+{% block candidate_main %}
+<div class="network-container">
+    <header class="network-header-panel">
+        <div class="network-title-group">
+            <span class="section-kicker">Réseau professionnel</span>
+            <h2>Découvrez des professionnels et entreprises</h2>
+            <p>Connectez-vous avec d'autres candidats diplômés de l'OFPPT ou découvrez les entreprises marocaines qui recrutent.</p>
+        </div>
+        <div class="network-stats-pill">
+            <span>Vous suivez <strong>{{ followed_user_ids.count }}</strong> membre{{ followed_user_ids.count|pluralize }}</span>
+        </div>
+    </header>
+
+    <!-- BARRE DE RECHERCHE DANS LE RÉSEAU -->
+    <div class="network-search-bar-wrap">
+        <form method="get" action="{% url 'candidate_network' %}" class="network-search-form">
+            <span class="search-input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <input 
+                type="text" 
+                name="q" 
+                value="{{ search_query|default:'' }}" 
+                placeholder="Rechercher par nom, ville, spécialité ou entreprise..." 
+                aria-label="Rechercher des membres ou entreprises"
+            >
+            {% if search_query %}
+            <a href="{% url 'candidate_network' %}" class="clear-search-btn" aria-label="Effacer la recherche">Effacer la recherche</a>
+            {% endif %}
+            <button type="submit" class="pill-button pill-button-dark search-submit-btn">Rechercher</button>
+        </form>
+    </div>
+
+    <!-- GRILLE D'ANNUAIRE DU RÉSEAU -->
+    <div class="network-grid">
+        {% for member in network_users %}
+        <article class="network-card {% if member.role == 'company' %}company-card-style{% endif %}" id="member-card-{{ member.id }}">
+            <div class="network-card-background"></div>
+            
+            <div class="network-card-inner">
+                <div class="member-avatar-wrap">
+                    {% if member.avatar %}
+                    <img 
+                        src="{{ member.avatar }}" 
+                        alt="{{ member.display_name }}" 
+                        class="member-avatar-img"
+                        id="member-avatar-img-{{ member.id }}"
+                        onerror="this.style.display='none'; document.getElementById('member-avatar-letter-{{ member.id }}').style.display='flex';"
+                    >
+                    {% endif %}
+                    <span 
+                        class="member-avatar-letter"
+                        id="member-avatar-letter-{{ member.id }}"
+                        {% if member.avatar %}style="display: none;"{% endif %}
+                    >
+                        {{ member.display_name|slice:":1"|upper }}
+                    </span>
+                    
+                    {% if member.role == "company" %}
+                    <span class="role-badge company-badge">Entreprise</span>
+                    {% else %}
+                    <span class="role-badge candidate-badge">Candidat</span>
+                    {% endif %}
+                </div>
+                
+                <!-- Métadonnées principales -->
+                <div class="member-info-group">
+                    <h3 class="member-name">{{ member.display_name }}</h3>
+                    <p class="member-title">{{ member.title }}</p>
+                    <span class="member-location">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" class="location-icon">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        {{ member.location }}
+                    </span>
+                </div>
+                
+                <!-- Détails d'Accréditation Supplémentaires (Moroccan legal fields for companies) -->
+                {% if member.role == "company" and member.company_profile %}
+                <div class="company-legal-accreditation">
+                    <span class="legal-badge-pill">ICE: {{ member.company_profile.ice|default:"En attente" }}</span>
+                    {% if member.company_profile.is_approved %}
+                    <span class="approved-verification-badge">✓ Vérifié par l'Admin</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <!-- Action d'abonnement -->
+                <div class="member-action-box">
+                    <a href="{% url 'toggle_follow' member.id %}" class="pill-button {% if member.is_followed %}pill-button-outline is-following-btn{% else %}pill-button-dark{% endif %} w-full-btn">
+                        {% if member.is_followed %}
+                        <span>Suivi</span>
+                        {% else %}
+                        <span>Suivre</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </article>
+        {% empty %}
+        <div class="empty-network-card">
+            <p>Il n'y a aucun membre ou entreprise suggéré à afficher pour le moment.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

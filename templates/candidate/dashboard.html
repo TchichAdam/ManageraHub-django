@@ -3,83 +3,168 @@
 {% block title %}Candidate Dashboard | ManageraHub{% endblock %}
 
 {% block candidate_main %}
-<section class="candidate-hero-card">
-    <p class="candidate-card-kicker">Candidate Dashboard</p>
-    <h1>Stay organized through every opportunity.</h1>
-    <p>Your dashboard now shows real candidate data: profile completion, saved documents, application overview, and fresh job offers you can open or apply to.</p>
-    <div class="candidate-hero-actions">
-        <a href="{% url 'candidate_profile' %}" class="pill-button pill-button-dark">Complete my profile</a>
-        <a href="{% url 'candidate_job_offers' %}" class="pill-button pill-button-light">Browse job offers</a>
+<section class="candidate-hero-card candidate-welcome">
+    <div class="candidate-welcome-text">
+        <p class="candidate-card-kicker">Candidate Dashboard</p>
+        <h1>Welcome back, {{ candidate_display_name }}.</h1>
+        <p>Track your applications, finish your profile, and discover fresh opportunities — all in one place.</p>
+        <div class="candidate-hero-actions">
+            <a href="{% url 'candidate_profile' %}" class="pill-button pill-button-dark">Complete my profile</a>
+            <a href="{% url 'candidate_job_offers' %}" class="pill-button pill-button-light">Browse job offers</a>
+        </div>
+    </div>
+    <div class="candidate-welcome-aside">
+        <div class="candidate-progress-ring" style="--p: {{ candidate_completion_percent }};">
+            <div class="candidate-progress-ring-center">
+                <strong>{{ candidate_completion_percent }}%</strong>
+                <span>Profile</span>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="candidate-stats-grid">
-    <article class="candidate-stat-card">
-        <p class="candidate-card-kicker">Profile</p>
-        <strong>{{ candidate_completion_percent }}%</strong>
-        <span>Completion progress</span>
-    </article>
-    <article class="candidate-stat-card">
-        <p class="candidate-card-kicker">Applications</p>
-        <strong>{{ candidate_stats.applications }}</strong>
-        <span>Submitted job applications</span>
-    </article>
-    <article class="candidate-stat-card">
-        <p class="candidate-card-kicker">Documents</p>
-        <strong>{{ candidate_stats.saved_docs }}</strong>
-        <span>Private files saved in your profile</span>
-    </article>
-    <article class="candidate-stat-card">
-        <p class="candidate-card-kicker">Jobs</p>
-        <strong>{{ candidate_stats.recent_jobs }}</strong>
-        <span>Active job offers available</span>
-    </article>
-</section>
-
-<section class="candidate-content-grid">
-    <article class="candidate-panel-card candidate-panel-card-wide">
-        <p class="candidate-card-kicker">Profile completion</p>
-        <h2>What still needs attention?</h2>
-        {% if profile_missing_items %}
-        <div class="candidate-list-card">
-            {% for item in profile_missing_items %}
-            <div class="candidate-list-item">
-                <span>{{ item }}</span>
-                <a href="{% url 'candidate_profile' %}">Update</a>
+<section class="candidate-dash-grid">
+    <div class="candidate-dash-main">
+        {% if tracked_applications %}
+        <article class="candidate-panel-card candidate-tracker" data-tracker style="position: relative;">
+            <!-- Real-time Radar overlay scanner -->
+            <div class="radar-scanner-overlay" data-radar-overlay>
+                <div class="radar-circle">
+                    <div class="radar-sweep"></div>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--plum); z-index: 2;">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                    </svg>
+                </div>
+                <div class="radar-status-text" data-radar-status-text>Syncing status...</div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="candidate-placeholder-card">
-            <h3>Your profile is in a strong state.</h3>
-            <p>All major profile sections are filled in. You can still update documents or refresh your experience at any time.</p>
-        </div>
-        {% endif %}
-    </article>
 
-    <article class="candidate-panel-card">
-        <p class="candidate-card-kicker">Quick links</p>
-        <div class="candidate-mini-links">
-            <a href="{% url 'candidate_profile' %}" class="candidate-inline-link">Edit my profile</a>
-            <a href="{% url 'candidate_job_offers' %}" class="candidate-inline-link">Search jobs</a>
-        </div>
-    </article>
-
-    <article class="candidate-panel-card">
-        <p class="candidate-card-kicker">Applications overview</p>
-        {% if applications %}
-        <div class="candidate-mini-stack">
-            {% for application in applications %}
-            <div class="candidate-mini-entry">
-                <strong>{{ application.job_offer.title }}</strong>
-                <span>{{ application.job_offer.company_name }} · {{ application.get_status_display }}</span>
+            <div class="candidate-tracker-head">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <p class="candidate-card-kicker" style="margin: 0;">Your applications</p>
+                        <span class="live-status-badge">
+                            <span class="pulse-radar-dot"></span>
+                            Live Sync
+                        </span>
+                        <button type="button" class="silent-sync-btn" data-sync-now title="Sync Status Now" style="background: none; border: none; color: var(--text-soft); cursor: pointer; padding: 2px; display: inline-flex; align-items: center; transition: color 0.2s;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="sync-icon" data-sync-icon>
+                                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <h2>Application Tracker</h2>
+                </div>
+                <div class="candidate-tracker-nav">
+                    <button type="button" class="candidate-tracker-arrow" data-tracker-prev aria-label="Previous application">&lsaquo;</button>
+                    <button type="button" class="candidate-tracker-arrow" data-tracker-next aria-label="Next application">&rsaquo;</button>
+                </div>
             </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <p>You have not applied to a job yet. Start from the Job Offers page.</p>
+            <div class="candidate-tracker-viewport">
+                <div class="candidate-tracker-track" data-tracker-track>
+                    {% for application in tracked_applications %}
+                    <article class="candidate-tracker-slide" data-tracker-slide data-app-id="{{ application.id }}" data-app-status="{{ application.status }}">
+                        <h3 class="candidate-tracker-job">{{ application.job_offer.title }}</h3>
+                        <p class="candidate-tracker-company">{{ application.job_offer.company_name }}</p>
+                        <p class="candidate-tracker-date">
+                            Applied on {{ application.submitted_at|date:"M j, Y" }}
+                            <span class="tracker-last-sync-time" data-sync-time style="margin-left: 10px; font-size: 0.75rem; color: var(--text-soft); font-weight: normal;"></span>
+                        </p>
+                        <ol class="candidate-timeline" data-timeline-list>
+                            {% for step in application.progress_steps %}
+                            <li class="candidate-timeline-step is-{{ step.state }}">
+                                <span class="candidate-timeline-dot" aria-hidden="true"></span>
+                                <div class="candidate-timeline-copy">
+                                    <strong>{{ step.label }}</strong>
+                                    <span>{% if step.state == "completed" %}Completed{% elif step.state == "current" %}Current step{% elif step.state == "rejected" %}Rejected{% else %}Upcoming{% endif %}</span>
+                                </div>
+                            </li>
+                            {% endfor %}
+                        </ol>
+
+                        <div class="candidate-tracker-logs-section">
+                            <h4>Activity History</h4>
+                            <ul class="candidate-tracker-logs-list" data-tracker-logs-list>
+                                {% for log in application.live_activity_logs %}
+                                <li>
+                                    <span class="log-time">{{ log.time }}</span>
+                                    <div class="log-content">
+                                        <strong>{{ log.title }}</strong>
+                                        <p>{{ log.desc }}</p>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="candidate-tracker-dots" data-tracker-dots></div>
+        </article>
         {% endif %}
-    </article>
+
+        <article class="candidate-panel-card">
+            <p class="candidate-card-kicker">Profile completion</p>
+            <h2>What still needs attention?</h2>
+            {% if profile_missing_items %}
+            <div class="candidate-list-card">
+                {% for item in profile_missing_items %}
+                <div class="candidate-list-item">
+                    <span>{{ item }}</span>
+                    <a href="{% url 'candidate_profile' %}">Update</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="candidate-placeholder-card">
+                <h3>Your profile is in a strong state.</h3>
+                <p>All major profile sections are filled in. You can still update documents or refresh your experience at any time.</p>
+            </div>
+            {% endif %}
+        </article>
+    </div>
+
+    <aside class="candidate-dash-aside">
+        <article class="candidate-panel-card candidate-quiz-card">
+            <p class="candidate-card-kicker">Candidate Quiz</p>
+            <h2>{{ quiz_title }}</h2>
+            <p>{{ quiz_subtitle }} · {{ quiz_question_count }} questions.</p>
+            {% if latest_quiz %}
+            <p class="candidate-quiz-last">Last score: <strong>{{ latest_quiz.score }}/{{ latest_quiz.total }}</strong> ({{ latest_quiz.percent }}%)</p>
+            {% else %}
+            <p class="candidate-quiz-last">You haven't taken the quiz yet.</p>
+            {% endif %}
+            <div class="candidate-card-actions">
+                <a href="{% url 'candidate_quizzes' %}" class="pill-button pill-button-dark">{% if latest_quiz %}Retake quiz{% else %}Start quiz{% endif %}</a>
+            </div>
+        </article>
+
+        <article class="candidate-panel-card">
+            <p class="candidate-card-kicker">Quick links</p>
+            <div class="candidate-mini-links">
+                <a href="{% url 'candidate_profile' %}" class="candidate-inline-link">Edit my profile</a>
+                <a href="{% url 'candidate_job_offers' %}" class="candidate-inline-link">Search jobs</a>
+                <a href="{% url 'candidate_applications' %}" class="candidate-inline-link">My applications</a>
+                <a href="{% url 'candidate_feed' %}" class="candidate-inline-link">Open the feed</a>
+            </div>
+        </article>
+
+        <article class="candidate-panel-card">
+            <p class="candidate-card-kicker">Recent applications</p>
+            {% if applications %}
+            <div class="candidate-mini-stack">
+                {% for application in applications %}
+                <div class="candidate-mini-entry">
+                    <strong>{{ application.job_offer.title }}</strong>
+                    <span>{{ application.job_offer.company_name }} · {{ application.get_status_display }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>You have not applied to a job yet. Start from the Job Offers page.</p>
+            {% endif %}
+        </article>
+    </aside>
 </section>
 
 <section class="candidate-panel-card candidate-panel-card-wide">
@@ -109,4 +194,207 @@
         {% endfor %}
     </div>
 </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tracker = document.querySelector('[data-tracker]');
+    if (!tracker) return;
+
+    const track = tracker.querySelector('[data-tracker-track]');
+    const slides = tracker.querySelectorAll('[data-tracker-slide]');
+    const prevBtn = tracker.querySelector('[data-tracker-prev]');
+    const nextBtn = tracker.querySelector('[data-tracker-next]');
+    const dotsContainer = tracker.querySelector('[data-tracker-dots]');
+    const radarOverlay = tracker.querySelector('[data-radar-overlay]');
+    const radarText = tracker.querySelector('[data-radar-status-text]');
+    const syncBtn = tracker.querySelector('[data-sync-now]');
+    const syncIcon = tracker.querySelector('[data-sync-icon]');
+
+    let currentIndex = 0;
+    const slideCount = slides.length;
+
+    // Helper: update active slide sync time
+    function updateSyncTime(slide, timeStr) {
+        const timeEl = slide.querySelector('[data-sync-time]');
+        if (timeEl) {
+            timeEl.textContent = timeStr ? `Synced: ${timeStr}` : 'Synced: Just now';
+        }
+    }
+
+    // Initialize sync time for all slides
+    slides.forEach(slide => updateSyncTime(slide, ''));
+
+    // Carousel: Render Dots
+    if (dotsContainer && slideCount > 1) {
+        dotsContainer.innerHTML = '';
+        for (let i = 0; i < slideCount; i++) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = `candidate-tracker-dot ${i === 0 ? 'is-active' : ''}`;
+            dot.setAttribute('aria-label', `Go to application ${i + 1}`);
+            dot.addEventListener('click', () => {
+                goToSlide(i);
+            });
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    // Carousel: Go to slide
+    function goToSlide(index) {
+        if (index < 0 || index >= slideCount) return;
+        currentIndex = index;
+        
+        // Transform track
+        if (track) {
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        // Update dots
+        if (dotsContainer) {
+            const dots = dotsContainer.querySelectorAll('.candidate-tracker-dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('is-active', idx === currentIndex);
+            });
+        }
+
+        // Update nav buttons disabled state
+        if (prevBtn) prevBtn.disabled = currentIndex === 0;
+        if (nextBtn) nextBtn.disabled = currentIndex === slideCount - 1;
+        
+        // Hide nav arrows completely if only 1 slide
+        if (slideCount <= 1) {
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        }
+    }
+
+    // Event listeners for arrows
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => goToSlide(currentIndex - 1));
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => goToSlide(currentIndex + 1));
+    }
+
+    // Initial navigation check
+    goToSlide(0);
+
+    // Sync active slide application status
+    async function syncApplicationStatus(appId, silent = false) {
+        const activeSlide = Array.from(slides).find(s => s.getAttribute('data-app-id') === appId);
+        if (!activeSlide) return;
+
+        if (!silent) {
+            radarText.textContent = "Connecting to server...";
+            radarOverlay.classList.add('active');
+        }
+        if (syncIcon) {
+            syncIcon.classList.add('spin-active');
+        }
+
+        try {
+            const response = await fetch(`?check_status=1&app_id=${appId}`);
+            if (!response.ok) throw new Error('Network response not ok');
+            const data = await response.json();
+
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+
+            // check if status changed or if it was a manual (non-silent) sync
+            const currentStatus = activeSlide.getAttribute('data-app-status');
+            const statusChanged = currentStatus !== data.status;
+
+            if (statusChanged || !silent) {
+                // If it was silent and status changed, display overlay scanning animation for extra premium visual feedback
+                if (silent && statusChanged) {
+                    radarText.textContent = "Status Update Detected! Syncing...";
+                    radarOverlay.classList.add('active');
+                    // wait a short moment for visual delight
+                    await new Promise(resolve => setTimeout(resolve, 1200));
+                }
+
+                // Update data attribute
+                activeSlide.setAttribute('data-app-status', data.status);
+
+                // Re-render timeline steps
+                const timeline = activeSlide.querySelector('[data-timeline-list]');
+                if (timeline) {
+                    timeline.innerHTML = data.steps.map(step => `
+                        <li class="candidate-timeline-step is-${step.state}">
+                            <span class="candidate-timeline-dot" aria-hidden="true"></span>
+                            <div class="candidate-timeline-copy">
+                                <strong>${step.label}</strong>
+                                <span>${step.state === 'completed' ? 'Completed' : (step.state === 'current' ? 'Current step' : (step.state === 'rejected' ? 'Rejected' : 'Upcoming'))}</span>
+                            </div>
+                        </li>
+                    `).join('');
+                }
+
+                // Re-render activity logs
+                const logsList = activeSlide.querySelector('[data-tracker-logs-list]');
+                if (logsList) {
+                    logsList.innerHTML = data.logs.map(log => `
+                        <li>
+                            <span class="log-time">${log.time}</span>
+                            <div class="log-content">
+                                <strong>${log.title}</strong>
+                                <p>${log.desc}</p>
+                            </div>
+                        </li>
+                    `).join('');
+                }
+
+                // Highlight/flash timeline container for subtle feedback
+                if (timeline) {
+                    timeline.classList.add('highlight-flash');
+                    setTimeout(() => timeline.classList.remove('highlight-flash'), 2000);
+                }
+
+                // Update sync time display
+                updateSyncTime(activeSlide, data.updated_at || null);
+            }
+        } catch (error) {
+            console.error('Failed to sync application status:', error);
+        } finally {
+            if (syncIcon) {
+                syncIcon.classList.remove('spin-active');
+            }
+            if (radarOverlay.classList.contains('active')) {
+                // Delay hiding overlay slightly to keep animation smooth
+                setTimeout(() => {
+                    radarOverlay.classList.remove('active');
+                }, 800);
+            }
+        }
+    }
+
+    // Manual Refresh Sync Click
+    if (syncBtn) {
+        syncBtn.addEventListener('click', function() {
+            const activeSlide = slides[currentIndex];
+            if (activeSlide) {
+                const appId = activeSlide.getAttribute('data-app-id');
+                if (appId) {
+                    syncApplicationStatus(appId, false);
+                }
+            }
+        });
+    }
+
+    // Auto Polling (silent background checking)
+    setInterval(() => {
+        const activeSlide = slides[currentIndex];
+        if (activeSlide) {
+            const appId = activeSlide.getAttribute('data-app-id');
+            if (appId) {
+                syncApplicationStatus(appId, true);
+            }
+        }
+    }, 12000); // Poll every 12 seconds
+});
+</script>
 {% endblock %}
