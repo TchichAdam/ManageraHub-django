@@ -43,7 +43,7 @@ def notify_candidate_on_status_change(sender, instance, **kwargs):
         context = {
             "candidate_name": candidate.get_full_name() or candidate.username,
             "job_title": instance.job_offer.title,
-            "company_name": instance.job_offer.company.company_name,
+            "company_name": instance.job_offer.company_name,
             "status": instance.status,
         }
         send_html_email(
