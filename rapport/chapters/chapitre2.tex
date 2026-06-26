@@ -155,7 +155,7 @@ Ces besoins garantissent la qualité technique, la robustesse et la pérennité 
 \begin{itemize}
     \item \textbf{Python (version 3.9) :} Langage principal choisi pour sa flexibilité, sa syntaxe concise et sa compatibilité optimale avec l'environnement de production.
     \item \textbf{Django (version 4.2 LTS) :} Framework de développement web backend choisi pour sa robustesse, sa gestion aisée de l'ORM, sa sécurité intégrée et sa structure MVT.
-    \item \textbf{MySQL (via PyMySQL) / MariaDB :} SGBD relationnel robuste utilisé en phase de développement local et en environnement cible, configuré pour garantir une intégrité transactionnelle totale.
+    \item \textbf{SQLite / MySQL :} SGBD relationnel (SQLite utilisé pour le développement local et la production légère, avec possibilité d'évoluer vers MySQL/MariaDB grâce à l'abstraction de l'ORM Django), configuré pour garantir une intégrité transactionnelle totale.
     \item \textbf{django-allauth (Optionnel) :} Module d'authentification tiers prêt à l'emploi permettant de gérer les flux OAuth (Google et GitHub) de manière optionnelle lorsque le module est présent (\texttt{HAS\_ALLAUTH}).
     \item \textbf{Pillow :} Bibliothèque indispensable pour la manipulation et la validation des formats d'images (logos d'entreprises, avatars candidats).
 \end{itemize}
@@ -254,7 +254,8 @@ La structure statique des données, mappée directement sur les modèles Django 
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.52, transform shape, classbox/.style={draw, rectangle, align=center, fill=emsiblue!5, drop shadow, rounded corners=2pt}]
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[classbox/.style={draw, rectangle, align=center, fill=emsiblue!5, drop shadow, rounded corners=2pt}]
     % User
     \node[classbox] (User) at (0, 9) [minimum width=6cm] {
         \textbf{User (django.contrib.auth)} \\ \rule{5.8cm}{0.4pt} \\
@@ -383,26 +384,37 @@ La structure statique des données, mappée directement sur les modèles Django 
     };
     
     % Follow
-    \node[classbox] (Follow) at (0, 4.5) [minimum width=4cm] {
+    \node[classbox] (Follow) at (0, 13.2) [minimum width=4cm] {
         \textbf{Follow} \\ \rule{3.8cm}{0.4pt} \\
         + follower : ForeignKey $\rightarrow$ User \\
         + following : ForeignKey $\rightarrow$ User \\
         + created\_at : DateTimeField
     };
 
-    % Liaisons avec cardinalités
-    \draw[thick, -{Stealth}] (Candidate) -- (User) node[midway, left] {\small 1..1};
-    \draw[thick, -{Stealth}] (Company) -- (User) node[midway, right] {\small 1..1};
-    \draw[thick, -{Stealth}] (Cert) -- (Candidate) node[midway, left] {\small *..1};
-    \draw[thick, -{Stealth}] (App) -- (User) node[midway, left] {\small *..1};
-    \draw[thick, -{Stealth}] (App) -- (Job) node[midway, above] {\small *..1};
-    \draw[thick, -{Stealth}] (Job) -- (User) node[midway, right] {\small *..1};
-    \draw[thick, -{Stealth}] (Quiz) -- (User) node[midway, right, pos=0.8] {\small *..1};
-    \draw[thick, -{Stealth}] (Post) -- (User) node[midway, left] {\small *..1};
-    \draw[thick, -{Stealth}] (Comment) -- (Post) node[midway, left] {\small *..1};
-    \draw[thick, -{Stealth}] (Comment) -- (User) node[midway, right, pos=0.8] {\small *..1};
-    \draw[thick, -{Stealth}] (Follow) -- (User) node[midway, above] {\small *..2};
+    % Liaisons avec cardinalités et routage sans chevauchement
+    \draw[thick, -{Stealth}] (Candidate) -- (User) node[midway, above, sloped, fill=white, inner sep=1.5pt] {{\small 1..1}};
+    \draw[thick, -{Stealth}] (Company) -- (User) node[midway, above, sloped, fill=white, inner sep=1.5pt] {{\small 1..1}};
+    \draw[thick, -{Stealth}] (Cert) -- (Candidate) node[midway, left, fill=white, inner sep=1.5pt] {{\small *..1}};
+    \draw[thick, -{Stealth}] (App) -- (User) node[midway, left, fill=white, inner sep=1.5pt] {{\small *..1}};
+    \draw[thick, -{Stealth}] (App) -- (Job) node[midway, above, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    % Job to User: contourne par la droite (offset 2.0)
+    \draw[thick, -{Stealth}] (Job.east) -- ++(2.0, 0) |- (User.350) node[pos=0.25, right, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    % Quiz to User: contourne par la droite (offset 1.0)
+    \draw[thick, -{Stealth}] (Quiz.east) -- ++(1.0, 0) |- (User.10) node[pos=0.25, right, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    % Post to User: contourne par la gauche (offset -1.0)
+    \draw[thick, -{Stealth}] (Post.west) -- ++(-1.0, 0) |- (User.170) node[pos=0.25, left, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    \draw[thick, -{Stealth}] (Comment) -- (Post) node[midway, left, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    % Comment to User: contourne par la gauche (offset -2.0)
+    \draw[thick, -{Stealth}] (Comment.west) -- ++(-2.0, 0) |- (User.190) node[pos=0.25, left, fill=white, inner sep=1.5pt] {{\small *..1}};
+    
+    \draw[thick, -{Stealth}] (Follow) -- (User) node[midway, left, fill=white, inner sep=1.5pt] {{\small *..2}};
 \end{tikzpicture}
+}
 \caption{Diagramme de classes techniques complet}
 \label{fig:classes_pfa2}
 \end{figure}
@@ -410,17 +422,17 @@ La structure statique des données, mappée directement sur les modèles Django 
 \subsection{Diagrammes de séquence}
 Les diagrammes de séquence UML permettent de représenter la dimension dynamique du système en détaillant chronologiquement les interactions entre les acteurs (utilisateurs) et les différents objets ou composants logiciels de la plateforme ManageraHub lors de l'exécution de cas d'utilisation clés. Pour répondre aux exigences de complétude fonctionnelle, nous présentons ici cinq scénarios critiques.
 
-\subsubsection{1. Inscription et vérification administrative d'une Entreprise}
+\subsubsection{Inscription et vérification administrative d'une Entreprise}
 Ce diagramme (figure \ref{fig:seq_verify_pfa2}) détaille le flux d'inscription administrative d'une entreprise recruteuse et sa validation ultérieure par l'administrateur de la plateforme. Tant que le booléen \texttt{is\_approved} est faux, les droits de publication restent verrouillés :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}[scale=0.9, xscale=1.35]
     % Lignes de vie
-    \draw[thick] (0,0) -- (0,-6.5) node[below] {Recruteur};
-    \draw[thick] (4,0) -- (4,-6.5) node[below] {RegisterView};
-    \draw[thick] (8,0) -- (8,-6.5) node[below] {AdminPortal};
-    \draw[thick] (12,0) -- (12,-6.5) node[below] {Database};
+    \draw[thick] (0,0) -- (0,-6.5);
+    \draw[thick] (4,0) -- (4,-6.5);
+    \draw[thick] (8,0) -- (8,-6.5);
+    \draw[thick] (12,0) -- (12,-6.5);
     
     \node[draw, fill=white] at (0,0.3) {Recruteur};
     \node[draw, fill=white] at (4,0.3) {Système Web};
@@ -428,58 +440,58 @@ Ce diagramme (figure \ref{fig:seq_verify_pfa2}) détaille le flux d'inscription 
     \node[draw, fill=white] at (12,0.3) {BDD};
     
     % Messages
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Saisir Infos, ICE et RC};
-    \draw[->] (4,-1.5) -- (12,-1.5) node[midway, above] {\small 2. Sauvegarder (is\_approved=False)};
-    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above] {\small 3. Notification confirmation};
-    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above] {\small 4. Afficher message d'attente};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Saisir Infos, ICE et RC}};
+    \draw[->] (4,-1.5) -- (12,-1.5) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. Sauvegarder (is\_approved=False)}};
+    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. Notification confirmation}};
+    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 4. Afficher message d'attente}};
     
-    \draw[->] (8,-3.8) -- (12,-3.8) node[midway, above] {\small 5. Consulter dossiers entreprises};
-    \draw[<-] (8,-4.4) -- (12,-4.4) node[midway, above] {\small 6. Renvoyer les documents};
-    \draw[->] (8,-5.2) -- (12,-5.2) node[midway, above] {\small 7. Valider (is\_approved=True)};
-    \draw[->] (12,-5.8) -- (0,-5.8) node[midway, above] {\small 8. Mail d'activation envoyé};
+    \draw[->] (8,-3.8) -- (12,-3.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 5. Consulter dossiers entreprises}};
+    \draw[<-] (8,-4.4) -- (12,-4.4) node[midway, above, fill=white, inner sep=1.5pt] {{\small 6. Renvoyer les documents}};
+    \draw[->] (8,-5.2) -- (12,-5.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 7. Valider (is\_approved=True)}};
+    \draw[->] (12,-5.8) -- (0,-5.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 8. Mail d'activation envoyé}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Inscription et Vérification de l'Entreprise}
 \label{fig:seq_verify_pfa2}
 \end{figure}
 
-\subsubsection{2. Soumission d'une candidature par un Candidat}
+\subsubsection{Soumission d'une candidature par un Candidat}
 Ce flux (figure \ref{fig:seq_apply_pfa2}) illustre comment un candidat postule à une offre d'emploi active et comment le dossier de candidature est enregistré en base de données :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
-    \draw[thick] (0,0) -- (0,-6) node[below] {Candidat};
-    \draw[thick] (4,0) -- (4,-6) node[below] {JobDetailView};
-    \draw[thick] (8,0) -- (8,-6) node[below] {ApplyView};
-    \draw[thick] (12,0) -- (12,-6) node[below] {Database};
+\begin{tikzpicture}[scale=0.9, xscale=1.35]
+    \draw[thick] (0,0) -- (0,-6);
+    \draw[thick] (4,0) -- (4,-6);
+    \draw[thick] (8,0) -- (8,-6);
+    \draw[thick] (12,0) -- (12,-6);
     
     \node[draw, fill=white] at (0,0.3) {Candidat};
     \node[draw, fill=white] at (4,0.3) {Interface Offre};
     \node[draw, fill=white] at (8,0.3) {Contrôleur Candidature};
     \node[draw, fill=white] at (12,0.3) {BDD};
     
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Cliquer sur "Postuler"};
-    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above] {\small 2. GET apply\_form};
-    \draw[<-] (0,-2.5) -- (4,-2.5) node[midway, above] {\small 3. Afficher le formulaire};
-    \draw[->] (0,-3.2) -- (8,-3.2) node[midway, above, pos=0.25] {\small 4. POST message, CV};
-    \draw[->] (8,-4) -- (12,-4) node[midway, above] {\small 5. Enregistrer Candidature};
-    \draw[<-] (0,-5.2) -- (8,-5.2) node[midway, above, pos=0.25] {\small 6. Rediriger (Candidature validée)};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Cliquer sur "Postuler"}};
+    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. GET apply\_form}};
+    \draw[<-] (0,-2.5) -- (4,-2.5) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. Afficher le formulaire}};
+    \draw[->] (0,-3.2) -- (8,-3.2) node[midway, above, pos=0.25, fill=white, inner sep=1.5pt] {{\small 4. POST message, CV}};
+    \draw[->] (8,-4) -- (12,-4) node[midway, above, fill=white, inner sep=1.5pt] {{\small 5. Enregistrer Candidature}};
+    \draw[<-] (0,-5.2) -- (8,-5.2) node[midway, above, pos=0.25, fill=white, inner sep=1.5pt] {{\small 6. Rediriger (Candidature validée)}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Flux de candidature}
 \label{fig:seq_apply_pfa2}
 \end{figure}
 
-\subsubsection{3. Publication d'une offre d'emploi par une Entreprise validée}
+\subsubsection{Publication d'une offre d'emploi par une Entreprise validée}
 Ce scénario (figure \ref{fig:seq_job_pfa2}) montre la cinématique de publication d'une offre. La plateforme vérifie d'abord que le recruteur a été préalablement validé administrativement par le système :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}[scale=0.9, xscale=1.35]
     % Lignes de vie
-    \draw[thick] (0,0) -- (0,-6.5) node[below] {Recruteur};
-    \draw[thick] (4,0) -- (4,-6.5) node[below] {JobCreateView};
-    \draw[thick] (8,0) -- (8,-6.5) node[below] {SecurityMiddleware};
-    \draw[thick] (12,0) -- (12,-6.5) node[below] {Database};
+    \draw[thick] (0,0) -- (0,-6.5);
+    \draw[thick] (4,0) -- (4,-6.5);
+    \draw[thick] (8,0) -- (8,-6.5);
+    \draw[thick] (12,0) -- (12,-6.5);
     
     \node[draw, fill=white] at (0,0.3) {Recruteur};
     \node[draw, fill=white] at (4,0.3) {Interface Recruteur};
@@ -487,30 +499,30 @@ Ce scénario (figure \ref{fig:seq_job_pfa2}) montre la cinématique de publicati
     \node[draw, fill=white] at (12,0.3) {BDD};
     
     % Messages
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Saisir \& Publier une offre};
-    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above] {\small 2. Valider l'accès recruteur};
-    \draw[->] (8,-2.5) -- (12,-2.5) node[midway, above] {\small 3. SELECT is\_approved FROM Company};
-    \draw[<-] (8,-3.2) -- (12,-3.2) node[midway, above] {\small 4. Retourner True (Vérifiée)};
-    \draw[->] (8,-3.9) -- (4,-3.9) node[midway, above] {\small 5. Autoriser la création};
-    \draw[->] (4,-4.6) -- (12,-4.6) node[midway, above] {\small 6. Enregistrer l'offre (INSERT)};
-    \draw[<-] (4,-5.3) -- (12,-5.3) node[midway, above] {\small 7. Confirmation (Offre créée)};
-    \draw[->] (4,-5.9) -- (0,-5.9) node[midway, above] {\small 8. Redirection vers Tableau de bord};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Saisir \& Publier une offre}};
+    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. Valider l'accès recruteur}};
+    \draw[->] (8,-2.5) -- (12,-2.5) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. SELECT is\_approved FROM Company}};
+    \draw[<-] (8,-3.2) -- (12,-3.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 4. Retourner True (Vérifiée)}};
+    \draw[->] (8,-3.9) -- (4,-3.9) node[midway, above, fill=white, inner sep=1.5pt] {{\small 5. Autoriser la création}};
+    \draw[->] (4,-4.6) -- (12,-4.6) node[midway, above, fill=white, inner sep=1.5pt] {{\small 6. Enregistrer l'offre (INSERT)}};
+    \draw[<-] (4,-5.3) -- (12,-5.3) node[midway, above, fill=white, inner sep=1.5pt] {{\small 7. Confirmation (Offre créée)}};
+    \draw[->] (4,-5.9) -- (0,-5.9) node[midway, above, fill=white, inner sep=1.5pt] {{\small 8. Redirection vers Tableau de bord}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Publication d'une offre d'emploi}
 \label{fig:seq_job_pfa2}
 \end{figure}
 
-\subsubsection{4. Publication de post et interaction (Likes / Commentaires) sur le fil d'actualités}
+\subsubsection{Publication de post et interaction (Likes / Commentaires) sur le fil d'actualités}
 Ce diagramme (figure \ref{fig:seq_social_pfa2}) modélise le fil d'actualités social, en illustrant la publication d'un contenu par un membre et la réaction instantanée d'un autre utilisateur :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}[scale=0.9, xscale=1.35]
     % Lignes de vie
-    \draw[thick] (0,0) -- (0,-6.8) node[below] {Utilisateurs};
-    \draw[thick] (4,0) -- (4,-6.8) node[below] {FeedView};
-    \draw[thick] (8,0) -- (8,-6.8) node[below] {InteractionController};
-    \draw[thick] (12,0) -- (12,-6.8) node[below] {Database};
+    \draw[thick] (0,0) -- (0,-6.8);
+    \draw[thick] (4,0) -- (4,-6.8);
+    \draw[thick] (8,0) -- (8,-6.8);
+    \draw[thick] (12,0) -- (12,-6.8);
     
     \node[draw, fill=white] at (0,0.3) {Membres (A / B)};
     \node[draw, fill=white] at (4,0.3) {Fil d'actualité};
@@ -518,32 +530,32 @@ Ce diagramme (figure \ref{fig:seq_social_pfa2}) modélise le fil d'actualités s
     \node[draw, fill=white] at (12,0.3) {BDD};
     
     % Messages
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Utilisateur A : Publier un post};
-    \draw[->] (4,-1.6) -- (12,-1.6) node[midway, above] {\small 2. Enregistrer Post (INSERT)};
-    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above] {\small 3. Retourner Post ID};
-    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above] {\small 4. Afficher Post sur le feed global};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Utilisateur A : Publier un post}};
+    \draw[->] (4,-1.6) -- (12,-1.6) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. Enregistrer Post (INSERT)}};
+    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. Retourner Post ID}};
+    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 4. Afficher Post sur le feed global}};
     
-    \draw[->] (0,-3.8) -- (8,-3.8) node[midway, above, pos=0.25] {\small 5. Utilisateur B : Liker / Commenter};
-    \draw[->] (8,-4.4) -- (12,-4.4) node[midway, above] {\small 6. Créer Relation (Like/Comment)};
-    \draw[<-] (8,-5.0) -- (12,-5.0) node[midway, above] {\small 7. Retourner compteurs mis à jour};
-    \draw[->] (8,-5.6) -- (4,-5.6) node[midway, above] {\small 8. Renvoyer données (Response JSON)};
-    \draw[->] (4,-6.2) -- (0,-6.2) node[midway, above] {\small 9. Mise à jour dynamique HTML (AJAX)};
+    \draw[->] (0,-3.8) -- (8,-3.8) node[midway, above, pos=0.25, fill=white, inner sep=1.5pt] {{\small 5. Utilisateur B : Liker / Commenter}};
+    \draw[->] (8,-4.4) -- (12,-4.4) node[midway, above, fill=white, inner sep=1.5pt] {{\small 6. Créer Relation (Like/Comment)}};
+    \draw[<-] (8,-5.0) -- (12,-5.0) node[midway, above, fill=white, inner sep=1.5pt] {{\small 7. Retourner compteurs mis à jour}};
+    \draw[->] (8,-5.6) -- (4,-5.6) node[midway, above, fill=white, inner sep=1.5pt] {{\small 8. Renvoyer données (Response JSON)}};
+    \draw[->] (4,-6.2) -- (0,-6.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 9. Mise à jour dynamique HTML (AJAX)}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Interaction fil d'actualités social}
 \label{fig:seq_social_pfa2}
 \end{figure}
 
-\subsubsection{5. Processus de suivi (Follow / Unfollow) entre membres du réseau}
+\subsubsection{Processus de suivi (Follow / Unfollow) entre membres du réseau}
 Le diagramme de la figure \ref{fig:seq_follow_pfa2} modélise l'établissement d'une relation d'abonnement entre deux candidats du réseau social professionnel :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}[scale=0.9, xscale=1.35]
     % Lignes de vie
-    \draw[thick] (0,0) -- (0,-6.5) node[below] {Candidat A};
-    \draw[thick] (4,0) -- (4,-6.5) node[below] {ProfileView};
-    \draw[thick] (8,0) -- (8,-6.5) node[below] {FollowController};
-    \draw[thick] (12,0) -- (12,-6.5) node[below] {Database};
+    \draw[thick] (0,0) -- (0,-6.5);
+    \draw[thick] (4,0) -- (4,-6.5);
+    \draw[thick] (8,0) -- (8,-6.5);
+    \draw[thick] (12,0) -- (12,-6.5);
     
     \node[draw, fill=white] at (0,0.3) {Candidat A};
     \node[draw, fill=white] at (4,0.3) {Interface Profil};
@@ -551,55 +563,140 @@ Le diagramme de la figure \ref{fig:seq_follow_pfa2} modélise l'établissement d
     \node[draw, fill=white] at (12,0.3) {BDD};
     
     % Messages
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Visiter profil du Candidat B};
-    \draw[->] (4,-1.6) -- (12,-1.6) node[midway, above] {\small 2. SELECT profil\_B FROM Database};
-    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above] {\small 3. Renvoyer données de B};
-    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above] {\small 4. Afficher bouton "Suivre"};
-    \draw[->] (0,-3.6) -- (8,-3.6) node[midway, above, pos=0.25] {\small 5. Cliquer sur "Suivre"};
-    \draw[->] (8,-4.2) -- (12,-4.2) node[midway, above] {\small 6. Enregistrer relation (INSERT)};
-    \draw[<-] (8,-4.8) -- (12,-4.8) node[midway, above] {\small 7. Confirmation de création};
-    \draw[->] (8,-5.4) -- (4,-5.4) node[midway, above] {\small 8. Mettre à jour bouton à "Abonné"};
-    \draw[->] (4,-6.0) -- (0,-6.0) node[midway, above] {\small 9. Affichage "Abonné" sur l'écran};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Visiter profil du Candidat B}};
+    \draw[->] (4,-1.6) -- (12,-1.6) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. SELECT profil\_B FROM Database}};
+    \draw[<-] (4,-2.2) -- (12,-2.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. Renvoyer données de B}};
+    \draw[->] (4,-2.8) -- (0,-2.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 4. Afficher bouton "Suivre"}};
+    \draw[->] (0,-3.6) -- (8,-3.6) node[midway, above, pos=0.25, fill=white, inner sep=1.5pt] {{\small 5. Cliquer sur "Suivre"}};
+    \draw[->] (8,-4.2) -- (12,-4.2) node[midway, above, fill=white, inner sep=1.5pt] {{\small 6. Enregistrer relation (INSERT)}};
+    \draw[<-] (8,-4.8) -- (12,-4.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 7. Confirmation de création}};
+    \draw[->] (8,-5.4) -- (4,-5.4) node[midway, above, fill=white, inner sep=1.5pt] {{\small 8. Mettre à jour bouton à "Abonné"}};
+    \draw[->] (4,-6.0) -- (0,-6.0) node[midway, above, fill=white, inner sep=1.5pt] {{\small 9. Affichage "Abonné" sur l'écran}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Système d'abonnement (Follow)}
 \label{fig:seq_follow_pfa2}
 \end{figure}
 
-\subsubsection{6. Suivi en temps réel de statut de candidature (Tracker AJAX)}
+\subsubsection{Suivi en temps réel de statut de candidature (Tracker AJAX)}
 Ce diagramme (figure \ref{fig:seq_realtime_pfa2}) modélise le processus d'interrogation en arrière-plan et de synchronisation dynamique du widget de suivi de candidature (Application Tracker) de l'espace candidat. Grâce à des appels AJAX réguliers, les informations de l'historique et de la timeline sont actualisées à la volée :
 
 \begin{figure}[H]
 \centering
-\begin{tikzpicture}[scale=0.8, transform shape]
+\begin{tikzpicture}[scale=0.95, xscale=1.75]
     % Lignes de vie
-    \draw[thick] (0,0) -- (0,-6.8) node[below] {Navigateur (JS)};
-    \draw[thick] (4,0) -- (4,-6.8) node[below] {DashboardView};
-    \draw[thick] (8,0) -- (8,-6.8) node[below] {Database};
+    \draw[thick] (0,0) -- (0,-6.8);
+    \draw[thick] (4,0) -- (4,-6.8);
+    \draw[thick] (8,0) -- (8,-6.8);
     
     \node[draw, fill=white] at (0,0.3) {Tracker (Frontend)};
     \node[draw, fill=white] at (4,0.3) {Contrôleur Dashboard};
-    \node[draw, fill=white] at (8,0.3) {BDD (MySQL)};
+    \node[draw, fill=white] at (8,0.3) {BDD (SQLite/MySQL)};
     
     % Messages
-    \draw[->] (0,-1) -- (4,-1) node[midway, above] {\small 1. Polling AJAX automatique (12s)};
-    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above] {\small 2. SELECT app\_status FROM JobApplication};
-    \draw[<-] (4,-2.6) -- (8,-2.6) node[midway, above] {\small 3. Retourner l'état et l'historique};
-    \draw[->] (4,-3.4) -- (0,-3.4) node[midway, above] {\small 4. Renvoyer données JSON};
+    \draw[->] (0,-1) -- (4,-1) node[midway, above, fill=white, inner sep=1.5pt] {{\small 1. Polling AJAX automatique (12s)}};
+    \draw[->] (4,-1.8) -- (8,-1.8) node[midway, above, fill=white, inner sep=1.5pt] {{\small 2. SELECT app\_status FROM JobApplication}};
+    \draw[<-] (4,-2.6) -- (8,-2.6) node[midway, above, fill=white, inner sep=1.5pt] {{\small 3. Retourner l'état et l'historique}};
+    \draw[->] (4,-3.4) -- (0,-3.4) node[midway, above, fill=white, inner sep=1.5pt] {{\small 4. Renvoyer données JSON}};
     
     % Condition
     \draw[gray, dashed] (-0.5,-3.8) rectangle (8.5,-6.4);
     \node[gray, anchor=north west] at (-0.5,-3.8) {\scriptsize [Condition: Si le statut a changé]};
     
-    \draw[->] (0,-4.5) -- (0,-5.2) node[midway, right] {\small 5. Activer l'overlay de scan radar};
-    \draw[->] (0,-5.9) -- (0,-6.2) node[midway, right] {\small 6. Re-rendre le timeline et flasher};
+    \draw[->] (0,-4.5) -- (0,-5.2) node[midway, right, fill=white, inner sep=1.5pt] {{\small 5. Activer l'overlay de scan radar}};
+    \draw[->] (0,-5.9) -- (0,-6.2) node[midway, right, fill=white, inner sep=1.5pt] {{\small 6. Re-rendre le timeline et flasher}};
 \end{tikzpicture}
 \caption{Diagramme de séquence : Synchronisation en temps réel (Tracker)}
 \label{fig:seq_realtime_pfa2}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[scale=0.85]
+    % Lignes de vie (Lifelines)
+    \draw[thick] (0,0) -- (0,-7.5);
+    \draw[thick] (3.0,0) -- (3.0,-7.5);
+    \draw[thick] (7.0,0) -- (7.0,-7.5);
+    \draw[thick] (11.5,0) -- (11.5,-7.5);
+    
+    % En-têtes
+    \node[draw, fill=lightgray!20, minimum height=0.6cm] at (0,0.3) {Acteur};
+    \node[draw, fill=lightgray!20, minimum height=0.6cm] at (3.0,0.3) {Client};
+    \node[draw, fill=emsiblue!10, minimum height=0.6cm] at (7.0,0.3) {ManageraHub};
+    \node[draw, fill=orange!10, minimum height=0.6cm] at (11.5,0.3) {Google / GitHub};
+    
+    % Étapes
+    % 1. Clic connexion
+    \draw[->, >=latex] (0,-0.6) -- (3.0,-0.6) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{1. Clic "Google / GitHub"}};
+    
+    % 2. Get login url
+    \draw[->, >=latex] (3.0,-1.2) -- (7.0,-1.2) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{2. GET /auth/provider/login/}};
+    
+    % 3. Redirection
+    \draw[->, >=latex] (7.0,-1.8) -- (3.0,-1.8) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{3. HTTP 302 Redirection}};
+    
+    % 4. Consentement page
+    \draw[->, >=latex] (3.0,-2.4) -- (11.5,-2.4) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{4. GET /oauth/authorize?client\_id=...}};
+    
+    % 5. Consentement utilisateur
+    \draw[<->, >=latex, dashed] (0,-3.2) -- (11.5,-3.2) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{5. Authentification \& Consentement}};
+    
+    % 6. Redirect callback
+    \draw[->, >=latex] (11.5,-4.0) -- (3.0,-4.0) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{6. HTTP 302 Callback (code)}};
+    
+    % 7. Callback Django
+    \draw[->, >=latex] (3.0,-4.6) -- (7.0,-4.6) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{7. GET /auth/provider/login/callback/?code=...}};
+    
+    % 8. Backend Token exchange
+    \draw[->, >=latex] (7.0,-5.2) -- (11.5,-5.2) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{8. POST /oauth/token (code + secret)}};
+    \draw[<-, >=latex] (7.0,-5.8) -- (11.5,-5.8) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{9. Access Token \& User Info}};
+    
+    % 10. Login / Creation
+    \draw[->, >=latex] (7.0,-6.4) -- (7.0,-6.8) node[midway, right, font=\scriptsize, fill=white, inner sep=1.5pt] {{10. Connexion / Inscription en BDD}};
+    
+    % 11. Success
+    \draw[->, >=latex] (7.0,-7.2) -- (3.0,-7.2) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{11. HTTP 302 Redirect (Dashboard)}};
+\end{tikzpicture}
+}
+\caption{Diagramme de séquence : Authentification sociale via OAuth 2.0}
+\label{fig:seq_oauth_pfa2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[scale=0.85]
+    % Lignes de vie
+    \draw[thick] (0,0) -- (0,-7.0);
+    \draw[thick] (3.0,0) -- (3.0,-7.0);
+    \draw[thick] (6.5,0) -- (6.5,-7.0);
+    \draw[thick] (10.0,0) -- (10.0,-7.0);
+    \draw[thick] (13.5,0) -- (13.5,-7.0);
+    
+    % En-têtes
+    \node[draw, fill=lightgray!20, minimum height=0.6cm] at (0,0.3) {Acteur};
+    \node[draw, fill=emsiblue!10, minimum height=0.6cm] at (3.0,0.3) {Django (Vues/Signaux)};
+    \node[draw, fill=emsigreen!10, minimum height=0.6cm] at (6.5,0.3) {emails.py};
+    \node[draw, fill=purple!10, minimum height=0.6cm] at (10.0,0.3) {SMTP Gmail};
+    \node[draw, fill=lightgray!20, minimum height=0.6cm] at (13.5,0.3) {Destinataire};
+    
+    % Actions
+    \draw[->, >=latex] (0,-0.8) -- (3.0,-0.8) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{1. Action (ex: changement de statut)}};
+    \draw[->, >=latex] (3.0,-1.6) -- (6.5,-1.6) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{2. Appel send\_html\_email(template, context)}};
+    \draw[->, >=latex] (6.5,-2.4) -- (6.5,-3.0) node[midway, right, font=\scriptsize, fill=white, inner sep=1.5pt] {{3. Rendu HTML + Boutons (SITE\_URL)}};
+    \draw[->, >=latex] (6.5,-3.8) -- (10.0,-3.8) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{4. EmailMultiAlternatives (TLS/Port 587)}};
+    \draw[->, >=latex] (10.0,-4.6) -- (13.5,-4.6) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{5. Distribution de l'e-mail}};
+    \draw[->, >=latex] (13.5,-5.6) -- (0,-5.6) node[midway, above, sloped, font=\scriptsize, fill=white, inner sep=1.5pt] {{6. Clic bouton d'action cliquable}};
+    \draw[->, >=latex] (0,-6.4) -- (3.0,-6.4) node[midway, above, font=\scriptsize, fill=white, inner sep=1.5pt] {{7. Redirection vers VM sslip.io}};
+\end{tikzpicture}
+}
+\caption{Diagramme de séquence : Système d'envoi d'e-mails de notification transactionnels}
+\label{fig:seq_email_pfa2}
+\end{figure}
+
 \subsection{Diagrammes d'activité}
 
-\subsubsection{1. Flux de postulation et mise à jour de statut}
+\subsubsection{Flux de postulation et mise à jour de statut}
 Ce diagramme (figure \ref{fig:act_apply_pfa2}) détaille le cycle de traitement d'une candidature, depuis la recherche d'offre par le candidat jusqu'à la décision finale de recrutement par l'entreprise :
 
 \begin{figure}[H]
@@ -647,51 +744,96 @@ Ce diagramme (figure \ref{fig:deployment_pfa2}) détaille la topologie physique 
 
 \begin{figure}[H]
 \centering
-\resizebox{0.9\textwidth}{!}{
-\begin{tikzpicture}[scale=0.85]
-    % Navigateur
-    \node (browser) [draw, rectangle, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=lightgray] {
-        \textbf{Navigateur Client} \\ \rule{3.0cm}{0.4pt} \\
+\resizebox{0.95\textwidth}{!}{
+\begin{tikzpicture}[scale=0.85, every node/.style={transform shape}]
+    % Navigateur Client
+    \node (browser) [draw, rectangle, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=lightgray!20, thick, rounded corners] at (0, 0) {
+        \textbf{Navigateur Client} \\ \rule{2.8cm}{0.4pt} \\
         HTML5 / CSS3 / JS \\
-        Moteur Jinja2 (Templates)
+        DNS : \texttt{sslip.io}
     };
     
-    % Serveur Applicatif
-    \node (appserver) [draw, rectangle, minimum width=4.2cm, minimum height=2.2cm, align=center, fill=emsiblue!10, right=1.2cm of browser] {
-        \textbf{Serveur d'Application} \\ \rule{4.0cm}{0.4pt} \\
-        Serveur HTTP Nginx \\
-        WSGI Gunicorn \\
-        \textbf{Framework Django (Python)}
+    % Box VM Oracle Cloud
+    \draw[dashed, draw=emsiblue!80, fill=emsiblue!5, thick, rounded corners] (4.1, -4.0) rectangle (14.5, 4.2);
+    \node[anchor=north west, color=emsiblue!90, font=\bfseries] at (4.3, 4.0) {Instance VM Oracle Cloud (Ubuntu)};
+    
+    % Nginx
+    \node (nginx) [draw, rectangle, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=white, thick, rounded corners] at (6.5, 1.8) {
+        \textbf{Serveur Web Nginx} \\ \rule{2.8cm}{0.4pt} \\
+        Reverse Proxy \\
+        Ports 80, 443
     };
     
-    % BDD
-    \node (db) [draw, rectangle, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=emsigreen!10, right=1.2cm of appserver] {
-        \textbf{Serveur de Données} \\ \rule{3.0cm}{0.4pt} \\
-        SGBDR MySQL \\
-        Port standard : 3306
+    % Gunicorn
+    \node (gunicorn) [draw, rectangle, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=white, thick, rounded corners] at (6.5, -1.8) {
+        \textbf{Gunicorn (WSGI)} \\ \rule{2.8cm}{0.4pt} \\
+        Serveur d'App \\
+        Port local 8000
     };
     
-    % Storage
-    \node (storage) [draw, rectangle, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=emsimaroon!10, below=0.8cm of appserver] {
-        \textbf{Serveur de Stockage} \\ \rule{3.0cm}{0.4pt} \\
-        Répertoire Média \\
-        (CVs \& Logos)
+    % Django
+    \node (django) [draw, rectangle, minimum width=3.2cm, minimum height=1.6cm, align=center, fill=emsiblue!15, thick, rounded corners] at (11.5, 0) {
+        \textbf{Framework Django} \\ \rule{2.8cm}{0.4pt} \\
+        Application Python \\
+        WhiteNoise (Static)
+    };
+    
+    % SQLite BDD
+    \node (sqlite) [draw, rectangle, minimum width=2.6cm, minimum height=1.2cm, align=center, fill=emsigreen!10, thick, rounded corners] at (11.5, 2.5) {
+        \textbf{BDD SQLite} \\ \rule{2.2cm}{0.4pt} \\
+        Fichier local (\texttt{db.sqlite3})
+    };
+    
+    % Stockage local
+    \node (storage) [draw, rectangle, minimum width=2.6cm, minimum height=1.2cm, align=center, fill=emsimaroon!10, thick, rounded corners] at (11.5, -2.5) {
+        \textbf{Médias locaux} \\ \rule{2.2cm}{0.4pt} \\
+        CVs \& Logos
     };
 
-    % Connecteurs
-    \draw[<->, thick] (browser) -- (appserver) node[midway, above] {\small HTTPS / SSL};
-    \draw[<->, thick] (appserver) -- (db) node[midway, above] {\small SQL / Port 3306};
-    \draw[<->, thick] (appserver) -- (storage) node[midway, right] {\small I/O Filesystem};
+    % Services Externes
+    % Google / GitHub OAuth
+    \node (oauth) [draw, rectangle, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=orange!10, thick, rounded corners] at (0, 3.0) {
+        \textbf{Google / GitHub} \\ \rule{2.8cm}{0.4pt} \\
+        OAuth 2.0 Auth API
+    };
+    
+    % Serveur SMTP Gmail
+    \node (smtp) [draw, rectangle, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=purple!10, thick, rounded corners] at (0, -3.0) {
+        \textbf{SMTP Gmail} \\ \rule{2.8cm}{0.4pt} \\
+        Notifications E-mail \\
+        Port 587 (TLS)
+    };
+
+    % Connecteurs avec routage propre (sans chevauchement)
+    \draw[<->, >=latex, thick] (browser) -- (nginx) node[midway, above, sloped, fill=white, inner sep=1.5pt] {{\scriptsize HTTP, HTTPS}};
+    
+    % Nginx to Django: orthogonal par le haut
+    \draw[<->, >=latex, thick] (nginx.east) -| (django.north) node[pos=0.3, above, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize Static}};
+    
+    \draw[<->, >=latex, thick] (nginx) -- (gunicorn) node[midway, left, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize Proxy}};
+    
+    % Gunicorn to Django: orthogonal par le bas
+    \draw[<->, >=latex, thick] (gunicorn.east) -| (django.south) node[pos=0.3, below, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize WSGI}};
+    
+    \draw[<->, >=latex, thick] (django) -- (sqlite) node[midway, right, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize ORM SQLite}};
+    \draw[<->, >=latex, thick] (django) -- (storage) node[midway, right, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize I/O Média}};
+    \draw[<->, >=latex, thick, dashed] (browser) -- (oauth) node[midway, left, fill=white, inner sep=1.5pt] {{\scriptsize Redirect, Callback}};
+    
+    % Django to SMTP: contourne Gunicorn par le bas
+    \draw[->, >=latex, thick, dashed] (django.south) |- (smtp.east) node[pos=0.7, below, fill=white, inner sep=1.5pt] {{\scriptsize Envoi Mail}};
+    
+    % Django to OAuth: contourne Nginx par le haut
+    \draw[->, >=latex, thick, dashed] (django.north) |- (oauth.east) node[pos=0.7, above, fill=white, inner sep=1.5pt] {{\scriptsize Token API}};
 \end{tikzpicture}
 }
-\caption{Diagramme de déploiement physique du système}
+\caption{Diagramme de déploiement physique du système sur Oracle Cloud}
 \label{fig:deployment_pfa2}
 \end{figure}
 
 \section{Conception de la base de données}
 
 \subsection{Modèle relationnel détaillé}
-La base de données relationnelle (MySQL) est structurée pour assurer une intégrité absolue et un temps d'accès optimal. Les tables fondamentales sont listées ci-dessous avec leurs clés primaires (PK) et étrangères (FK) :
+La base de données relationnelle (SQLite / MySQL) est structurée pour assurer une intégrité absolue et un temps d'accès optimal. Les tables fondamentales sont listées ci-dessous avec leurs clés primaires (PK) et étrangères (FK) :
 
 \begin{enumerate}
     \item \textbf{auth\_user} \\
