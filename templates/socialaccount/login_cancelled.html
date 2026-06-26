@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Connexion Annulée | ManageraHub{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --plum: #4f0c28;
+        --plum-deep: #3f0a20;
+        --periwinkle: #c5d2f8;
+        --radius-pill: 999px;
+    }
+    body {
+        font-family: "Inter", "Montserrat", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 24px;
+        background: radial-gradient(circle at center, #1b0610 0%, #0a0206 100%);
+        color: #fff;
+    }
+    .error-container {
+        width: 100%;
+        max-width: 480px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 40px 32px;
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .error-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+    }
+    .error-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 12px;
+    }
+    .error-desc {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0 0 32px;
+    }
+    .error-actions {
+        display: grid;
+        gap: 12px;
+    }
+    .btn-primary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        border-radius: var(--radius-pill);
+        border: none;
+        background: var(--plum);
+        color: #fff;
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 10px 24px rgba(79, 12, 40, 0.3);
+    }
+    .btn-primary:hover {
+        background: var(--plum-deep);
+        box-shadow: 0 12px 28px rgba(79, 12, 40, 0.45);
+    }
+    .btn-secondary {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 50px;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.25);
+    }
+</style>
+
+<div class="error-container">
+    <div class="error-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+    </div>
+    <h1 class="error-title">Connexion Annulée</h1>
+    <p class="error-desc">
+        La tentative de connexion avec votre compte de réseau social a été annulée. 
+        <br><br>
+        Vous pouvez réessayer de vous connecter ou retourner à la page d'accueil de la plateforme.
+    </p>
+    <div class="error-actions">
+        <a href="{% url 'signin' %}" class="btn-primary">Retourner à la Connexion</a>
+        <a href="/" class="btn-secondary">Retour à l'Accueil</a>
+    </div>
+</div>
+{% endblock %}

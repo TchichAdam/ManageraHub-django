@@ -92,6 +92,7 @@ urlpatterns = [
     path('admin/verify-company-offline/<int:company_id>/', admin_verify_company_offline_view, name='admin_verify_company_offline'),
     path('admin/', admin.site.urls),
     path('test-oauth-error/', TemplateView.as_view(template_name='socialaccount/authentication_error.html'), name='test_oauth_error'),
+    path('test-oauth-cancelled/', TemplateView.as_view(template_name='socialaccount/login_cancelled.html'), name='test_oauth_cancelled'),
 ]
 
 
