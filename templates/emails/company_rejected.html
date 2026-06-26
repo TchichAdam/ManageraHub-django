@@ -1,7 +1,8 @@
 {% extends "emails/base_email.html" %}
+{% block preheader %}Mise à jour concernant votre inscription entreprise {{ company_name }} sur ManageraHub{% endblock %}
 
 {% block email_content %}
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif;">
     <tr>
         <td style="padding-bottom: 20px;">
             <h2 style="margin: 0; font-family: Georgia, serif; font-size: 24px; color: #ef4444; font-weight: 600;">Mise à jour concernant votre inscription entreprise ✦</h2>
@@ -27,19 +28,21 @@
     <!-- CTA BUTTON -->
     <tr>
         <td align="center" style="padding-bottom: 30px;">
-            <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td align="center" style="background-color: #4f0c28; border-radius: 99px;">
-                        <a href="{{ site_url }}/company/profile" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Mettre à jour mes informations</a>
-                    </td>
-                </tr>
-            </table>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ site_url }}/company/profile/" style="height:52px;v-text-anchor:middle;width:340px;" arcsize="50%" strokecolor="#4f0c28" fillcolor="#4f0c28">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em;">METTRE À JOUR MES INFORMATIONS</center>
+            </v:roundrect>
+            <![endif]-->
+            <!--[if !mso]><!-->
+            <a href="{{ site_url }}/company/profile/" target="_blank" style="display: inline-block; background-color: #4f0c28; color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 36px; border-radius: 99px; mso-hide: all;">Mettre à jour mes informations</a>
+            <!--<![endif]-->
         </td>
     </tr>
     <tr>
         <td style="font-size: 14px; color: #8a94a6; line-height: 1.5; border-top: 1px solid #f0f2f5; padding-top: 20px;">
-            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur : <br>
-            <a href="{{ site_url }}/company/profile" style="color: #4f0c28; text-decoration: underline;">{{ site_url }}/company/profile</a>
+            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur :<br>
+            <a href="{{ site_url }}/company/profile/" target="_blank" style="color: #4f0c28; text-decoration: underline; word-break: break-all;">{{ site_url }}/company/profile/</a>
         </td>
     </tr>
 </table>

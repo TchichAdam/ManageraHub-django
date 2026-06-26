@@ -1,7 +1,8 @@
 {% extends "emails/base_email.html" %}
+{% block preheader %}Bienvenue sur ManageraHub ! Votre inscription entreprise a été reçue.{% endblock %}
 
 {% block email_content %}
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif;">
     <tr>
         <td style="padding-bottom: 20px;">
             <h2 style="margin: 0; font-family: Georgia, serif; font-size: 24px; color: #1e2229; font-weight: 600;">Bienvenue sur ManageraHub, {{ display_name }} ! ✦</h2>
@@ -11,25 +12,27 @@
         <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 30px;">
             Nous vous remercions de votre inscription en tant qu'Entreprise sur ManageraHub.
             <br><br>
-            Votre dossier d'inscription a bien été reçu et est actuellement **en cours de vérification** par notre équipe d'administration. Une fois validé, vous recevrez un e-mail de confirmation et pourrez publier des offres d'emploi, faire passer des quiz de sélection et gérer vos candidatures directement depuis votre portail.
+            Votre dossier d'inscription a bien été reçu et est actuellement <strong>en cours de vérification</strong> par notre équipe d'administration. Une fois validé, vous recevrez un e-mail de confirmation et pourrez publier des offres d'emploi, faire passer des quiz de sélection et gérer vos candidatures directement depuis votre portail.
         </td>
     </tr>
     <!-- CTA BUTTON -->
     <tr>
         <td align="center" style="padding-bottom: 30px;">
-            <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                    <td align="center" style="background-color: #4f0c28; border-radius: 99px;">
-                        <a href="{{ site_url }}/company/dashboard" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Consulter mon Statut</a>
-                    </td>
-                </tr>
-            </table>
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ site_url }}/company/dashboard/" style="height:52px;v-text-anchor:middle;width:280px;" arcsize="50%" strokecolor="#4f0c28" fillcolor="#4f0c28">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:14px;font-weight:bold;text-transform:uppercase;letter-spacing:0.05em;">CONSULTER MON STATUT</center>
+            </v:roundrect>
+            <![endif]-->
+            <!--[if !mso]><!-->
+            <a href="{{ site_url }}/company/dashboard/" target="_blank" style="display: inline-block; background-color: #4f0c28; color: #ffffff; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em; padding: 16px 36px; border-radius: 99px; mso-hide: all;">Consulter mon Statut</a>
+            <!--<![endif]-->
         </td>
     </tr>
     <tr>
         <td style="font-size: 14px; color: #8a94a6; line-height: 1.5; border-top: 1px solid #f0f2f5; padding-top: 20px;">
-            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur : <br>
-            <a href="{{ site_url }}/company/dashboard" style="color: #4f0c28; text-decoration: underline;">{{ site_url }}/company/dashboard</a>
+            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur :<br>
+            <a href="{{ site_url }}/company/dashboard/" target="_blank" style="color: #4f0c28; text-decoration: underline; word-break: break-all;">{{ site_url }}/company/dashboard/</a>
         </td>
     </tr>
 </table>
