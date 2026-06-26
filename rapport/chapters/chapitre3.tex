@@ -158,7 +158,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
-def send_html_email(subject, template_name, context, to_emails):
+def send_html_email(subject, template_name, context, recipient_list, from_email=None):
     # Injection automatique de la variable de l'URL du site
     context['site_url'] = getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000')
     
@@ -169,11 +169,14 @@ def send_html_email(subject, template_name, context, to_emails):
     email = EmailMultiAlternatives(
         subject=subject,
         body=text_content,
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        to=to_emails,
+        from_email=from_email or settings.DEFAULT_FROM_EMAIL,
+        to=recipient_list,
     )
     email.attach_alternative(html_content, "text/html")
-    return email.send()
+    try:
+        return email.send(fail_silently=False)
+    except Exception as e:
+        return False
 \end{lstlisting}
 
 Le rendu visuel d'un e-mail transactionnel de bienvenue reçu dans la boîte de messagerie du candidat est illustré dans la figure \ref{fig:email_welcome_screenshot} :
@@ -194,7 +197,7 @@ De même, le rendu visuel de l'e-mail de mise à jour du statut d'une candidatur
 
 
 \section{Présentation des interfaces de l'application}
-Cette section présente la charte graphique implémentée ainsi que les maquettes fonctionnelles et captures d'écran des différents modules de l'application. La charte graphique utilise des nuances de **Dark Plum** (\texttt{\#4F0C28}) comme couleur principale et de **Periwinkle** (\texttt{\#C5D2F8}) comme couleur secondaire pour les accents.
+Cette section présente la charte graphique implémentée ainsi que les maquettes fonctionnelles et captures d'écran des différents modules de l'application. La charte graphique utilise des nuances de \textbf{Dark Plum} (\texttt{\#4F0C28}) comme couleur principale et de \textbf{Periwinkle} (\texttt{\#C5D2F8}) comme couleur secondaire pour les accents.
 
 \subsection{Page d'accueil et d'authentification}
 La landing page présente les services de la plateforme aux visiteurs et propose deux boutons d'appel à l'action distincts pour s'inscrire en tant que candidat ou entreprise.
@@ -259,6 +262,27 @@ Le candidat accède également au \textbf{fil d'actualité social professionnel 
     \label{fig:social_feed}
 \end{figure}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/network_page.png}
+    \caption{Espace Réseau (Network) pour la recherche et l'abonnement aux autres membres}
+    \label{fig:network_page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/quiz_page.png}
+    \caption{Module d'évaluation des compétences interactif (Quiz)}
+    \label{fig:quiz_page}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/postulation_form.png}
+    \caption{Formulaire de postulation avec téléchargement de CV et lettre de motivation}
+    \label{fig:postulation_form}
+\end{figure}
+
 \subsection{Espace Entreprise et Gestion des Offres}
 L'entreprise accède à un espace restreint permettant de gérer ses offres d'emploi actives et d'analyser les dossiers de candidature reçus.
 
@@ -304,11 +328,46 @@ Le framework Django intègre nativement des protections contre les vulnérabilit
     \item \textbf{Hashage des mots de passe :} Utilisation du hashage itératif PBKDF2 avec sel dynamique pour le stockage des identifiants utilisateurs.
 \end{itemize}
 
+\section{Validation et Tests Unitaires}
+Afin de garantir la fiabilité du code et la pérennité de l'application face aux futures évolutions, nous avons implémenté une suite de tests unitaires automatisés s'appuyant sur le module \texttt{django.test.TestCase}. Le fichier \texttt{tests.py} de l'application couvre les scénarios nominaux et les cas d'erreur de la logique métier. 
+
+Le listing \ref{lst:test_case} illustre un extrait des tests vérifiant l'intégrité de l'inscription et la création automatique des profils utilisateurs :
+
+\begin{lstlisting}[language=Python, caption=Extrait des tests unitaires (Création de candidat), label=lst:test_case]
+class CandidateProfileTests(TestCase):
+    def setUp(self):
+        # Configuration initiale de l'environnement de test
+        self.client = Client()
+        self.register_url = reverse('candidate_register')
+        self.user_data = {
+            'username': 'testcandidate',
+            'email': 'candidate@test.com',
+            'password': 'testpassword123',
+            'confirm_password': 'testpassword123',
+            'first_name': 'Test',
+            'last_name': 'Candidate',
+        }
+
+    def test_candidate_registration(self):
+        # Simulation d'une requete POST d'inscription
+        response = self.client.post(self.register_url, self.user_data)
+        
+        # Verification de la redirection apres succes
+        self.assertEqual(response.status_code, 302)
+        
+        # Verification en base de donnees
+        self.assertTrue(User.objects.filter(username='testcandidate').exists())
+        user = User.objects.get(username='testcandidate')
+        self.assertTrue(CandidateProfile.objects.filter(user=user).exists())
+\end{lstlisting}
+
+Au total, la suite exécute \textbf{17 tests} couvrant également les fonctionnalités sociales (publications sur le fil d'actualité) et le processus de postulation (ATS). Tous les tests s'exécutent avec succès, validant ainsi la robustesse de l'implémentation.
+
 \section{Difficultés rencontrées et solutions apportées}
 Durant la phase finale d'intégration de la charte graphique et de mise en œuvre du responsive design, plusieurs défis techniques ont dû être surmontés :
 \begin{enumerate}
     \item \textbf{Alignement et centrage des formulaires et des tableaux de bord :} Sur les terminaux mobiles et tablettes, certains formulaires d'authentification et de profilage apparaissaient décentrés ou présentaient des problèmes de débordement horizontal. Nous avons résolu cela en restructurant nos feuilles de style (\texttt{static/css/main.css}) pour utiliser un système de grille CSS (CSS Grid) et de boîte flexible (Flexbox) avec des marges auto-calculées, garantissant un centrage géométrique parfait de tous les boutons et entrées sur mobile.
-    \item \textbf{Gestion des documents légaux :} L'ICE de l'entreprise doit obligatoirement faire 15 chiffres. Nous avons développé des validateurs personnalisés côté modèle Django (en utilisant des expressions régulières \texttt{RegexValidator}) pour bloquer l'enregistrement de valeurs invalides directement lors de la soumission du formulaire d'inscription entreprise.
+    \item \textbf{Gestion des documents légaux :} L'ICE de l'entreprise doit obligatoirement faire 15 chiffres. Nous avons développé des validateurs personnalisés côté modèle Django (en utilisant les fonctions natives \texttt{isdigit()} et \texttt{len()}) pour bloquer l'enregistrement de valeurs invalides directement lors de la soumission du formulaire d'inscription entreprise.
     \item \textbf{Fichiers médias :} Les CV, photos de profil et lettres de motivation contiennent des informations personnelles. Pour éviter qu'ils ne soient mélangés, nous avons implémenté des fonctions de génération de chemins de stockage dynamiques et compartimentés (comme les fonctions de stockage de profil ou de candidature) qui organisent automatiquement les téléversements dans des répertoires sécurisés par identifiants d'utilisateurs et d'offres.
     \item \textbf{Mise à jour d'état en temps réel (Tracker) :} Interroger intensivement le serveur pour actualiser la timeline de candidature peut surcharger la base de données. Nous avons résolu ce problème en développant un point d'API Django dédié et optimisé qui renvoie uniquement les données JSON nécessaires, couplé à une scrutation (polling) asynchrone côté client. De plus, l'overlay de scan radar ne s'active visuellement que lorsqu'une réelle transition d'état est détectée en base de données, alliant fluidité et économie de requêtes.
     \item \textbf{Expérience fluide du fil d'actualité (Social Feed) :} Le chargement d'un grand nombre de publications avec images et vidéos ralentissait l'affichage global sur mobile. Nous avons implémenté une pagination dynamique par défilement infini (Infinite Scroll) en JavaScript. Pour combler le temps de chargement asynchrone, nous avons conçu des squelettes de chargement (skeletons loaders) animés en CSS, masquant le délai réseau et rendant l'interface fluide.

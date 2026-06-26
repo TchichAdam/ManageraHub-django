@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.10)  18 JUN 2026 14:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.6.10)  26 JUN 2026 19:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1011,7 +1011,7 @@ Package caption Info: End \AtBeginDocument code.
 
 
 (chapters/cover.tex
-<logo_0.png, id=246, 365.365pt x 79.29625pt>
+<logo_0.png, id=258, 365.365pt x 79.29625pt>
 File: logo_0.png Graphic file (type png)
 <use logo_0.png>
 Package pdftex.def Info: logo_0.png  used on input line 10.
@@ -1028,7 +1028,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 11.
 (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<logo_1.png, id=248, 210.7875pt x 100.375pt>
+<logo_1.png, id=260, 210.7875pt x 100.375pt>
 File: logo_1.png Graphic file (type png)
 <use logo_1.png>
 Package pdftex.def Info: logo_1.png  used on input line 14.
@@ -1099,7 +1099,7 @@ l.31 \newpage
 (chapters/abbreviations.tex [9
 
 
-])
+] [10])
 \openout2 = `chapters/introduction.aux'.
 
  (chapters/introduction.tex [1
@@ -1118,12 +1118,31 @@ Chapitre 1.
 
 
 
-] [4] [5] [6] [7] [8] [9])
+] [4] [5] [6]
+Overfull \hbox (6.22429pt too wide) in paragraph at lines 98--99
+[]\T1/ptm/b/n/12 BNF02 - Er-go-no-mie et Mo-bi-lité (Res-pon-sive De-sign) : \T
+1/ptm/m/n/12 L'in-ter-face uti-li-sa-teur doit s'adap-
+ []
+
+
+LaTeX Warning: Reference `fig:uc_candidat_chap1' on page 7 undefined on input l
+ine 107.
+
+[7]
+
+LaTeX Warning: Reference `fig:uc_entreprise_chap1' on page 8 undefined on input
+ line 150.
+
+
+LaTeX Warning: Reference `fig:uc_admin_chap1' on page 8 undefined on input line
+ 189.
+
+[8] [9] [10] [11] [12])
 \openout2 = `chapters/chapitre2.aux'.
 
  (chapters/chapitre2.tex
 Chapitre 2.
-[10
+[13
 
 
 
@@ -1134,113 +1153,260 @@ LaTeX Font Info:    Trying to load font information for T1+pcr on input line 46
  (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
-[11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21] [22] [23] [24] [25]
-[26] [27])
+[14] [15] [16] [17] [18] [19] [20]
+Overfull \hbox (4.3184pt too wide) in paragraph at lines 454--455
+ [][] 
+ []
+
+[21]
+Overfull \hbox (2.32643pt too wide) in paragraph at lines 481--482
+ [][] 
+ []
+
+
+Overfull \hbox (12.57536pt too wide) in paragraph at lines 512--513
+ [][] 
+ []
+
+[22]
+Overfull \hbox (21.82022pt too wide) in paragraph at lines 545--546
+ [][] 
+ []
+
+
+Overfull \hbox (8.1584pt too wide) in paragraph at lines 577--578
+ [][] 
+ []
+
+[23]
+Overfull \hbox (33.95152pt too wide) in paragraph at lines 609--610
+ [][] 
+ []
+
+[24] [25] [26] [27] [28] [29] [30] [31] [32])
 \openout2 = `chapters/chapitre3.aux'.
 
  (chapters/chapitre3.tex
 Chapitre 3.
-[28
+[33
 
 
 
 
 ]
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 25.
- [29] [30]
-<diagrams/landing.png, id=666, 1444.64719pt x 714.41907pt>
+nput line 36.
+ [34] [35]
+Overfull \hbox (7.73666pt too wide) in paragraph at lines 114--115
+[]\T1/ptm/m/n/12 La confi-gu-ra-tion as-so-cie les comptes so-ciaux ré-cu-pé-ré
+s à des pro-fils \T1/pcr/m/n/12 User \T1/ptm/m/n/12 lo-caux. Si l'adresse
+ []
+
+
+Overfull \hbox (49.31004pt too wide) in paragraph at lines 114--115
+\T1/ptm/m/n/12 vo-lée. Nous avons per-son-na-lisé les ga-ba-rits (\T1/pcr/m/n/1
+2 socialaccount/signup.html \T1/ptm/m/n/12 et \T1/pcr/m/n/12 socialaccount/
+ []
+
+[36]
+Overfull \hbox (2.87651pt too wide) in paragraph at lines 143--144
+[]\T1/ptm/b/n/12 Bienvenue can-di-dat/entreprise : \T1/ptm/m/n/12 Mes-sage per-
+son-na-lisé en-voyé dès la créa-tion du compte. 
+ []
+
+[37]
+<diagrams/email_welcome_template.png, id=771, 1443.89438pt x 712.16063pt>
+File: diagrams/email_welcome_template.png Graphic file (type png)
+<use diagrams/email_welcome_template.png>
+Package pdftex.def Info: diagrams/email_welcome_template.png  used on input lin
+e 185.
+(pdftex.def)             Requested size: 455.24411pt x 224.53825pt.
+ [38]
+<diagrams/email_status_template.png, id=803, 1247.41031pt x 581.17125pt>
+File: diagrams/email_status_template.png Graphic file (type png)
+<use diagrams/email_status_template.png>
+Package pdftex.def Info: diagrams/email_status_template.png  used on input line
+ 193.
+(pdftex.def)             Requested size: 455.24411pt x 212.0947pt.
+<diagrams/landing.png, id=804, 1444.64719pt x 714.41907pt>
 File: diagrams/landing.png Graphic file (type png)
 <use diagrams/landing.png>
-Package pdftex.def Info: diagrams/landing.png  used on input line 108.
+Package pdftex.def Info: diagrams/landing.png  used on input line 207.
 (pdftex.def)             Requested size: 455.24411pt x 225.1304pt.
- [31]
-<diagrams/signin.png, id=682, 1444.64719pt x 715.92468pt>
+ [39 <./diagrams/email_welcome_template.png> <./diagrams/email_status_template.
+png>]
+<diagrams/production_landing.png, id=812, 1442.38875pt x 748.29562pt>
+File: diagrams/production_landing.png Graphic file (type png)
+<use diagrams/production_landing.png>
+Package pdftex.def Info: diagrams/production_landing.png  used on input line 21
+5.
+(pdftex.def)             Requested size: 455.24411pt x 236.17108pt.
+<diagrams/signin.png, id=813, 1444.64719pt x 715.92468pt>
 File: diagrams/signin.png Graphic file (type png)
 <use diagrams/signin.png>
-Package pdftex.def Info: diagrams/signin.png  used on input line 115.
+Package pdftex.def Info: diagrams/signin.png  used on input line 222.
 (pdftex.def)             Requested size: 455.24411pt x 225.60486pt.
- [32 <./diagrams/landing.png> <./diagrams/signin.png>]
-<diagrams/candidate_dashboard.png, id=689, 1444.64719pt x 710.655pt>
+ [40 <./diagrams/landing.png> <./diagrams/production_landing.png>]
+<diagrams/oauth_login_buttons.png, id=821, 1442.38875pt x 782.925pt>
+File: diagrams/oauth_login_buttons.png Graphic file (type png)
+<use diagrams/oauth_login_buttons.png>
+Package pdftex.def Info: diagrams/oauth_login_buttons.png  used on input line 2
+30.
+(pdftex.def)             Requested size: 455.24411pt x 247.10054pt.
+<diagrams/oauth_login_error.png, id=823, 1196.97188pt x 577.40718pt>
+File: diagrams/oauth_login_error.png Graphic file (type png)
+<use diagrams/oauth_login_error.png>
+Package pdftex.def Info: diagrams/oauth_login_error.png  used on input line 238
+.
+(pdftex.def)             Requested size: 455.24411pt x 219.60202pt.
+ [41 <./diagrams/signin.png> <./diagrams/oauth_login_buttons.png>]
+<diagrams/candidate_dashboard.png, id=830, 1444.64719pt x 710.655pt>
 File: diagrams/candidate_dashboard.png Graphic file (type png)
 <use diagrams/candidate_dashboard.png>
-Package pdftex.def Info: diagrams/candidate_dashboard.png  used on input line 1
-29.
+Package pdftex.def Info: diagrams/candidate_dashboard.png  used on input line 2
+53.
 (pdftex.def)             Requested size: 455.24411pt x 223.94426pt.
-<diagrams/feed.png, id=690, 1444.64719pt x 710.655pt>
+ [42 <./diagrams/oauth_login_error.png>]
+<diagrams/feed.png, id=836, 1444.64719pt x 710.655pt>
 File: diagrams/feed.png Graphic file (type png)
 <use diagrams/feed.png>
-Package pdftex.def Info: diagrams/feed.png  used on input line 136.
+Package pdftex.def Info: diagrams/feed.png  used on input line 260.
 (pdftex.def)             Requested size: 455.24411pt x 223.94426pt.
-<diagrams/company_dashboard.png, id=691, 1441.63594pt x 711.4078pt>
+
+
+LaTeX Warning: File `diagrams/network_page.png' not found on input line 267.
+
+
+! Package pdftex.def Error: File `diagrams/network_page.png' not found: using d
+raft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.267 ...th=\textwidth]{diagrams/network_page.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[43 <./diagrams/candidate_dashboard.png> <./diagrams/feed.png>]
+
+LaTeX Warning: File `diagrams/quiz_page.png' not found on input line 274.
+
+
+! Package pdftex.def Error: File `diagrams/quiz_page.png' not found: using draf
+t setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.274 ...width=\textwidth]{diagrams/quiz_page.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[44]
+
+LaTeX Warning: File `diagrams/postulation_form.png' not found on input line 281
+.
+
+
+! Package pdftex.def Error: File `diagrams/postulation_form.png' not found: usi
+ng draft setting.
+
+See the pdftex.def package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.281 ...textwidth]{diagrams/postulation_form.png}
+                                                  
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+[45]
+<diagrams/company_dashboard.png, id=853, 1441.63594pt x 711.4078pt>
 File: diagrams/company_dashboard.png Graphic file (type png)
 <use diagrams/company_dashboard.png>
-Package pdftex.def Info: diagrams/company_dashboard.png  used on input line 146
+Package pdftex.def Info: diagrams/company_dashboard.png  used on input line 291
 .
 (pdftex.def)             Requested size: 455.24411pt x 224.64825pt.
-
-[33 <./diagrams/candidate_dashboard.png> <./diagrams/feed.png>]
-<diagrams/company_application_detail.png, id=699, 1444.64719pt x 744.53156pt>
+ [46]
+<diagrams/company_application_detail.png, id=859, 1444.64719pt x 744.53156pt>
 File: diagrams/company_application_detail.png Graphic file (type png)
 <use diagrams/company_application_detail.png>
 Package pdftex.def Info: diagrams/company_application_detail.png  used on input
- line 153.
+ line 298.
 (pdftex.def)             Requested size: 455.24411pt x 234.61957pt.
-<diagrams/admin_dashboard.png, id=700, 1444.64719pt x 710.655pt>
+<diagrams/admin_dashboard.png, id=860, 1444.64719pt x 710.655pt>
 File: diagrams/admin_dashboard.png Graphic file (type png)
 <use diagrams/admin_dashboard.png>
-Package pdftex.def Info: diagrams/admin_dashboard.png  used on input line 163.
+Package pdftex.def Info: diagrams/admin_dashboard.png  used on input line 308.
 (pdftex.def)             Requested size: 455.24411pt x 223.94426pt.
- [34 <./diagrams/company_dashboard.png> <./diagrams/company_application_detail.
+ [47 <./diagrams/company_dashboard.png> <./diagrams/company_application_detail.
 png>]
-<diagrams/mobile_responsive.png, id=707, 693.11658pt x 596.93669pt>
+<diagrams/mobile_responsive.png, id=869, 693.11658pt x 596.93669pt>
 File: diagrams/mobile_responsive.png Graphic file (type png)
 <use diagrams/mobile_responsive.png>
-Package pdftex.def Info: diagrams/mobile_responsive.png  used on input line 173
+Package pdftex.def Info: diagrams/mobile_responsive.png  used on input line 318
 .
 (pdftex.def)             Requested size: 455.24411pt x 392.07574pt.
- [35 <./diagrams/admin_dashboard.png>] [36 <./diagrams/mobile_responsive.png>] 
-[37]
-[38])
+ [48 <./diagrams/admin_dashboard.png>] [49 <./diagrams/mobile_responsive.png>]
+
+LaTeX Warning: Reference `lst:test_case' on page 50 undefined on input line 334
+.
+
+[50] [51] [52])
 \openout2 = `chapters/conclusion.aux'.
 
- (chapters/conclusion.tex [39
+ (chapters/conclusion.tex [53
 
 
 
 
-] [40])
+] [54])
 \openout2 = `chapters/references.aux'.
 
- (chapters/references.tex [41
+ (chapters/references.tex
+Overfull \hbox (4.38583pt too wide) in paragraph at lines 27--28
+[][]$\T1/pcr/m/n/12 https : / / docs . oracle . com / en-[]us / iaas / Content 
+/ Compute/$[][] \T1/ptm/m/n/12 (Consulté en
+ []
+
+[55
 
 
 
 
-])
+]
+Overfull \hbox (50.83038pt too wide) in paragraph at lines 28--29
+[][]$\T1/pcr/m/n/12 https : / / docs . nginx . com / nginx / admin-[]guide / we
+b-[]server / reverse-[]proxy/$[][]
+ []
+
+[56])
 \openout2 = `chapters/annexes.aux'.
 
-
-(chapters/annexes.tex
+ (chapters/annexes.tex
 (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
-[42
+[57
 
 
 
 
-] [43]
+] [58]
 (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2025/11/14 1.11b listings language file
 )
 (C:\Users\adam\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstmisc.sty
 File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
 )
-[44] [45] [46] [47]) (main.aux (chapters/cover.aux) (chapters/dedicaces.aux)
+[59] [60] [61] [62]) (main.aux (chapters/cover.aux) (chapters/dedicaces.aux)
 (chapters/remerciements.aux) (chapters/resume.aux) (chapters/abbreviations.aux)
 (chapters/introduction.aux) (chapters/chapitre1.aux) (chapters/chapitre2.aux)
 (chapters/chapitre3.aux) (chapters/conclusion.aux) (chapters/references.aux)
@@ -1249,32 +1415,81 @@ File: lstmisc.sty 2025/11/14 1.11b (Carsten Heinz)
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-05-26>
  ***********
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 8612F2ABB5AAF5D8B76926216826CBAE;11277.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: 62640D48FDF2F960BDC1F1429B6F6788;12329
+(rerunfilecheck)             After:  BDE87A164ABD3D3C65F7690ED97ED1C7;13572.
  ) 
 Here is how much of TeX's memory you used:
- 30435 strings out of 467509
- 564679 string characters out of 5409266
- 1576087 words of memory out of 5000000
- 58693 multiletter control sequences out of 15000+600000
+ 30908 strings out of 467509
+ 574873 string characters out of 5409266
+ 1579645 words of memory out of 5000000
+ 59041 multiletter control sequences out of 15000+600000
  699058 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,14n,94p,1001b,2198s stack positions out of 10000i,1000n,20000p,200000b,200000s
-<C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
-mmi10.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
-nts/cm/cmmi12.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmmi8.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/typ
-e1/public/amsfonts/cm/cmr12.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fo
-nts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/adam/AppData/Local/Programs/M
-iKTeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/adam/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/urw/courier/ucrb8a.pfb><C:/Users/adam/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/adam/AppData/Local/P
-rograms/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/adam/AppData/Local/Pr
-ograms/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/adam/AppData/Local/Pro
-grams/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (57 pages, 15914058 bytes).
+
+pdfTeX warning (dest): name{table.caption.16} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.15} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{table.caption.11} has been referenced but does not 
+exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.19} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.18} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{figure.caption.17} has been referenced but does not
+ exist, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter*.44} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter*.43} has been referenced but does not exist
+, replaced by a fixed one
+
+
+pdfTeX warning (dest): name{chapter*.42} has been referenced but does not exist
+, replaced by a fixed one
+
+<C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmm
+i10.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfont
+s/cm/cmmi12.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1/public
+/amsfonts/cm/cmmi8.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmr12.pfb><C:/Users/adam/AppData/Local/Programs/MiKTeX/font
+s/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/adam/AppData/Local/Programs/MiK
+TeX/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Users/adam/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/urw/courier/ucrb8a.pfb><C:/Users/adam/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/adam/AppData/Local/Pro
+grams/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/adam/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/adam/AppData/Local/Progr
+ams/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (73 pages, 19810917 bytes).
 PDF statistics:
- 1045 PDF objects out of 1200 (max. 8388607)
- 405 named destinations out of 1000 (max. 500000)
- 591 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1287 PDF objects out of 1440 (max. 8388607)
+ 530 named destinations out of 1000 (max. 500000)
+ 640 words of extra memory for PDF output out of 10000 (max. 10000000)
 

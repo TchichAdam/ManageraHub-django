@@ -242,7 +242,7 @@ TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 # Target dir for `python manage.py collectstatic` in production.
 STATIC_ROOT = BASE_DIR / 'staticfiles'

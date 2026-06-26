@@ -1,24 +1,37 @@
 \babel@toc {french}{}\relax 
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {1.1}{\ignorespaces Diagramme de Gantt du projet ManageraHub}}{8}{figure.caption.12}%
-\contentsline {figure}{\numberline {1.2}{\ignorespaces Réseau PERT et chemin critique}}{9}{figure.caption.13}%
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Cas d'utilisation spécifiques au Candidat}}{8}{figure.caption.11}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Cas d'utilisation spécifiques à l'Entreprise}}{8}{figure.caption.12}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Cas d'utilisation spécifiques à l'Administrateur}}{9}{figure.caption.13}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Diagramme de Gantt du projet ManageraHub}}{11}{figure.caption.15}%
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Réseau PERT et chemin critique}}{12}{figure.caption.16}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagramme de cas d'utilisation global}}{17}{figure.caption.17}%
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Diagramme de classes techniques complet}}{18}{figure.caption.18}%
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Diagramme de séquence : Inscription et Vérification de l'Entreprise}}{19}{figure.caption.19}%
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Diagramme de séquence : Flux de candidature}}{19}{figure.caption.20}%
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Diagramme de séquence : Publication d'une offre d'emploi}}{20}{figure.caption.21}%
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Diagramme de séquence : Interaction fil d'actualités social}}{20}{figure.caption.22}%
-\contentsline {figure}{\numberline {2.7}{\ignorespaces Diagramme de séquence : Système d'abonnement (Follow)}}{21}{figure.caption.23}%
-\contentsline {figure}{\numberline {2.8}{\ignorespaces Diagramme de séquence : Synchronisation en temps réel (Tracker)}}{21}{figure.caption.24}%
-\contentsline {figure}{\numberline {2.9}{\ignorespaces Diagramme d'activité : Processus complet d'une candidature}}{22}{figure.caption.25}%
-\contentsline {figure}{\numberline {2.10}{\ignorespaces Diagramme de déploiement physique du système}}{22}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Diagramme de cas d'utilisation global}}{20}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Diagramme de classes techniques complet}}{21}{figure.caption.21}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Diagramme de séquence : Inscription et Vérification de l'Entreprise}}{22}{figure.caption.22}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Diagramme de séquence : Flux de candidature}}{22}{figure.caption.23}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Diagramme de séquence : Publication d'une offre d'emploi}}{23}{figure.caption.24}%
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Diagramme de séquence : Interaction fil d'actualités social}}{23}{figure.caption.25}%
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Diagramme de séquence : Système d'abonnement (Follow)}}{24}{figure.caption.26}%
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Diagramme de séquence : Synchronisation en temps réel (Tracker)}}{24}{figure.caption.27}%
+\contentsline {figure}{\numberline {2.9}{\ignorespaces Diagramme de séquence : Authentification sociale via OAuth 2.0}}{25}{figure.caption.28}%
+\contentsline {figure}{\numberline {2.10}{\ignorespaces Diagramme de séquence : Système d'envoi d'e-mails de notification transactionnels}}{25}{figure.caption.29}%
+\contentsline {figure}{\numberline {2.11}{\ignorespaces Diagramme d'activité : Processus complet d'une candidature}}{26}{figure.caption.30}%
+\contentsline {figure}{\numberline {2.12}{\ignorespaces Diagramme de déploiement physique du système sur Oracle Cloud}}{27}{figure.caption.31}%
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Page d'accueil de ManageraHub - Vue Desktop}}{32}{figure.caption.27}%
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Interface de Connexion et d'Inscription de ManageraHub}}{32}{figure.caption.28}%
-\contentsline {figure}{\numberline {3.3}{\ignorespaces Tableau de bord de l'Espace Candidat avec barre de progression de profil}}{33}{figure.caption.29}%
-\contentsline {figure}{\numberline {3.4}{\ignorespaces Fil d'actualités social de la plateforme avec likes et commentaires}}{33}{figure.caption.30}%
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Tableau de bord de pilotage d'une Entreprise approuvée}}{34}{figure.caption.31}%
-\contentsline {figure}{\numberline {3.6}{\ignorespaces Écran d'évaluation des candidatures et de changement de statut}}{34}{figure.caption.32}%
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Panneau d'administration - Validation des comptes recruteurs}}{35}{figure.caption.33}%
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Rendu de l'application ManageraHub sur écran de Smartphone}}{36}{figure.caption.34}%
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Rendu de l'e-mail HTML de bienvenue dans une boîte Gmail}}{39}{figure.caption.32}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Rendu de l'e-mail HTML de changement de statut dans une boîte Gmail}}{39}{figure.caption.33}%
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Page d'accueil de ManageraHub - Vue Desktop}}{40}{figure.caption.34}%
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Page d'accueil en ligne en production (URL sslip.io)}}{40}{figure.caption.35}%
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Interface de Connexion et d'Inscription de ManageraHub}}{41}{figure.caption.36}%
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Boutons d'authentification Google et GitHub intégrés}}{41}{figure.caption.37}%
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Page d'erreur/annulation d'authentification sociale personnalisée}}{42}{figure.caption.38}%
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Tableau de bord de l'Espace Candidat avec barre de progression de profil}}{43}{figure.caption.39}%
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Fil d'actualités social de la plateforme avec likes et commentaires}}{43}{figure.caption.40}%
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Espace Réseau (Network) pour la recherche et l'abonnement aux autres membres}}{44}{figure.caption.41}%
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Module d'évaluation des compétences interactif (Quiz)}}{45}{figure.caption.42}%
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Formulaire de postulation avec téléchargement de CV et lettre de motivation}}{46}{figure.caption.43}%
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Tableau de bord de pilotage d'une Entreprise approuvée}}{47}{figure.caption.44}%
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Écran d'évaluation des candidatures et de changement de statut}}{47}{figure.caption.45}%
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Panneau d'administration - Validation des comptes recruteurs}}{48}{figure.caption.46}%
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Rendu de l'application ManageraHub sur écran de Smartphone}}{49}{figure.caption.47}%

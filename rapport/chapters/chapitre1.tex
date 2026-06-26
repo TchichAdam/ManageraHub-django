@@ -17,7 +17,7 @@ Toutefois, cette transition numérique rapide a mis en évidence des lacunes maj
 \subsection{Étude comparative des solutions existantes}
 Pour concevoir ManageraHub de manière pertinente, nous avons réalisé une étude comparative approfondie des solutions de recrutement dominantes sur le marché marocain.
 
-\subsubsection{1. LinkedIn}
+\subsubsection{LinkedIn}
 LinkedIn s'est imposé comme le réseau social professionnel incontournable à l'échelle mondiale et nationale. Il excelle dans la création de liens, le réseautage, et offre une vitrine dynamique pour les profils. Cependant, ses limitations pour le contexte marocain sont évidentes :
 \begin{itemize}
     \item \textbf{Coût prohibitif :} Les offres d'emploi payantes (LinkedIn Job Slots) sont inaccessibles pour la majorité des PME et start-ups locales.
@@ -25,14 +25,14 @@ LinkedIn s'est imposé comme le réseau social professionnel incontournable à l
     \item \textbf{Gestion des candidatures sommaire :} L'outil intégré reste basique à moins d'acheter une licence premium "Recruiter Lite" très coûteuse.
 \end{itemize}
 
-\subsubsection{2. ReKrute.com}
+\subsubsection{ReKrute.com}
 ReKrute est le portail d'emploi marocain de référence pour les cadres et profils qualifiés.
 \begin{itemize}
     \item \textbf{Points forts :} Un outil ATS interne performant pour les recruteurs, un bon système de filtrage et une large base de données de CV.
     \item \textbf{Limitations :} L'interface est rigide et peu interactive pour le candidat. La plateforme est payante pour les recruteurs dès la première annonce, excluant les petites structures. De plus, il n'y a aucun aspect social permettant aux candidats de s'exprimer ou de publier du contenu en dehors de la postulation formelle.
 \end{itemize}
 
-\subsubsection{3. Anapec (Agence Nationale de Promotion de l'Emploi et des Compétences)}
+\subsubsection{Anapec (Agence Nationale de Promotion de l'Emploi et des Compétences)}
 L'Anapec est l'organisme public marocain chargé de l'intermédiation sur le marché de l'emploi.
 \begin{itemize}
     \item \textbf{Points forts :} Gratuité totale pour les entreprises et les candidats marocains, vérification légale obligatoire de l'existence de l'entreprise.
@@ -77,6 +77,152 @@ La proposition de valeur de ManageraHub repose sur trois axes fondamentaux :
     \item \textbf{2. Réseautage Social Actif (Feed Professionnel) :} Un fil d'actualités centralisé permet aux utilisateurs de s'exprimer au-delà de leur CV. Les candidats et entreprises publient des messages textuels enrichis d'images ou de vidéos, aiment et commentent les publications, et se suivent mutuellement. Ce feed intègre une fonctionnalité essentielle : la possibilité d'associer des mots-clés ou des entreprises taguées pour maximiser la visibilité.
     \item \textbf{3. Gestion Structurée de Carrière et Recrutement (ATS Intégré) :} Le candidat dispose d'un espace personnel pour uploader son CV et associer des certifications professionnelles multiples. Il peut postuler d'un simple clic et suivre en temps réel le statut de ses candidatures. L'entreprise dispose d'un tableau de bord moderne pour filtrer les candidats et faire évoluer les statuts, ce qui déclenche des notifications automatiques vers les candidats.
 \end{itemize}
+
+\section{Spécification formelle des besoins et Modélisation}
+\subsection{Besoins fonctionnels (BF)}
+Les besoins fonctionnels décrivent les actions que le système doit exécuter pour satisfaire les demandes des utilisateurs.
+\begin{itemize}
+    \item \textbf{BF01 - Gestion des comptes Candidats :} Le système doit permettre aux chercheurs d'emploi de s'inscrire, de s'authentifier (classique ou OAuth) et de gérer leur profil (CV, compétences, certifications).
+    \item \textbf{BF02 - Gestion des comptes Entreprises :} Le système doit permettre aux recruteurs de s'inscrire et de fournir leurs informations légales (ICE, RC) pour vérification.
+    \item \textbf{BF03 - Modération et Validation (Admin) :} Le système doit fournir une interface permettant à l'administrateur de valider ou rejeter l'inscription des entreprises sur la base de leur ICE/RC.
+    \item \textbf{BF04 - Gestion des offres d'emploi :} Une entreprise validée doit pouvoir publier, modifier, activer ou désactiver des offres d'emploi.
+    \item \textbf{BF05 - Processus de candidature (ATS) :} Le candidat doit pouvoir rechercher des offres et y postuler. L'entreprise doit pouvoir consulter les candidatures et modifier leur statut.
+    \item \textbf{BF06 - Réseau social et interactions :} Le système doit intégrer un fil d'actualités où les utilisateurs peuvent publier des posts, commenter, liker et se suivre mutuellement (Follow).
+    \item \textbf{BF07 - Évaluation des compétences :} Le système doit proposer des quiz interactifs permettant aux candidats d'évaluer leurs soft-skills et de conserver l'historique de leurs scores.
+\end{itemize}
+
+\subsection{Besoins non-fonctionnels (BNF)}
+Les besoins non-fonctionnels définissent les critères de qualité, de sécurité et de performance de la plateforme.
+\begin{itemize}
+    \item \textbf{BNF01 - Sécurité et Confidentialité :} Les mots de passe doivent être hachés (PBKDF2). Toutes les requêtes modifiant l'état doivent être protégées contre les attaques CSRF et XSS. Les documents sensibles (CV, RC) ne doivent pas être publiquement indexables.
+    \item \textbf{BNF02 - Ergonomie et Mobilité (Responsive Design) :} L'interface utilisateur doit s'adapter automatiquement aux terminaux mobiles, tablettes et ordinateurs de bureau (approche Mobile-First).
+    \item \textbf{BNF03 - Performance et Optimisation :} Le temps de réponse des pages contenant beaucoup de données (comme le fil d'actualités social) doit être minimisé en évitant le problème des requêtes N+1 via l'ORM.
+    \item \textbf{BNF04 - Fiabilité et Suivi en temps réel :} Le suivi du statut des candidatures doit être dynamique sans nécessiter le rechargement manuel de la page par l'utilisateur (polling AJAX).
+\end{itemize}
+
+\subsection{Diagrammes de Cas d'Utilisation (Analyse)}
+Pour illustrer graphiquement ces besoins, nous avons modélisé les interactions principales des trois acteurs avec le système.
+
+\subsubsection{Cas d'utilisation : Acteur Candidat}
+La figure \ref{fig:uc_candidat_chap1} présente les actions possibles pour le candidat, allant de la gestion de son profil à sa participation au réseau social et au passage de quiz.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.65\textwidth}{!}{
+\begin{tikzpicture}[
+  actor/.pic={
+    \draw[thick, draw=emsiblue, fill=white] (0,0.5) circle (0.2);
+    \draw[thick, draw=emsiblue] (0,0.3) -- (0,-0.25);
+    \draw[thick, draw=emsiblue] (-0.3,0.1) -- (0.3,0.1);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (-0.2,-0.75);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (0.2,-0.75);
+  }
+]
+    \pic at (-4, 0) {actor};
+    \node (candidat) at (-4, 0) [circle, minimum size=1.5cm] {};
+    \node at (-4, -1.0) {\textbf{Candidat}};
+    
+    \draw[thick, emsiblue] (-1, -4.5) rectangle (5, 4.5);
+    \node[emsiblue, above] at (2, 4.5) {\textbf{Système ATS \& Social}};
+    
+    \begin{scope}[every node/.style={draw, ellipse, align=center, minimum width=2.5cm, inner sep=2pt, fill=white, drop shadow, font=\small}]
+        \node (profil) at (2, 3.5) {Gérer son Profil};
+        \node (quiz) at (2, 2.0) {Passer un Quiz};
+        \node (postuler) at (2, 0.5) {Rechercher \& Postuler};
+        \node (suivi) at (2, -1.0) {Suivre ses candidatures};
+        \node (reseau) at (2, -2.5) {Participer au Réseau Social};
+        \node (auth) at (2, -4.0) {S'authentifier};
+    \end{scope}
+    
+    \draw (candidat) -- (profil);
+    \draw (candidat) -- (quiz);
+    \draw (candidat) -- (postuler);
+    \draw (candidat) -- (suivi);
+    \draw (candidat) -- (reseau);
+    \draw (candidat) -- (auth);
+\end{tikzpicture}
+}
+\caption{Cas d'utilisation spécifiques au Candidat}
+\label{fig:uc_candidat_chap1}
+\end{figure}
+
+\subsubsection{Cas d'utilisation : Acteur Entreprise}
+La figure \ref{fig:uc_entreprise_chap1} détaille les privilèges de l'entreprise recruteuse, fortement conditionnés par son approbation administrative.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.65\textwidth}{!}{
+\begin{tikzpicture}[
+  actor/.pic={
+    \draw[thick, draw=emsiblue, fill=white] (0,0.5) circle (0.2);
+    \draw[thick, draw=emsiblue] (0,0.3) -- (0,-0.25);
+    \draw[thick, draw=emsiblue] (-0.3,0.1) -- (0.3,0.1);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (-0.2,-0.75);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (0.2,-0.75);
+  }
+]
+    \pic at (-4, 0) {actor};
+    \node (entreprise) at (-4, 0) [circle, minimum size=1.5cm] {};
+    \node at (-4, -1.0) {\textbf{Entreprise}};
+    
+    \draw[thick, emsiblue] (-1, -3.5) rectangle (5, 3.5);
+    \node[emsiblue, above] at (2, 3.5) {\textbf{Espace Recruteur}};
+    
+    \begin{scope}[every node/.style={draw, ellipse, align=center, minimum width=2.5cm, inner sep=2pt, fill=white, drop shadow, font=\small}]
+        \node (profil) at (2, 2.5) {Gérer profil Entreprise};
+        \node (offre) at (2, 1.0) {Gérer Offres d'emploi};
+        \node (cand) at (2, -0.5) {Traiter Candidatures};
+        \node (reseau) at (2, -2.0) {Participer au Réseau Social};
+    \end{scope}
+    
+    \draw (entreprise) -- (profil);
+    \draw (entreprise) -- (offre);
+    \draw (entreprise) -- (cand);
+    \draw (entreprise) -- (reseau);
+\end{tikzpicture}
+}
+\caption{Cas d'utilisation spécifiques à l'Entreprise}
+\label{fig:uc_entreprise_chap1}
+\end{figure}
+
+\subsubsection{Cas d'utilisation : Acteur Administrateur}
+La figure \ref{fig:uc_admin_chap1} illustre le rôle de modération de l'administrateur, garantissant l'intégrité de la plateforme.
+
+\begin{figure}[H]
+\centering
+\resizebox{0.65\textwidth}{!}{
+\begin{tikzpicture}[
+  actor/.pic={
+    \draw[thick, draw=emsiblue, fill=white] (0,0.5) circle (0.2);
+    \draw[thick, draw=emsiblue] (0,0.3) -- (0,-0.25);
+    \draw[thick, draw=emsiblue] (-0.3,0.1) -- (0.3,0.1);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (-0.2,-0.75);
+    \draw[thick, draw=emsiblue] (0,-0.25) -- (0.2,-0.75);
+  }
+]
+    \pic at (-4, 0) {actor};
+    \node (admin) at (-4, 0) [circle, minimum size=1.5cm] {};
+    \node at (-4, -1.0) {\textbf{Administrateur}};
+    
+    \draw[thick, emsiblue] (-1, -3.5) rectangle (5, 3.5);
+    \node[emsiblue, above] at (2, 3.5) {\textbf{Panneau d'Administration}};
+    
+    \begin{scope}[every node/.style={draw, ellipse, align=center, minimum width=2.5cm, inner sep=2pt, fill=white, drop shadow, font=\small}]
+        \node (valider) at (2, 2.0) {Valider Entreprises (ICE/RC)};
+        \node (users) at (2, 0.5) {Gérer Utilisateurs};
+        \node (mod) at (2, -1.0) {Modérer Feed \& Offres};
+        \node (stats) at (2, -2.5) {Consulter Statistiques};
+    \end{scope}
+    
+    \draw (admin) -- (valider);
+    \draw (admin) -- (users);
+    \draw (admin) -- (mod);
+    \draw (admin) -- (stats);
+\end{tikzpicture}
+}
+\caption{Cas d'utilisation spécifiques à l'Administrateur}
+\label{fig:uc_admin_chap1}
+\end{figure}
 
 \section{Organisation et planification du projet}
 \subsection{Le processus de développement : 2TUP (2 Track Unified Process)}

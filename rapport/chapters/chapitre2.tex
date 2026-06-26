@@ -8,7 +8,7 @@ Le système ManageraHub doit gérer trois profils distincts d'utilisateurs. Pour
 
 \subsection{Besoins fonctionnels}
 
-\subsubsection{Espace Candidat (14 fonctionnalités)}
+\subsubsection{Espace Candidat (15 fonctionnalités)}
 Le Candidat représente le chercheur d'emploi ou le profil souhaitant développer son réseau. Les fonctionnalités associées sont détaillées dans le tableau \ref{tab:features_candidat}.
 
 \begin{table}[H]
@@ -327,6 +327,8 @@ La structure statique des données, mappée directement sur les modèles Django 
         + contract\_type : CharField [Choices] \\
         + experience\_level : CharField [Choices] \\
         + summary : TextField \\
+        + responsibilities : TextField \\
+        + requirements : TextField \\
         + salary\_range : CharField \\
         + is\_remote : BooleanField \\
         + is\_active : BooleanField \\
@@ -898,7 +900,7 @@ La base de données relationnelle (SQLite / MySQL) est structurée pour assurer 
         \item logo : VARCHAR(100) NULL
         \item background\_image : VARCHAR(100) NULL
         \item is\_approved : BOOLEAN DEFAULT FALSE (mis à TRUE par l'admin après validation)
-        \item ice : VARCHAR(15) UNIQUE NULL (Identifiant Commun de l'Entreprise)
+        \item ice : VARCHAR(15) NULL (Identifiant Commun de l'Entreprise)
         \item rc\_number : VARCHAR(50) NULL (Registre du Commerce)
         \item legal\_document : VARCHAR(100) NULL
         \item created\_at : DATETIME NOT NULL
