@@ -89,7 +89,11 @@ urlpatterns = [
     path('admin/reject-company/<int:company_id>/', admin_reject_company_view, name='admin_reject_company'),
     path('admin/verify-company-offline/<int:company_id>/', admin_verify_company_offline_view, name='admin_verify_company_offline'),
     path('admin/', admin.site.urls),
+    path('test-oauth-error/', TemplateView.as_view(template_name='socialaccount/authentication_error.html'), name='test_oauth_error'),
 ]
+
+from django.views.generic import TemplateView
+
 
 if settings.HAS_ALLAUTH:
     urlpatterns.append(path('auth/', include('allauth.urls')))
