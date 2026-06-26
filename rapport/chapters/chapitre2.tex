@@ -810,12 +810,12 @@ Ce diagramme (figure \ref{fig:deployment_pfa2}) détaille la topologie physique 
     \draw[<->, >=latex, thick] (browser) -- (nginx) node[midway, above, sloped, fill=white, inner sep=1.5pt] {{\scriptsize HTTP, HTTPS}};
     
     % Nginx to Django: orthogonal par le haut
-    \draw[<->, >=latex, thick] (nginx.east) -| (django.north) node[pos=0.3, above, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize Static}};
+    \draw[<->, >=latex, thick] (nginx.east) -| (django.north) node[pos=0.3, below, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize Static}};
     
     \draw[<->, >=latex, thick] (nginx) -- (gunicorn) node[midway, left, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize Proxy}};
     
     % Gunicorn to Django: orthogonal par le bas
-    \draw[<->, >=latex, thick] (gunicorn.east) -| (django.south) node[pos=0.3, below, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize WSGI}};
+    \draw[<->, >=latex, thick] (gunicorn.east) -| (django.south) node[pos=0.3, above, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize WSGI}};
     
     \draw[<->, >=latex, thick] (django) -- (sqlite) node[midway, right, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize ORM SQLite}};
     \draw[<->, >=latex, thick] (django) -- (storage) node[midway, right, fill=emsiblue!5, inner sep=1.5pt] {{\scriptsize I/O Média}};
