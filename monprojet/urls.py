@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.urls import include, path
+from django.views.generic import TemplateView
+
 
 from app1.views import (
     account_logout_view,
@@ -91,8 +93,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('test-oauth-error/', TemplateView.as_view(template_name='socialaccount/authentication_error.html'), name='test_oauth_error'),
 ]
-
-from django.views.generic import TemplateView
 
 
 if settings.HAS_ALLAUTH:
