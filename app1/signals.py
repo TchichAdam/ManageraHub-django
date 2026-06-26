@@ -65,3 +65,53 @@ def notify_candidate_on_status_change(sender, instance, **kwargs):
             recipient_list=[candidate_email],
             fail_silently=True,
         )
+
+
+from django.db.models.signals import post_save
+from .models import CandidateProfile, CompanyProfile
+
+@receiver(post_save, sender=CandidateProfile)
+def notify_candidate_on_welcome(sender, instance, created, **kwargs):
+    """Send a welcome email to the candidate when their profile is created."""
+    if created:
+        user = instance.user
+        subject = "Welcome to ManageraHub!"
+        body = (
+            f"Hello {user.get_full_name() or user.username},\n\n"
+            "Thank you for registering as a Candidate on ManageraHub! "
+            "Your profile has been created. You can now browse job offers, "
+            "apply online, track your status, and pass quizzes.\n\n"
+            "Best regards,\n"
+            "The ManageraHub Team"
+        )
+        if user.email:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+
+@receiver(post_save, sender=CompanyProfile)
+def notify_company_on_welcome(sender, instance, created, **kwargs):
+    """Send a welcome email to the company when their profile is created."""
+    if created:
+        user = instance.user
+        subject = "Welcome to ManageraHub!"
+        body = (
+            f"Hello {user.get_full_name() or user.username},\n\n"
+            "Thank you for registering as a Company on ManageraHub! "
+            "Your registration has been received and is currently pending administrator approval. "
+            "Once approved, you will be able to post jobs, manage applications, and hire candidates.\n\n"
+            "Best regards,\n"
+            "The ManageraHub Team"
+        )
+        if user.email:
+            send_mail(
+                subject=subject,
+                message=body,
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
