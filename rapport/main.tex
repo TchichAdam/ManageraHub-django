@@ -65,6 +65,13 @@
 \fancyfoot[C]{\color{emsiblue} \large\bfseries \thepage}
 \renewcommand{\headrulewidth}{0.4pt}
 
+% Redéfinition du style plain (utilisé par défaut sur les pages de début de chapitre) pour avoir le même footer
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyfoot[C]{\color{emsiblue} \large\bfseries \thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
 \onehalfspacing
 
 % Commande personnalisée pour les placeholders de captures d'écran
