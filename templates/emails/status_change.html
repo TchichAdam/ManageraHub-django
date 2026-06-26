@@ -1,0 +1,89 @@
+{% extends "emails/base_email.html" %}
+
+{% block email_content %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;">
+    <tr>
+        <td style="padding-bottom: 20px;">
+            <h2 style="margin: 0; font-family: Georgia, serif; font-size: 22px; color: #1e2229; font-weight: 600;">Mise à jour de votre candidature ✦</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 24px;">
+            Bonjour {{ candidate_name }},
+            <br><br>
+            Il y a du nouveau concernant votre candidature pour l'offre d'emploi : <br>
+            <strong style="color: #1e2229; font-size: 16px;">{{ job_title }}</strong> chez <strong>{{ company_name }}</strong>.
+        </td>
+    </tr>
+    
+    <!-- STATUS DETAIL CARD -->
+    <tr>
+        <td style="padding-bottom: 30px;">
+            {% if status == 'accepted' %}
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #e6fdf0; border-left: 4px solid #10b981; border-radius: 4px 12px 12px 4px; padding: 20px;">
+                    <tr>
+                        <td style="font-size: 15px; font-weight: bold; color: #065f46; padding-bottom: 6px;">Félicitations ! Votre candidature a été acceptée.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px; color: #047857; line-height: 1.5;">
+                            Excellente nouvelle ! L'entreprise a accepté votre candidature pour le poste de <strong>{{ job_title }}</strong>. Ils prendront contact avec vous très prochainement pour convenir des étapes suivantes.
+                        </td>
+                    </tr>
+                </table>
+            {% elif status == 'rejected' %}
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #fef2f2; border-left: 4px solid #f87171; border-radius: 4px 12px 12px 4px; padding: 20px;">
+                    <tr>
+                        <td style="font-size: 15px; font-weight: bold; color: #991b1b; padding-bottom: 6px;">Mise à jour concernant votre candidature</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px; color: #b91c1c; line-height: 1.5;">
+                            Merci d'avoir postulé pour le poste de <strong>{{ job_title }}</strong>. Malheureusement, l'entreprise a décidé de ne pas donner suite à votre candidature pour le moment. Ne vous découragez pas et continuez vos recherches !
+                        </td>
+                    </tr>
+                </table>
+            {% elif status == 'under_review' %}
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 4px 12px 12px 4px; padding: 20px;">
+                    <tr>
+                        <td style="font-size: 15px; font-weight: bold; color: #1e3a8a; padding-bottom: 6px;">Candidature en cours d'examen</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px; color: #1d4ed8; line-height: 1.5;">
+                            Bonne nouvelle — votre profil pour le poste de <strong>{{ job_title }}</strong> est actuellement en cours d'examen par l'équipe de recrutement. Nous vous tiendrons informé de son évolution.
+                        </td>
+                    </tr>
+                </table>
+            {% elif status == 'interview_scheduled' %}
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #faf5ff; border-left: 4px solid #a855f7; border-radius: 4px 12px 12px 4px; padding: 20px;">
+                    <tr>
+                        <td style="font-size: 15px; font-weight: bold; color: #581c87; padding-bottom: 6px;">Entretien planifié !</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px; color: #7e22ce; line-height: 1.5;">
+                            Votre candidature pour le poste de <strong>{{ job_title }}</strong> a franchi une étape importante ! Vous avez été sélectionné pour un entretien. L'entreprise vous contactera très rapidement pour en fixer la date et les modalités.
+                        </td>
+                    </tr>
+                </table>
+            {% endif %}
+        </td>
+    </tr>
+
+    <!-- CTA BUTTON -->
+    <tr>
+        <td align="center" style="padding-bottom: 30px;">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="background-color: #4f0c28; border-radius: 99px;">
+                        <a href="{{ site_url }}/candidate/applications" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Suivre ma candidature</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 14px; color: #8a94a6; line-height: 1.5; border-top: 1px solid #f0f2f5; padding-top: 20px;">
+            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur : <br>
+            <a href="{{ site_url }}/candidate/applications" style="color: #4f0c28; text-decoration: underline;">{{ site_url }}/candidate/applications</a>
+        </td>
+    </tr>
+</table>
+{% endblock %}

@@ -12,6 +12,7 @@ from django.utils import timezone
 
 from django.http import JsonResponse
 from django.core.mail import send_mail
+from .emails import send_html_email
 from .forms import CandidateProfileForm, CompanyProfileForm, JobApplicationForm, JobOfferFilterForm, JobOfferForm, CompanyJobFilterForm, CompanyApplicationFilterForm
 from .models import CandidateProfile, CompanyProfile, JobApplication, JobOffer, Post, Comment, Follow, QuizResult
 from . import quizzes
@@ -1206,30 +1207,20 @@ def admin_approve_company_view(request, company_id):
     company = get_object_or_404(CompanyProfile, pk=company_id)
     company.is_approved = True
     company.save(update_fields=["is_approved"])
-    
-    # Send simulation email to console
-    subject = f"Your Company Account '{company.company_name}' has been APPROVED! ✦"
-    message = f"""Bonjour {company.user.first_name} {company.user.last_name},
-
-Félicitations! Your company account for '{company.company_name}' has been reviewed and APPROVED by our administration team.
-
-Here is your company profile details we verified:
-- ICE (Identifiant Commun): {company.ice or "Not provided"}
-- RC Number: {company.rc_number or "Not provided"}
-- City/Location: {company.city}, {company.country}
-
-You can now log in to the Company Portal and start posting job offers!
-Access here: http://127.0.0.1:8000/company/signin
-
-Best regards,
-The ManageraHub Admin Team (Morocco)
-"""
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [company.user.email],
-        fail_silently=True,
+    subject = f"Votre compte entreprise '{company.company_name}' a été validé ! ✦"
+    context = {
+        "display_name": f"{company.user.first_name} {company.user.last_name}".strip() or company.user.username,
+        "company_name": company.company_name,
+        "ice": company.ice,
+        "rc_number": company.rc_number,
+        "city": company.city,
+        "country": company.country,
+    }
+    send_html_email(
+        subject=subject,
+        template_name="emails/company_approved.html",
+        context=context,
+        recipient_list=[company.user.email],
     )
     return redirect("/admin/")
 
@@ -1245,27 +1236,16 @@ def admin_reject_company_view(request, company_id):
     company.is_approved = False
     company.save(update_fields=["is_approved"])
     
-    # Send simulation email to console
-    subject = f"Update regarding your Company Account request for '{company.company_name}'"
-    message = f"""Bonjour {company.user.first_name} {company.user.last_name},
-
-Thank you for your interest in ManageraHub. 
-
-After reviewing the legal documents and details provided for '{company.company_name}', our administration team has rejected or deactivated your company profile.
-
-If you believe this was an error, please ensure your 15-digit ICE and Registre du Commerce (RC) numbers are correct and that you uploaded a valid Modèle J certificate.
-
-You can update your registration or get in touch with our support.
-
-Best regards,
-The ManageraHub Admin Team (Morocco)
-"""
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [company.user.email],
-        fail_silently=True,
+    subject = f"Mise à jour concernant votre inscription entreprise '{company.company_name}'"
+    context = {
+        "display_name": f"{company.user.first_name} {company.user.last_name}".strip() or company.user.username,
+        "company_name": company.company_name,
+    }
+    send_html_email(
+        subject=subject,
+        template_name="emails/company_rejected.html",
+        context=context,
+        recipient_list=[company.user.email],
     )
     return redirect("/admin/")
 

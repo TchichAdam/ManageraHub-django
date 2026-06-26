@@ -276,3 +276,5 @@ DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@managerahub.ma')
 
 # Allow embedding media/pages in iframes from the same origin (needed for offline PDF previews)
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+SITE_URL = os.getenv('SITE_URL', 'http://127.0.0.1:8000').rstrip('/')

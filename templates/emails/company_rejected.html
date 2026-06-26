@@ -1,0 +1,46 @@
+{% extends "emails/base_email.html" %}
+
+{% block email_content %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;">
+    <tr>
+        <td style="padding-bottom: 20px;">
+            <h2 style="margin: 0; font-family: Georgia, serif; font-size: 24px; color: #ef4444; font-weight: 600;">Mise à jour concernant votre inscription entreprise ✦</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 24px;">
+            Bonjour {{ display_name }},
+            <br><br>
+            Nous vous remercions de l'intérêt porté à la plateforme ManageraHub.
+            <br><br>
+            Après examen approfondi des informations et documents justificatifs fournis pour votre entreprise <strong>{{ company_name }}</strong>, notre équipe d'administration a le regret de vous informer que votre compte n'a pas pu être validé.
+            <br><br>
+            <strong>Pourquoi mon inscription a-t-elle été refusée ?</strong><br>
+            Cela se produit généralement si votre identifiant ICE (15 chiffres) ou votre numéro de Registre du Commerce (RC) comportent des erreurs, ou si le document légal fourni (ex: certificat Modèle J) n'est pas valide ou est illisible.
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 30px;">
+            Vous pouvez mettre à jour vos informations et télécharger à nouveau des justificatifs conformes en vous connectant à votre espace.
+        </td>
+    </tr>
+    <!-- CTA BUTTON -->
+    <tr>
+        <td align="center" style="padding-bottom: 30px;">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="background-color: #4f0c28; border-radius: 99px;">
+                        <a href="{{ site_url }}/company/profile" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Mettre à jour mes informations</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 14px; color: #8a94a6; line-height: 1.5; border-top: 1px solid #f0f2f5; padding-top: 20px;">
+            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur : <br>
+            <a href="{{ site_url }}/company/profile" style="color: #4f0c28; text-decoration: underline;">{{ site_url }}/company/profile</a>
+        </td>
+    </tr>
+</table>
+{% endblock %}

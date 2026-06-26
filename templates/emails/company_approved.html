@@ -1,0 +1,58 @@
+{% extends "emails/base_email.html" %}
+
+{% block email_content %}
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;">
+    <tr>
+        <td style="padding-bottom: 20px;">
+            <h2 style="margin: 0; font-family: Georgia, serif; font-size: 24px; color: #10b981; font-weight: 600;">Votre compte entreprise a été validé ! ✦</h2>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 24px;">
+            Bonjour {{ display_name }},
+            <br><br>
+            Félicitations ! Votre compte Entreprise pour <strong>{{ company_name }}</strong> a été examiné et **APPROUVÉ** par notre équipe d'administration.
+            <br><br>
+            Voici les informations d'identification de l'entreprise que nous avons validées :
+        </td>
+    </tr>
+    <tr>
+        <td style="padding-bottom: 30px;">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #fafbfc; border: 1px solid #eaedf2; border-radius: 12px; padding: 20px; font-size: 14px; color: #4e5d78; line-height: 1.6;">
+                <tr>
+                    <td style="padding-bottom: 8px;"><strong>Identifiant Commun (ICE) :</strong> {{ ice|default:"Non fourni" }}</td>
+                </tr>
+                <tr>
+                    <td style="padding-bottom: 8px;"><strong>Numéro de Registre du Commerce (RC) :</strong> {{ rc_number|default:"Non fourni" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Localisation :</strong> {{ city }}, {{ country }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 15px; color: #4e5d78; line-height: 1.6; padding-bottom: 30px;">
+            Vous pouvez dès maintenant vous connecter à votre portail entreprise pour publier des offres d'emploi, faire passer des quiz de sélection et gérer le recrutement de vos futurs collaborateurs.
+        </td>
+    </tr>
+    <!-- CTA BUTTON -->
+    <tr>
+        <td align="center" style="padding-bottom: 30px;">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="background-color: #4f0c28; border-radius: 99px;">
+                        <a href="{{ site_url }}/company/dashboard" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: Arial, sans-serif; font-size: 14px; font-weight: bold; color: #ffffff; text-decoration: none; text-transform: uppercase; letter-spacing: 0.05em;">Publier une offre d'emploi</a>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="font-size: 14px; color: #8a94a6; line-height: 1.5; border-top: 1px solid #f0f2f5; padding-top: 20px;">
+            Si le bouton ci-dessus ne fonctionne pas, copiez-collez le lien suivant dans votre navigateur : <br>
+            <a href="{{ site_url }}/company/dashboard" style="color: #4f0c28; text-decoration: underline;">{{ site_url }}/company/dashboard</a>
+        </td>
+    </tr>
+</table>
+{% endblock %}
