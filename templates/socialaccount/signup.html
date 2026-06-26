@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}Inscription | ManageraHub{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --plum: #4f0c28;
+        --plum-deep: #3f0a20;
+        --periwinkle: #c5d2f8;
+        --radius-pill: 999px;
+    }
+    body {
+        font-family: "Inter", "Montserrat", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        padding: 24px;
+        background: radial-gradient(circle at center, #1b0610 0%, #0a0206 100%);
+        color: #fff;
+    }
+    .signup-container {
+        width: 100%;
+        max-width: 480px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 40px 32px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+    .signup-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.2rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 0 0 12px;
+        text-align: center;
+    }
+    .signup-desc {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 0 0 28px;
+        text-align: center;
+    }
+    .signup-form {
+        display: grid;
+        gap: 16px;
+    }
+    .signup-form label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.88);
+        margin-bottom: 6px;
+        display: block;
+    }
+    .signup-form input[type="text"],
+    .signup-form input[type="email"] {
+        width: 100%;
+        min-height: 48px;
+        padding: 0 16px;
+        border-radius: 13px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.09);
+        color: #fff;
+        font-family: "Inter", sans-serif;
+        font-size: 0.88rem;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .signup-form input:focus {
+        border-color: rgba(197, 210, 248, 0.55);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    .btn-submit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        border-radius: var(--radius-pill);
+        border: none;
+        background: var(--plum);
+        color: #fff;
+        font-size: 0.88rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        cursor: pointer;
+        margin-top: 12px;
+        box-shadow: 0 10px 24px rgba(79, 12, 40, 0.3);
+    }
+    .btn-submit:hover {
+        background: var(--plum-deep);
+        box-shadow: 0 12px 28px rgba(79, 12, 40, 0.45);
+    }
+    .help-block {
+        font-size: 0.74rem;
+        color: rgba(255, 255, 255, 0.45);
+        margin-top: 4px;
+        display: block;
+    }
+</style>
+
+<div class="signup-container">
+    <h1 class="signup-title">Créer votre compte</h1>
+    <p class="signup-desc">
+        Vous êtes sur le point d'associer votre compte de réseau social pour vous connecter à ManageraHub. Veuillez valider vos informations ci-dessous.
+    </p>
+
+    <form class="signup-form" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div style="color: #ef4444; font-size: 0.85rem; margin-bottom: 12px;">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <span class="help-block">{{ field.help_text|safe }}</span>
+                {% endif %}
+                {% if field.errors %}
+                    <div style="color: #ef4444; font-size: 0.78rem; margin-top: 4px;">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">S'inscrire</button>
+    </form>
+</div>
+{% endblock %}
