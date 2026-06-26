@@ -7,13 +7,24 @@ Ce chapitre détaille la phase d'implémentation technique de ManageraHub. Il d�
 \subsection{Environnement matériel}
 Le développement de la plateforme a été réalisé sur une machine portable équipée d'un processeur Intel Core i7 cadencé à 2.8 GHz, de 16 Go de mémoire vive (RAM) et d'un stockage SSD de 512 Go. Cette configuration a permis de faire tourner le serveur de développement local et la base de données relationnelle de manière fluide.
 
-\subsection{Environnement logiciel}
+\subsection{Environnement logiciel (Développement)}
 \begin{itemize}
     \item \textbf{Système d'exploitation :} Windows 11 Professionnel.
     \item \textbf{Langage et Framework :} Python (version 3.9) et Django (version 4.2 LTS).
     \item \textbf{IDE / Éditeurs :} Visual Studio Code pour l'écriture et le débogage du code Python\allowbreak/Django et des fichiers statiques.
     \item \textbf{Gestion des versions :} Git pour le contrôle de version, hébergé sur GitHub.
-    \item \textbf{Base de données :} MySQL / MariaDB (utilisant la bibliothèque \texttt{PyMySQL}) pour le développement local et la production.
+    \item \textbf{Base de données :} SQLite pour le stockage relationnel local.
+\end{itemize}
+
+\subsection{Environnement de déploiement cloud (Production)}
+Pour la mise en production de ManageraHub, nous avons opté pour une infrastructure cloud performante et évolutive :
+\begin{itemize}
+    \item \textbf{Fournisseur Cloud :} Oracle Cloud Infrastructure (OCI).
+    \item \textbf{Machine Virtuelle (VM) :} Instance de calcul Compute sous Ubuntu Server 22.04 LTS (IP publique : 51.170.143.223).
+    \item \textbf{Serveur Web \& Reverse Proxy :} Nginx configuré pour écouter sur les ports standards HTTP/HTTPS et rediriger le trafic vers le serveur d'application interne.
+    \item \textbf{Serveur d'application WSGI :} Gunicorn gérant les processus de l'application Django en arrière-plan (port local 8000).
+    \item \textbf{Résolution DNS :} Utilisation du service de wildcard DNS de confiance \texttt{sslip.io} permettant d'attribuer le nom de domaine résolvable \texttt{51-170-143-223.sslip.io} pointant directement vers l'adresse IP publique de la VM.
+    \item \textbf{Base de données :} SQLite (\texttt{db.sqlite3}), choisi pour sa simplicité et sa légèreté lors des phases de validation.
 \end{itemize}
 
 \section{Architecture technique du code source}
@@ -97,10 +108,95 @@ def candidate_feed_view(request):
     return render(request, 'candidate/feed.html', {'posts': posts})
 \end{lstlisting}
 
+\subsection{Authentification Sociale (OAuth 2.0 via django-allauth)}
+Pour offrir une expérience utilisateur moderne et fluide, nous avons intégré l'authentification sociale à l'aide de la bibliothèque \texttt{django-allauth}. Les candidats peuvent ainsi s'inscrire ou se connecter en un clic avec leurs comptes Google ou GitHub.
+
+La configuration associe les comptes sociaux récupérés à des profils \texttt{User} locaux. Si l'adresse e-mail retournée par le fournisseur OAuth n'est pas encore enregistrée, un compte est créé à la volée. Nous avons personnalisé les gabarits (\texttt{socialaccount/}\allowbreak\texttt{signup.html} et \texttt{socialaccount/}\allowbreak\texttt{login\_error.html}) pour maintenir la charte graphique de la plateforme (Dark Plum et Periwinkle) et afficher des messages d'erreur clairs en cas d'échec d'autorisation réseau (comme par exemple l'erreur d'inscription sans CSS).
+
+Voici la configuration majeure implémentée dans \texttt{monprojet/settings.py} :
+
+\begin{lstlisting}[language=Python, caption=Configuration de django-allauth pour OAuth dans settings.py]
+# Configuration Allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+INSTALLED_APPS += [
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
+]
+
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+\end{lstlisting}
+
+\subsection{Système de notifications par e-mail transactionnel (SMTP)}
+Le système d'e-mail de ManageraHub a été entièrement refondu pour envoyer des e-mails transactionnels HTML modernes et professionnels. Les notifications par e-mail sont générées dynamiquement lors d'événements clés :
+\begin{itemize}
+    \item \textbf{Bienvenue candidat/\allowbreak entreprise :} Message personnalisé envoyé dès la création du compte.
+    \item \textbf{Validation d'entreprise :} Notification de l'approbation du compte par l'administrateur.
+    \item \textbf{Rejet d'entreprise :} Notification du refus du compte avec le motif saisi.
+    \item \textbf{Changement de statut de candidature :} Notification en temps réel du candidat (ex: accepté, rejeté, entretien) avec des cartes de statut colorées pour un impact visuel optimal.
+\end{itemize}
+
+L'implémentation repose sur le protocole SMTP de Gmail avec un mot de passe d'application. Nous utilisons \texttt{EmailMultiAlternatives} dans \texttt{app1/emails.py} pour joindre une version texte brut en alternative au gabarit HTML.
+
+Pour garantir la cliquabilité et le bon rendu visuel des boutons de redirection (comme le bouton d'accès au profil ou à l'offre) sur tous les clients mail (Gmail, Outlook, Apple Mail), nous avons mis en œuvre le pattern de conception \textbf{Bulletproof Button}. Ce pattern combine l'inline-block HTML/CSS pour les clients standard et le balisage VML (Vector Markup Language) spécifique pour assurer la compatibilité Microsoft Outlook.
+
+Le code suivant montre l'implémentation de la fonction d'envoi d'e-mails HTML :
+
+\begin{lstlisting}[language=Python, caption=Fonction d'envoi d'e-mails HTML personnalisés dans app1/emails.py]
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.conf import settings
+
+def send_html_email(subject, template_name, context, to_emails):
+    # Injection automatique de la variable de l'URL du site
+    context['site_url'] = getattr(settings, 'SITE_URL', 'http://127.0.0.1:8000')
+    
+    # Rendu du template HTML
+    html_content = render_to_string(template_name, context)
+    text_content = strip_tags(html_content)
+    
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=to_emails,
+    )
+    email.attach_alternative(html_content, "text/html")
+    return email.send()
+\end{lstlisting}
+
+Le rendu visuel d'un e-mail transactionnel de bienvenue reçu dans la boîte de messagerie du candidat est illustré dans la figure \ref{fig:email_welcome_screenshot} :
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{diagrams/email_welcome_template.png}
+    \caption{Rendu de l'e-mail HTML de bienvenue dans une boîte Gmail}
+    \label{fig:email_welcome_screenshot}
+\end{figure}
+
+De même, le rendu visuel de l'e-mail de mise à jour du statut d'une candidature reçu par le candidat est illustré par la figure \ref{fig:email_status_screenshot} :
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{diagrams/email_status_template.png}
+    \caption{Rendu de l'e-mail HTML de changement de statut dans une boîte Gmail}
+    \label{fig:email_status_screenshot}
+\end{figure}
+
+
 \section{Présentation des interfaces de l'application}
 Cette section présente la charte graphique implémentée ainsi que les maquettes fonctionnelles et captures d'écran des différents modules de l'application. La charte graphique utilise des nuances de **Dark Plum** (\texttt{\#4F0C28}) comme couleur principale et de **Periwinkle** (\texttt{\#C5D2F8}) comme couleur secondaire pour les accents.
 
-\subsection{1. Page d'accueil et d'authentification}
+\subsection{Page d'accueil et d'authentification}
 La landing page présente les services de la plateforme aux visiteurs et propose deux boutons d'appel à l'action distincts pour s'inscrire en tant que candidat ou entreprise.
 
 \begin{figure}[H]
@@ -110,6 +206,14 @@ La landing page présente les services de la plateforme aux visiteurs et propose
     \label{fig:landing_desktop}
 \end{figure}
 
+En production sur Oracle Cloud, la page d'accueil est accessible publiquement, comme le montre la figure \ref{fig:production_landing} :
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{diagrams/production_landing.png}
+    \caption{Page d'accueil en ligne en production (URL sslip.io)}
+    \label{fig:production_landing}
+\end{figure}
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{diagrams/signin.png}
@@ -117,7 +221,15 @@ La landing page présente les services de la plateforme aux visiteurs et propose
     \label{fig:signin_page}
 \end{figure}
 
-\subsection{2. Espace Candidat et Tableaux de Bord}
+L'interface de connexion intègre désormais les boutons d'authentification sociale (Google et GitHub) comme illustré dans la figure \ref{fig:oauth_buttons} :
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{diagrams/oauth_login_buttons.png}
+    \caption{Boutons d'authentification Google et GitHub intégrés}
+    \label{fig:oauth_buttons}
+\end{figure}
+
+\subsection{Espace Candidat et Tableaux de Bord}
 L'espace Candidat affiche un tableau de bord complet avec le pourcentage de complétion de son profil, sa liste de candidatures actives et leurs statuts.
 
 De plus, nous y avons intégré un module de \textbf{suivi en temps réel des candidatures (Application Tracker)}. Ce widget de type carrousel permet au candidat de visualiser graphiquement l'évolution de ses demandes via une frise chronologique interactive (étapes : \textit{Candidature envoyée, Examen en cours, Entretien planifié, Décision finale}). Les données sont synchronisées automatiquement en tâche de fond (polling asynchrone) sans nécessiter de rafraîchir manuellement la page. Si un changement d'état est détecté, un indicateur visuel de scan radar s'active temporairement et applique un effet de surbrillance lumineuse sur la frise.
@@ -138,7 +250,7 @@ Le candidat accède également au \textbf{fil d'actualité social professionnel 
     \label{fig:social_feed}
 \end{figure}
 
-\subsection{3. Espace Entreprise et Gestion des Offres}
+\subsection{Espace Entreprise et Gestion des Offres}
 L'entreprise accède à un espace restreint permettant de gérer ses offres d'emploi actives et d'analyser les dossiers de candidature reçus.
 
 \begin{figure}[H]
@@ -155,7 +267,7 @@ L'entreprise accède à un espace restreint permettant de gérer ses offres d'em
     \label{fig:comp_app_detail}
 \end{figure}
 
-\subsection{4. Espace d'Administration et Modération}
+\subsection{Espace d'Administration et Modération}
 Le panneau de contrôle de l'administrateur permet de vérifier les documents de légitimité de l'entreprise (ICE et RC) avant d'activer le compte.
 
 \begin{figure}[H]
@@ -165,7 +277,7 @@ Le panneau de contrôle de l'administrateur permet de vérifier les documents de
     \label{fig:admin_validation}
 \end{figure}
 
-\subsection{5. Version Mobile (Responsive Design)}
+\subsection{Version Mobile (Responsive Design)}
 Tous les éléments graphiques se réorganisent sur les écrans mobiles et tablettes pour garantir un centrage et une lisibilité optimale.
 
 \begin{figure}[H]
@@ -191,6 +303,9 @@ Durant la phase finale d'intégration de la charte graphique et de mise en œuvr
     \item \textbf{Fichiers médias :} Les CV, photos de profil et lettres de motivation contiennent des informations personnelles. Pour éviter qu'ils ne soient mélangés, nous avons implémenté des fonctions de génération de chemins de stockage dynamiques et compartimentés (comme les fonctions de stockage de profil ou de candidature) qui organisent automatiquement les téléversements dans des répertoires sécurisés par identifiants d'utilisateurs et d'offres.
     \item \textbf{Mise à jour d'état en temps réel (Tracker) :} Interroger intensivement le serveur pour actualiser la timeline de candidature peut surcharger la base de données. Nous avons résolu ce problème en développant un point d'API Django dédié et optimisé qui renvoie uniquement les données JSON nécessaires, couplé à une scrutation (polling) asynchrone côté client. De plus, l'overlay de scan radar ne s'active visuellement que lorsqu'une réelle transition d'état est détectée en base de données, alliant fluidité et économie de requêtes.
     \item \textbf{Expérience fluide du fil d'actualité (Social Feed) :} Le chargement d'un grand nombre de publications avec images et vidéos ralentissait l'affichage global sur mobile. Nous avons implémenté une pagination dynamique par défilement infini (Infinite Scroll) en JavaScript. Pour combler le temps de chargement asynchrone, nous avons conçu des squelettes de chargement (skeletons loaders) animés en CSS, masquant le délai réseau et rendant l'interface fluide.
+    \item \textbf{Surcharge graphique d'OAuth et django-allauth :} L'intégration de la connexion sociale Google et GitHub a initialement mené à des pages de gestion de compte et de confirmation d'inscription sans styles CSS, dégradant l'expérience. Nous avons résolu cette difficulté en surchargeant systématiquement tous les templates de \texttt{django-allauth} (notamment \texttt{signup.html} et \texttt{login\_error.html}) en y intégrant la structure HTML sémantique et la charte Dark Plum personnalisée de la plateforme.
+    \item \textbf{Rendu des e-mails HTML et cliquabilité des boutons (SMTP) :} L'envoi d'e-mails HTML modernes contenant des boutons de redirection a révélé des problèmes d'affichage et de cliquabilité sur des clients de messagerie restrictifs (comme Microsoft Outlook ou Gmail mobile), ainsi qu'un classement fréquent des messages en spam. Nous avons surmonté cela en configurant le protocole SMTP Gmail avec des mots de passe d'application sécurisés pour authentifier le domaine d'envoi, et en concevant les boutons avec le pattern hybride \textbf{Bulletproof Button} (combinant VML pour Outlook et balises HTML structurelles \texttt{display: inline-block} avec styles CSS inline pour le reste des clients).
+    \item \textbf{Redirection de callbacks OAuth sans nom de domaine enregistré :} Les API d'authentification Google et GitHub exigent des domaines publics résolvables pour configurer les URL de retour (Redirect URIs) et interdisent l'utilisation d'adresses IP brutes de serveurs de production. Sans nom de domaine enregistré, nous avons configuré et exploité la solution wildcard DNS gratuite \texttt{sslip.io} pour associer notre adresse IP publique de VM Oracle Cloud (\texttt{51.170.143.223}) au nom de domaine résolvable \texttt{51-170-143-223.sslip.io}, permettant de mener à bien les tests d'authentification sociale en conditions réelles de production.
 \end{enumerate}
 
 \section{Conclusion}
