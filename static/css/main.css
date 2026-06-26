@@ -1265,7 +1265,7 @@ body.menu-open {
     flex: 1;
     position: relative;
     overflow: hidden;
-    background-image: url('../images/admin-login-bg.jpeg');
+    background-image: url('../images/admin-login-bg.jpg');
     background-size: cover;
     background-position: center;
 }

@@ -54,8 +54,8 @@ if not DEBUG:
         '1', 'true', 'yes', 'on',
     )
     SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0') or '0')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False').strip().lower() in ('1', 'true', 'yes', 'on')
+    CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False').strip().lower() in ('1', 'true', 'yes', 'on')
 
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '').strip()
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '').strip()
