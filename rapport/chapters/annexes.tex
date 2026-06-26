@@ -2,55 +2,44 @@
 \addcontentsline{toc}{chapter}{Annexes}
 \markboth{Annexes}{Annexes}
 
-\section*{Annexe A : Guide d'installation et configuration}
+\section*{Annexe A : Guide de déploiement sur Oracle Cloud}
 
-Pour déployer ManageraHub en local pour le développement, veuillez suivre ces étapes :
+Pour déployer ManageraHub en production sur une machine virtuelle (VM) Oracle Cloud, veuillez suivre ces étapes principales :
 
-\subsection*{1. Prérequis système}
+\subsection*{1. Configuration de l'instance Oracle Cloud}
 \begin{itemize}
-    \item Python 3.9 installé.
-    \item Gestionnaire de paquets \texttt{pip} et utilitaire de virtualisation \texttt{venv}.
-    \item Git installé pour le clonage du dépôt.
+    \item Création d'une instance Ubuntu (Always Free Eligible) via la console OCI.
+    \item Ouverture des ports 80 (HTTP) et 443 (HTTPS) dans la Virtual Cloud Network (VCN).
+    \item Connexion sécurisée à la VM via une paire de clés SSH privées.
 \end{itemize}
 
-\subsection*{2. Étapes de déploiement}
-\begin{lstlisting}[language=bash, caption=Commandes de configuration du projet]
-# 1. Cloner le depot du projet
+\subsection*{2. Étapes de configuration du serveur}
+\begin{lstlisting}[language=bash, caption=Installation des paquets et configuration système]
+# 1. Mise a jour du systeme et installation des dependances
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3-pip python3-venv git nginx -y
+
+# 2. Ouverture des ports du pare-feu local (Ubuntu iptables)
+sudo iptables -I INPUT 6 -p tcp --dport 80 -j ACCEPT
+sudo iptables -I INPUT 6 -p tcp --dport 443 -j ACCEPT
+sudo netfilter-persistent save
+
+# 3. Clonage du projet et configuration Python
 git clone https://github.com/TchichAdam/managerahub-django.git
 cd managerahub-django
-
-# 2. Creer et activer l'environnement virtuel
-python -m venv venv
-# Sur Windows :
-venv\Scripts\activate
-# Sur Linux/macOS :
-source venv/bin/activate
-
-# 3. Installer les dependances
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
-# 4. Creer les fichiers de migration de base de donnees
-python manage.py makemigrations app1
-
-# 5. Appliquer les migrations
-python manage.py migrate
-
-# 6. Creer un compte administrateur principal
-python manage.py createsuperuser
-
-# 7. Lancer le serveur de developpement local
-python manage.py runserver
+# 4. Preparation de la base de donnees et des fichiers statiques
+python3 manage.py makemigrations
+python3 manage.py migrate
+python3 manage.py collectstatic --no-input
 \end{lstlisting}
 
-Une fois le serveur démarré, l'application est accessible à l'adresse suivante dans n'importe quel navigateur web : \url{http://127.0.0.1:8000/}.
-
-\subsection*{3. Comptes de test prédéfinis}
-\begin{itemize}
-    \item \textbf{Compte Administrateur :} \texttt{admin@managerahub.com} / Mot de passe : \texttt{admin123}
-    \item \textbf{Candidat de test :} \texttt{candidate@}\allowbreak\texttt{test.com} / Passe : \texttt{candidate123}
-    \item \textbf{Compte Entreprise de test (en attente) :} \texttt{entreprise@test.com} / Mot de passe : \texttt{entreprise123}
-\end{itemize}
-\textit{Note de sécurité importante : Ces comptes de test et leurs mots de passe associés sont réservés exclusivement à l'environnement de développement local (dev-only) et doivent impérativement être supprimés ou modifiés en production.}
+\subsection*{3. Lancement avec Gunicorn et Nginx}
+L'application est servie en arrière-plan par \texttt{Gunicorn} (géré via \texttt{systemd}) et le trafic web est géré par \texttt{Nginx} agissant comme un reverse-proxy vers Gunicorn.
+Les requêtes parviennent sur l'IP publique d'Oracle Cloud associée au domaine \url{http://51-170-143-223.sslip.io}.
 
 \newpage
 
@@ -138,7 +127,7 @@ Ce gabarit affiche le profil du candidat, la complétion de son profil et ses ca
 \section*{Annexe C : Validations de formulaires et logique de sécurité}
 Pour garantir la cohérence des données, notamment pour le marché marocain, des mécanismes de validation stricts ont été mis en œuvre.
 
-\subsection*{1. Validateur personnalisé d'ICE marocain (app1/forms.py)}
+\subsection*{1. Validateur personnalisé d'ICE marocain (forms.py)}
 L'ICE (Identifiant Commun de l'Entreprise) doit être composé de 15 chiffres. Voici comment ce contrôle est géré dans notre formulaire de modification du profil de l'entreprise :
 
 \begin{lstlisting}[language=Python, caption=Validation de l'ICE dans CompanyProfileForm]
